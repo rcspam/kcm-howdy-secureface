@@ -1,0 +1,20 @@
+in the original, ';' is used to denote a comment, but we need '#'
+
+--- a/ini.h	2023-08-14 09:24:14.535050811 +0300
++++ b/ini.h	2023-08-14 09:24:38.719145711 +0300
+@@ -288,13 +288,13 @@
+ 				return PDataType::PDATA_NONE;
+ 			}
+ 			char firstCharacter = line[0];
+-			if (firstCharacter == ';')
++			if (firstCharacter == '#')
+ 			{
+ 				return PDataType::PDATA_COMMENT;
+ 			}
+ 			if (firstCharacter == '[')
+ 			{
+-				auto commentAt = line.find_first_of(';');
++				auto commentAt = line.find_first_of('#');
+ 				if (commentAt != std::string::npos)
+ 				{
+ 					line = line.substr(0, commentAt);

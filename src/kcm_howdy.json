@@ -1,0 +1,22 @@
+{
+    "Categories": "Qt;KDE;X-KDE-settings-system;",
+    "KPlugin": {
+        "Description": "Configure Facial Authentication",
+        "Description[ru]": "Настройка распознавания лица",
+        "Description[x-test]": "xxConfigure Facial Authenticationxx",
+        "Icon": "howdy",
+        "Name": "Facial Authentication (Howdy)",
+        "Name[ru]": "Распознавание лица (Howdy)",
+        "Name[x-test]": "xxFacial Authentication (Howdy)xx",
+        "ServiceTypes": [
+            "KCModule"
+        ]
+    },
+    "X-KDE-Keywords": "howdy,face,facial,login,authentication,session,camera,webcam,video,ir,hello,display manager",
+    "X-KDE-Keywords[ru]": "howdy,face,facial,login,authentication,session,camera,webcam,video,ir,hello,display manager,лицо,аутентификация по лицу,вход,логин,менеджер входа,сеанс,сессия,камера,вебкамера,видео",
+    "X-KDE-Keywords[x-test]": "xxhowdyxx,xxfacexx,xxfacialxx,xxloginxx,xxauthenticationxx,xxsessionxx,xxcameraxx,xxwebcamxx,xxvideoxx,xxirxx,xxhelloxx,xxdisplay managerxx",
+    "X-KDE-Keywords[x-test]": "xxlightdmxx,xxdisplay managerxx,xxthemesxx,xxlogin themexx,xxlogin screenxx,xxlogin skinxx,xxlogin visualxx,xxlogin lookxx,xxlogoutxx,xxenterxx,xxauthentication screenxx,xxsync settingsxx,xxsynchronize settingsxx,xxsessionxx,xxdefault sessionxx,xxdefault userxx,xxuser uidxx,xxlogin asxx,xxauthenticate asxx,xxcommand to shutdownxx,xxcommand to restartxx",
+    "X-KDE-ParentApp": "kcontrol",
+    "X-KDE-System-Settings-Parent-Category": "personalization",
+    "X-KDE-Weight": 10
+}
