@@ -1,0 +1,26 @@
+[Domain]
+Name=Howdy
+Name[ru]=Howdy
+Name[x-test]=xxHowdyxx
+Icon=howdy
+URL=https://gitlab.com/golubevan/kcm-howdy
+
+[org.kde.kcontrol.kcmhowdy.removefacemodel]
+Name=Remove Face Model
+Name[ru]=Удалить модель лица
+Name[x-test]=xxRemove Face Modelxx
+Description=Remove face model
+Description[ru]=Удалить модель лица
+Description[x-test]=xxRemove face modelxx
+Policy=auth_self
+Persistence=session
+
+[org.kde.kcontrol.kcmhowdy.addfacemodel]
+Name=Add Face Model
+Name[ru]=Добавить модель лица
+Name[x-test]=xxAdd Face Modelxx
+Description=Scan a new face model
+Description[ru]=Отсканировать новую модель лица
+Description[x-test]=xxScan a new face modelxx
+Policy=auth_self
+Persistence=session

@@ -22,8 +22,10 @@ find_package(KF5 REQUIRED COMPONENTS
     I18n
     KCMUtils
     Declarative
-    Config
+    Auth
 )
+
+find_package(Gettext REQUIRED)
 
 add_compile_options(-Werror=pedantic)
 
@@ -34,3 +36,5 @@ ecm_install_icons(ICONS
 )
 
 add_subdirectory(src)
+
+ki18n_install(po)

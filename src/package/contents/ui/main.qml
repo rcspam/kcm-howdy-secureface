@@ -6,9 +6,16 @@
 
 import QtQuick 2.15
 import QtQuick.Controls 2.15
+import QtQuick.Layouts 1.15
 
-Item {
+import org.kde.kcm 1.4 as KCM
+
+KCM.SimpleKCM {
     id: root
+
+    SystemPalette { id: paletteActive;   colorGroup: SystemPalette.Active }
+    SystemPalette { id: paletteInactive; colorGroup: SystemPalette.Inactive }
+    property var gap: Math.round(kcm.gridUnit / 3)
 
     property var cfg_device: ConfigValue {
         branch: "video/"
@@ -24,9 +31,135 @@ Item {
         id: normalView
         anchors.fill: parent
         visible: !errorOccurred
-        TextField {
-            id: devicePath
-            text: cfg_device.value
+        TabBar {
+            id: bar
+            width: parent.width
+            TabButton {
+                text: i18n("Model list")
+            }
+            TabButton {
+                text: i18n("Device")
+            }
+        }
+        StackLayout {
+            anchors.top: bar.bottom
+            width: parent.width
+            currentIndex: bar.currentIndex
+            Column {
+                padding: gap
+                spacing: gap
+                ScrollView {
+                    id: scrollView
+                    clip: true
+                    visible: kcm.facesModel.rows > 0
+                    Component.onCompleted: {
+                        background.visible = true
+                    }
+                    Column {
+                        HorizontalHeaderView {
+                            id: facesTableHeader
+                            syncView: facesTable
+                            columnWidthProvider: facesTable.columnWidthProvider
+                            boundsBehavior: Flickable.StopAtBounds
+                        }
+                        TableView {
+                            id: facesTable
+                            width: columnWidths.reduce((acc, cur) => acc + cur, 0)
+                            boundsBehavior: Flickable.StopAtBounds
+                            height: contentHeight
+                            model: kcm.facesModel
+                            property var columnWidths: [1, 3 * kcm.gridUnit, 8 * kcm.gridUnit]
+                            property var selectedRow: -1
+                            columnWidthProvider: function (column) { return columnWidths[column] }
+                            delegate: Item {
+                                id: rootDelegate
+                                Rectangle {
+                                    id: hoverRect
+
+                                    x: {
+                                        var pos = 0
+                                        for (var i = 0; i < column; ++i) {
+                                            pos += facesTable.columnWidths[i]
+                                        }
+                                        return -pos
+                                    }
+                                    width: facesTable.width
+                                    height: parent.height
+                                    color: "transparent"
+                                    border {
+                                        width: 1
+                                        color: paletteActive.highlight
+                                    }
+                                    visible: cellArea.containsMouse
+                                }
+                                Rectangle {
+                                    id: selectedRect
+
+                                    anchors.fill: rootDelegate
+                                    color: paletteActive.highlight
+                                    visible: row == facesTable.selectedRow
+                                }
+                                Text {
+                                    id: myText
+                                    anchors.verticalCenter: parent.verticalCenter
+                                    leftPadding: gap * 2
+                                    rightPadding: gap * 2
+                                    text: display
+                                    color: row == facesTable.selectedRow ? paletteActive.highlightedText : paletteActive.text
+                                    Component.onCompleted: {
+                                        facesTable.columnWidths[column] = Math.max(facesTable.columnWidths[column], implicitWidth)
+                                        facesTable.columnWidthsChanged()
+                                        kcm.facesModel.layoutChanged()
+                                    }
+                                }
+                                MouseArea {
+                                    id: cellArea
+                                    anchors.fill: parent
+                                    hoverEnabled: true
+                                    onClicked: facesTable.selectedRow = row
+                                }
+                            }
+                        }
+                    }
+                }
+                Text {
+                    text: i18n("No face models")
+                    visible: kcm.facesModel.rows == 0
+                    padding: gap * 2
+                }
+                Row {
+                    spacing: gap
+                    Button {
+                        text: i18n("Add")
+                        onClicked: inputModelName.show()
+                    }
+
+                    Button {
+                        text: i18n("Delete")
+                        visible: kcm.facesModel.rows > 0
+                        enabled: facesTable.selectedRow >= 0
+                        onClicked: {
+                            confirmBox.show(i18n("Are you sure you want to delete this model?\nThe operation cannot be undone."), confirmBox.iconWarning)
+                            var selectedRow = facesTable.selectedRow
+                            confirmBox.callback = () => kcm.facesModel.removeFace(selectedRow)
+                        }
+                    }
+                }
+            }
+            Column {
+                padding: gap
+                spacing: gap
+                TextField {
+                    id: devicePath
+                    text: cfg_device.value
+                }
+
+                TextField {
+                    id: deviceName
+                    text: ""
+                }
+
+            }
         }
     }
 
@@ -40,7 +173,77 @@ Item {
             anchors.centerIn: parent
             text: "PUT_ERROR_TEXT_HERE"
         }
+    }
 
+    Dialog {
+        id: inputModelName
+
+        // center manually so that there is an integer value
+        x: Math.round((parent.width - width) * 0.5)
+        y: Math.round((parent.height - height) * 0.5)
+
+        property var optimalWidth: footer.minWidth + contentWidth
+        property var width0: Math.min(optimalWidth, parent.width * 0.7, kcm.gridUnit * 20)
+
+        width: Math.max(footer.minWidth, contentWidth + gap * 4, width0)
+        height: width >= optimalWidth ? implicitHeight - footer.height + gap * 2 : implicitHeight
+
+        function show() {
+            value.text = ""
+            open()
+            value.forceActiveFocus()
+        }
+
+        verticalPadding: 0
+        horizontalPadding: gap * 2
+        clip: true
+
+        header: Text {
+            padding: gap * 2
+            wrapMode: Text.WordWrap
+            width: Math.min(implicitWidth, parent.width)
+            text: i18n("Enter a name for the new model")
+        }
+
+        TextField {
+            id: value
+            Keys.onReturnPressed: inputModelName.accept()
+        }
+
+        footer: DialogButtonBox {
+            padding: gap * 2
+            topPadding: gap * 2
+            property int minWidth: implicitWidth + spacing * 2
+            standardButtons: Dialog.Ok | Dialog.Cancel
+            buttonLayout: DialogButtonBox.KdeLayout
+            alignment: Qt.AlignBottom | Qt.AlignRight
+        }
+
+        onAccepted: {
+            kcm.facesModel.addFace(value.text)
+        }
+    }
+
+    MsgBox {
+        id: msgBox
+    }
+
+    MsgBox {
+        id: msgBoxNoButton
+        footer: DialogButtonBox {}
+    }
+
+    MsgBox {
+        id: confirmBox
+        buttons: Dialog.Ok | Dialog.Cancel
+        property var callback
+        onAccepted: callback()
+    }
+
+    function closeAllTheBoxes() {
+        msgBox.reject()
+        msgBoxNoButton.reject()
+        confirmBox.reject()
     }
 
     ConfigValue {
@@ -49,12 +252,45 @@ Item {
 
     Connections {
         target: kcm.config
+
         function onConfigLoaded() {
             configValue.setupConfigValues(root)
         }
 
         function onErrorLoadConfigFile(filename) {
-            errorMsg.text = i18n("Error load config file:\n%1", filename)
+            errorMsg.text = i18("Error load config file:") + "\n" + filename
+            errorOccurred = true
+        }
+    }
+
+    Connections {
+        target: kcm.facesModel
+
+        function onErrorCreateFacesModel(message) {
+            errorMsg.text = i18n("Error create faces model:") + "\n" + message
+            errorOccurred = true
+        }
+
+        function onErrorAction(message) {
+            closeAllTheBoxes()
+            msgBox.show(message, msgBox.iconError)
+        }
+
+        function onSuccessAddFace() {
+            closeAllTheBoxes()
+            msgBox.show(i18n("Face model added successfully"), msgBox.iconInfo)
+        }
+
+        function onAuthorizedForAddFace() {
+            msgBoxNoButton.show(i18n("Look into the camera please"))
+        }
+    }
+
+    Connections {
+        target: kcm
+
+        function onErrorInitBackend(message) {
+            errorMsg.text = i18n("Error init backend:") + "\n" +  message
             errorOccurred = true
         }
     }

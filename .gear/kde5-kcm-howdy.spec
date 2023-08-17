@@ -34,11 +34,19 @@ KDE Workspace 5 Howdy configuration module
 %K5install
 %K5install_move data kcm_howdy kpackage
 
-%files
+%find_lang --with-kde --append --output=%name.lang kcm_howdy
+
+%files -f %name.lang
 %_K5xdgapp/kcm_howdy.desktop
 %_K5plug/plasma/kcms/systemsettings/kcm_howdy.so
 %_K5data/kpackage/kcms/kcm_howdy/
 %_K5data/icons/hicolor/scalable/apps/howdy.svg
+
+# auth helper
+%_K5libexecdir/kauth/kcm-howdy-auth-helper
+%_datadir/dbus-1/system.d/org.kde.kcontrol.kcmhowdy.conf
+%_datadir/polkit-1/actions/org.kde.kcontrol.kcmhowdy.policy
+%_K5dbus_sys_srv/org.kde.kcontrol.kcmhowdy.service
 
 %changelog
 * Wed Aug 09 2023 Anton Golubev <golubevan@altlinux.org> 0.0.1-alt1
