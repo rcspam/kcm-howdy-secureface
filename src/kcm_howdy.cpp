@@ -5,6 +5,7 @@
 */
 
 #include "kcm_howdy.h"
+#include "config.h"
 
 #include <QQuickItem>
 #include <QGuiApplication>

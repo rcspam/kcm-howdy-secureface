@@ -14,6 +14,9 @@ include(KDECMakeSettings)
 include(ECMInstallIcons)
 include(KDECompilerSettings NO_POLICY_SCOPE)
 
+set(HOWDY_CONFIG_FILE "/etc/howdy/config.ini" CACHE PATH "Howdy config file")
+set(HOWDY_MODELS_PATH "/etc/howdy/models"     CACHE PATH "Howdy models path")
+
 find_package(Qt5 ${QT_MIN_VERSION} CONFIG REQUIRED COMPONENTS
     Quick
 )
@@ -34,6 +37,9 @@ ecm_install_icons(ICONS
     DESTINATION ${KDE_INSTALL_ICONDIR}
     THEME hicolor
 )
+
+include_directories(${CMAKE_CURRENT_BINARY_DIR})
+configure_file(config.h.in ${CMAKE_CURRENT_BINARY_DIR}/config.h @ONLY)
 
 add_subdirectory(src)
 
