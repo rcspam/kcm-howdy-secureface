@@ -15,7 +15,7 @@ class AuthHelper: public QObject
 public Q_SLOTS:
     KAuth::ActionReply addfacemodel(const QVariantMap &args);
     KAuth::ActionReply removefacemodel(const QVariantMap &args);
-    KAuth::ActionReply clearallfacemodels(const QVariantMap &args);
+    KAuth::ActionReply saveconfig(const QVariantMap &args);
 
 private:
     KAuth::ActionReply error(QString errorText);

@@ -18,22 +18,26 @@ class KcmConfig: public QObject
     Q_OBJECT
 
 public:
-    explicit KcmConfig(KQuickAddons::ManagedConfigModule *parent);
+    explicit KcmConfig(QString fileName, KQuickAddons::ManagedConfigModule *parent);
 
     Q_INVOKABLE QVariant getConfigValue(QString url);
     Q_INVOKABLE void updateConfigValue(QString url, QVariant value);
     Q_INVOKABLE void storeDefaultValue(QString url, QVariant value);
-    void load(const char *filename);
+    void load();
+    void save();
 
 Q_SIGNALS:
     void configLoaded();
+    void configSaved();
     void errorLoadConfigFile(QString filename);
+    void errorSaveConfigFile(QString message);
 
 private:
     using Config = QMap<QString, QString>;
 
     bool hasSomethingNew(Config &newCfg, Config &oldCfg);
 
+    QString m_filename;
     Config m_storedConfig;
     Config m_updatedConfig;
 };

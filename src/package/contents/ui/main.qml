@@ -22,7 +22,7 @@ KCM.SimpleKCM {
         name: "device_path"
         type: cfgString
         defaultValue: ""
-        listenValue: devicePath.text
+        listenValue: camCombo.currentValue
     }
 
     property bool errorOccurred: false
@@ -149,16 +149,15 @@ KCM.SimpleKCM {
             Column {
                 padding: gap
                 spacing: gap
-                TextField {
-                    id: devicePath
-                    text: cfg_device.value
-                }
 
-                TextField {
-                    id: deviceName
-                    text: ""
+                ComboBox {
+                    id: camCombo
+                    // returns -1 if not found
+                    currentIndex: Math.max(indexOfValue(cfg_device.value), 0)
+                    model: kcm.camModel
+                    valueRole: 'name'
+                    textRole: 'description'
                 }
-
             }
         }
     }
@@ -260,6 +259,11 @@ KCM.SimpleKCM {
         function onErrorLoadConfigFile(filename) {
             errorMsg.text = i18("Error load config file:") + "\n" + filename
             errorOccurred = true
+        }
+
+        function onErrorSaveConfigFile(message) {
+            closeAllTheBoxes()
+            msgBox.show(i18n("Save settings failed:") + "\n" + message, msgBox.iconError)
         }
     }
 

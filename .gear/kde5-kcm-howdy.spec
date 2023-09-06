@@ -20,6 +20,7 @@ BuildRequires: kf5-kpackage-devel
 BuildRequires: kf5-kcmutils-devel
 BuildRequires: kf5-kdeclarative-devel
 BuildRequires: kf5-ki18n-devel
+BuildRequires: qt5-multimedia-devel
 
 %description
 KDE Workspace 5 Howdy configuration module

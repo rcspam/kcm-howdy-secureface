@@ -24,3 +24,13 @@ Description[ru]=Отсканировать новую модель лица
 Description[x-test]=xxScan a new face modelxx
 Policy=auth_self
 Persistence=session
+
+[org.kde.kcontrol.kcmhowdy.saveconfig]
+Name=Save Settings
+Name[ru]=Сохранить параметры
+Name[x-test]=xxSave Settingsxx
+Description=Save Settings in Howdy config file
+Description[ru]=Сохранить настройки в конфигурационном файле Howdy
+Description[x-test]=xxSave Settings in Howdy config filexx
+Policy=auth_admin
+Persistence=session

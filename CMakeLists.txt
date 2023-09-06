@@ -19,6 +19,7 @@ set(HOWDY_MODELS_PATH "/etc/howdy/models"     CACHE PATH "Howdy models path")
 
 find_package(Qt5 ${QT_MIN_VERSION} CONFIG REQUIRED COMPONENTS
     Quick
+    Multimedia
 )
 
 find_package(KF5 REQUIRED COMPONENTS

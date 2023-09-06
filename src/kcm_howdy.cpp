@@ -4,12 +4,14 @@
     SPDX-License-Identifier: GPL-3.0-or-later
 */
 
+
 #include "kcm_howdy.h"
 #include "config.h"
 
 #include <QQuickItem>
 #include <QGuiApplication>
 #include <QFontMetrics>
+#include <QCameraInfo>
 
 #include <KPluginFactory>
 #define TRANSLATION_DOMAIN "kcm_howdy"
@@ -20,15 +22,17 @@
 
 #include "kcm_config.h"
 #include "facesmodel.h"
+#include "cammodel.h"
 
 K_PLUGIN_CLASS_WITH_JSON(KcmHowdy, "kcm_howdy.json")
 
 KcmHowdy::KcmHowdy(QObject *parent, const KPluginMetaData &data, const QVariantList &args)
     : KQuickAddons::ManagedConfigModule(parent, data, args)
-    , m_config(new KcmConfig(this))
+    , m_config(new KcmConfig(QStringLiteral(HOWDY_CONFIG_FILE), this))
 {
     qmlRegisterAnonymousType<KcmConfig>("org.altlinux.howdy.kcm", 1);
     qmlRegisterAnonymousType<FacesModel>("org.altlinux.howdy.kcm", 1);
+    qmlRegisterAnonymousType<CamModel>("org.altlinux.howdy.kcm", 1);
 
     QString username;
     auto pw = getpwuid(getuid());
@@ -42,13 +46,18 @@ KcmHowdy::KcmHowdy(QObject *parent, const KPluginMetaData &data, const QVariantL
     m_facesModel = new FacesModel(QStringLiteral("%1/%2.dat")
                                   .arg(QStringLiteral(HOWDY_MODELS_PATH))
                                   .arg(username), this);
+    m_camModel = new CamModel(this);
 }
 
 void KcmHowdy::load()
 {
-    m_config->load(HOWDY_CONFIG_FILE);
+    m_config->load();
 }
 
+void KcmHowdy::save()
+{
+    m_config->save();
+}
 
 int KcmHowdy::gridUnit()
 {

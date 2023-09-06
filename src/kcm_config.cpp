@@ -10,10 +10,15 @@
 #include <QQuickItem>
 
 #include <KQuickAddons/ManagedConfigModule>
+#include <KAuth/Action>
+#include <KAuth/ExecuteJob>
+
+#define TRANSLATION_DOMAIN "kcm_howdy"
+#include <KLocalizedString>
 
 #include "mini/ini.h"
 
-KcmConfig::KcmConfig(KQuickAddons::ManagedConfigModule *parent) : QObject(parent) {}
+KcmConfig::KcmConfig(QString filename, KQuickAddons::ManagedConfigModule *parent) : QObject(parent), m_filename(filename) {}
 
 bool KcmConfig::hasSomethingNew(Config &newCfg, Config &oldCfg)
 {
@@ -48,16 +53,16 @@ QVariant KcmConfig::getConfigValue(QString url)
     }
 }
 
-void KcmConfig::load(const char *filename)
+void KcmConfig::load()
 {
-    mINI::INIFile file(filename);
+    mINI::INIFile file(qPrintable(m_filename));
     mINI::INIStructure ini;
     m_storedConfig.clear();
     m_updatedConfig.clear();
     auto p = static_cast<KQuickAddons::ManagedConfigModule*>(parent());
     if(!file.read(ini)) {
-        qWarning("%s: can't read config file %s", Q_FUNC_INFO, filename);
-        Q_EMIT errorLoadConfigFile(QLatin1String(filename));
+        qWarning("%s: can't read config file %s", Q_FUNC_INFO, qPrintable(m_filename));
+        Q_EMIT errorLoadConfigFile(m_filename);
         return;
     }
     for (auto &group : ini) {
@@ -68,4 +73,40 @@ void KcmConfig::load(const char *filename)
     }
     Q_EMIT configLoaded();
     p->setNeedsSave(false);
+}
+
+static QString deniedIfEmpty(QString errorString)
+{
+    return errorString.length() == 0 ? i18n("Access denied") : errorString;
+}
+
+void KcmConfig::save()
+{
+    QVariantMap args;
+    for (auto i = m_storedConfig.begin(); i != m_storedConfig.end(); ++i) {
+        args[i.key()] = i.value();
+    }
+    // overwrite the changed values, if any
+    for (auto i = m_updatedConfig.begin(); i != m_updatedConfig.end(); ++i) {
+        args[i.key()] = i.value();
+    }
+
+    auto p = static_cast<KQuickAddons::ManagedConfigModule*>(parent());
+
+    KAuth::Action saveAction(QStringLiteral("org.kde.kcontrol.kcmhowdy.saveconfig"));
+    saveAction.setHelperId(QStringLiteral("org.kde.kcontrol.kcmhowdy"));
+    saveAction.setArguments(args);
+    KAuth::ExecuteJob *job = saveAction.execute();
+    if (!job->exec())
+    {
+        qWarning() << "Save failed:" << job->errorText() << ", " << job->errorString();
+        Q_EMIT errorSaveConfigFile(deniedIfEmpty(job->errorString()));
+        p->setNeedsSave(true);
+    }
+    else
+    {
+        for (auto i = m_updatedConfig.begin(); i != m_updatedConfig.end(); ++i) {
+            m_storedConfig[i.key()] = i.value();
+        }
+    }
 }

@@ -5,14 +5,15 @@
 */
 
 #include "auth_helper.h"
+#include "config.h"
 
 #include <QProcess>
-
 #include <KAuth/HelperSupport>
 #define TRANSLATION_DOMAIN "kcm_howdy"
 #include <KLocalizedString>
-
 #include <pwd.h>
+
+#include "mini/ini.h"
 
 KAuth::ActionReply AuthHelper::addfacemodel(const QVariantMap &args)
 {
@@ -33,11 +34,36 @@ KAuth::ActionReply AuthHelper::removefacemodel(const QVariantMap &args)
     return invokeForCallingUser(params);
 }
 
-KAuth::ActionReply AuthHelper::clearallfacemodels(const QVariantMap &args)
+KAuth::ActionReply AuthHelper::saveconfig(const QVariantMap &args)
 {
-    Q_UNUSED(args);
-    QStringList params{ QStringLiteral("clear"), QStringLiteral("-y") };
-    return invokeForCallingUser(params);
+    KAuth::ActionReply errorReply = KAuth::ActionReply::HelperErrorReply();
+
+    mINI::INIFile file(HOWDY_CONFIG_FILE);
+    mINI::INIStructure ini;
+
+    for (auto i = args.constBegin() ; i != args.constEnd() ; ++i)
+    {
+        QStringList lst = i.key().split(QLatin1Char('/'));
+        if (lst.size() != 2)
+        {
+            errorReply.setErrorDescription(i18n("Invalid key format: %1", i.key()));
+            return errorReply;
+        }
+
+        std::string groupName = lst[0].toStdString();
+        std::string keyName = lst[1].toStdString();
+        std::string value = i.value().toString().toStdString();
+
+        ini[groupName][keyName] = value;
+
+    }
+
+    if (!file.write(ini)) {
+        errorReply.setErrorDescription(i18n("Failed to write configuration file on disk"));
+        return errorReply;
+    }
+
+    return KAuth::ActionReply::SuccessReply();
 }
 
 KAuth::ActionReply AuthHelper::error(QString errorText) {
