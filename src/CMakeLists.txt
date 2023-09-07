@@ -1,6 +1,14 @@
 kcoreaddons_add_plugin(kcm_howdy INSTALL_NAMESPACE "plasma/kcms/systemsettings")
 
-target_sources(kcm_howdy PRIVATE kcm_howdy.cpp kcm_config.cpp facesmodel.cpp cammodel.cpp)
+target_sources(kcm_howdy PRIVATE
+    kcm_howdy.cpp
+    kcm_config.cpp
+    facesmodel.cpp
+    cammodel.cpp
+    qpixmapitem.cpp
+    )
+
+add_subdirectory(previewproducer)
 
 target_link_libraries(kcm_howdy
     Qt5::Core
@@ -9,6 +17,7 @@ target_link_libraries(kcm_howdy
     KF5::CoreAddons
     KF5::I18n
     KF5::QuickAddons
+    previewproducer
 )
 
 kpackage_install_package(package kcm_howdy kcms)

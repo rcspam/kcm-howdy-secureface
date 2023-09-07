@@ -23,6 +23,8 @@
 #include "kcm_config.h"
 #include "facesmodel.h"
 #include "cammodel.h"
+#include "previewproducer.h"
+#include "qpixmapitem.h"
 
 K_PLUGIN_CLASS_WITH_JSON(KcmHowdy, "kcm_howdy.json")
 
@@ -33,6 +35,9 @@ KcmHowdy::KcmHowdy(QObject *parent, const KPluginMetaData &data, const QVariantL
     qmlRegisterAnonymousType<KcmConfig>("org.altlinux.howdy.kcm", 1);
     qmlRegisterAnonymousType<FacesModel>("org.altlinux.howdy.kcm", 1);
     qmlRegisterAnonymousType<CamModel>("org.altlinux.howdy.kcm", 1);
+    qmlRegisterAnonymousType<PreviewProducer>("org.altlinux.howdy.kcm", 1);
+
+    qmlRegisterType<QPixmapItem>("org.altlinux.howdy.kcm.custom", 1, 0, "QPixmapItem");
 
     QString username;
     auto pw = getpwuid(getuid());
@@ -47,6 +52,9 @@ KcmHowdy::KcmHowdy(QObject *parent, const KPluginMetaData &data, const QVariantL
                                   .arg(QStringLiteral(HOWDY_MODELS_PATH))
                                   .arg(username), this);
     m_camModel = new CamModel(this);
+
+    m_previewProducer = new PreviewProducer(m_config, this);
+    Q_EMIT previewProducerUpdated();
 }
 
 void KcmHowdy::load()
@@ -59,13 +67,17 @@ void KcmHowdy::save()
     m_config->save();
 }
 
+void KcmHowdy::defaults()
+{
+    m_config->defaults();
+}
+
 int KcmHowdy::gridUnit()
 {
     if (m_gridUnit > 0) return m_gridUnit;
 
     // taken from KDE plasma-framework,
     // src/declarativeimports/core/units.cpp
-
     m_gridUnit = QFontMetrics(QGuiApplication::font()).boundingRect(QStringLiteral("M")).height();
     if (m_gridUnit % 2 != 0) {
         m_gridUnit++;

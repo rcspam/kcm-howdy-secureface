@@ -7,6 +7,8 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.15
+import QtMultimedia 5.15
+import org.altlinux.howdy.kcm.custom 1.0 as Custom
 
 import org.kde.kcm 1.4 as KCM
 
@@ -25,6 +27,22 @@ KCM.SimpleKCM {
         listenValue: camCombo.currentValue
     }
 
+    property var cfg_darkThreshold: ConfigValue {
+        branch: "video/"
+        name: "dark_treshold"
+        type: cfgInteger
+        defaultValue: 60
+        listenValue: sliderDarkThreshold.value
+    }
+
+    property var cfg_certainty: ConfigValue {
+        branch: "video/"
+        name: "certainty"
+        type: cfgReal
+        defaultValue: 3.5
+        listenValue: sliderCertainty.value.toFixed(1)
+    }
+
     property bool errorOccurred: false
 
     Item {
@@ -34,11 +52,25 @@ KCM.SimpleKCM {
         TabBar {
             id: bar
             width: parent.width
+            property int prevIndex: currentIndex
             TabButton {
                 text: i18n("Model list")
             }
             TabButton {
                 text: i18n("Device")
+            }
+            onCurrentIndexChanged: {
+                if (currentIndex == 0 && prevIndex != 0 && kcm.needsSave) {
+                    currentIndex = prevIndex
+                    confirmBox.show(i18n("Settings changes will be lost."), confirmBox.iconWarning)
+                    confirmBox.acceptCallback = () => {
+                        prevIndex = 0
+                        currentIndex = 0
+                        configValue.setupConfigValues(root)
+                    }
+                } else {
+                    prevIndex = currentIndex
+                }
             }
         }
         StackLayout {
@@ -129,6 +161,7 @@ KCM.SimpleKCM {
                 }
                 Row {
                     spacing: gap
+
                     Button {
                         text: i18n("Add")
                         onClicked: inputModelName.show()
@@ -140,8 +173,7 @@ KCM.SimpleKCM {
                         enabled: facesTable.selectedRow >= 0
                         onClicked: {
                             confirmBox.show(i18n("Are you sure you want to delete this model?\nThe operation cannot be undone."), confirmBox.iconWarning)
-                            var selectedRow = facesTable.selectedRow
-                            confirmBox.callback = () => kcm.facesModel.removeFace(selectedRow)
+                            confirmBox.acceptCallback = () => kcm.facesModel.removeFace(facesTable.selectedRow)
                         }
                     }
                 }
@@ -157,11 +189,97 @@ KCM.SimpleKCM {
                     model: kcm.camModel
                     valueRole: 'name'
                     textRole: 'description'
+                    onCurrentValueChanged: kcm.previewProducer.setVideoPath(currentValue)
+                }
+
+                Grid {
+                    columns: 3
+                    spacing: gap
+
+                    Text {
+                        text: i18n("Darkness threshold")
+                    }
+                    Slider {
+                        id: sliderDarkThreshold
+                        from: 0.0
+                        to: 100.0
+                        stepSize: 1.0
+                        snapMode: Slider.SnapAlways
+                        value: cfg_darkThreshold.value
+                        onValueChanged: kcm.previewProducer.setDarkThreshold(this.value)
+                    }
+                    Text {
+                        text: sliderDarkThreshold.value
+                    }
+
+                    Text {
+                        text: i18n("Certainty")
+                    }
+                    Slider {
+                        id: sliderCertainty
+                        from: 0.0
+                        to: 15.0
+                        stepSize: 0.1
+                        snapMode: Slider.SnapAlways
+                        value: cfg_certainty.value
+                        onValueChanged: kcm.previewProducer.setCertainty(this.value)
+                    }
+                    Text {
+                        text: sliderCertainty.value.toFixed(1)
+                    }
+                }
+
+                CheckBox {
+                    id: enablePreview
+                    text: i18n("Enable preview")
+                    checked: true
+                }
+
+                Rectangle {
+                    id: videoFinder
+
+                    property var enabled: camCombo.currentValue != "" && bar.currentIndex == 1 && enablePreview.checked
+
+                    width: videoOut.width + gap * 2
+                    height: videoOut.height + gap * 2
+
+                    radius: gap
+                    color: paletteActive.base
+                    border.color: paletteActive.mid
+                    border.width: 1
+
+                    Custom.QPixmapItem {
+                        id: videoOut
+                        x: gap
+                        y: gap
+                        width: kcm.gridUnit * 20
+                        height: kcm.gridUnit * 15
+                        pixmap: kcm.previewProducer.pixmap
+                        smooth: true
+                        fillMode: Custom.QPixmapItem.PreserveAspectFit
+                        visible: !kcm.previewProducer.waitingCamera
+                    }
+
+                    Rectangle {
+                        id: blackScreen
+                        visible: !videoFinder.enabled
+                        color: "black"
+                        anchors.fill: videoOut
+                    }
+
+                    BusyIndicator {
+                        anchors.centerIn: videoFinder
+                        running: true
+                        visible: !blackScreen.visible && kcm.previewProducer.waitingCamera
+                    }
+
+                    onEnabledChanged: kcm.previewProducer.capturing = enabled
                 }
             }
         }
     }
 
+    // if as a result of an error we cannot do anything at all
     Item {
         id: errorView
         visible: errorOccurred
@@ -218,13 +336,16 @@ KCM.SimpleKCM {
             alignment: Qt.AlignBottom | Qt.AlignRight
         }
 
-        onAccepted: {
-            kcm.facesModel.addFace(value.text)
-        }
+        onAccepted: kcm.facesModel.addFace(value.text)
     }
 
     MsgBox {
         id: msgBox
+        property var closeCallback
+        onClosed: {
+            if (closeCallback) closeCallback()
+            closeCallback = null
+        }
     }
 
     MsgBox {
@@ -235,8 +356,11 @@ KCM.SimpleKCM {
     MsgBox {
         id: confirmBox
         buttons: Dialog.Ok | Dialog.Cancel
-        property var callback
-        onAccepted: callback()
+        property var acceptCallback
+        onAccepted: {
+            if (acceptCallback) acceptCallback()
+            acceptCallback = null
+        }
     }
 
     function closeAllTheBoxes() {
@@ -265,6 +389,10 @@ KCM.SimpleKCM {
             closeAllTheBoxes()
             msgBox.show(i18n("Save settings failed:") + "\n" + message, msgBox.iconError)
         }
+
+        function onSetDefaults() {
+            configValue.setupConfigValues(root, null, true)
+        }
     }
 
     Connections {
@@ -287,6 +415,16 @@ KCM.SimpleKCM {
 
         function onAuthorizedForAddFace() {
             msgBoxNoButton.show(i18n("Look into the camera please"))
+        }
+    }
+
+    Connections {
+        target: kcm.previewProducer
+
+        function onCaptureErrorOccurred(errorString) {
+            closeAllTheBoxes()
+            msgBox.show(i18n("Capture error occurred:") + "\n" + errorString, msgBox.iconError)
+            msgBox.closeCallback = () => enablePreview.checked = false
         }
     }
 

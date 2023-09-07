@@ -12,7 +12,8 @@ QtObject {
     property int cfgUnknown: 0
     property int cfgString:  1
     property int cfgInteger: 2
-    property int cfgBoolean: 3
+    property int cfgReal:    3
+    property int cfgBoolean: 4
 
     property string branch
     property string name
@@ -28,6 +29,7 @@ QtObject {
         switch (type) {
             case cfgString:  value = stringValue; break;
             case cfgInteger: value = parseInt(stringValue); break;
+            case cfgReal:    value = parseFloat(stringValue); break;
             case cfgBoolean: value = stringValue === "true"; break;
             default: console.error("Type unknown for ConfigValue: (" + type + ") name: " + name + " branch: " + branch)
         }

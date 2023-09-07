@@ -16,8 +16,11 @@ include(KDECompilerSettings NO_POLICY_SCOPE)
 
 set(HOWDY_CONFIG_FILE "/etc/howdy/config.ini" CACHE PATH "Howdy config file")
 set(HOWDY_MODELS_PATH "/etc/howdy/models"     CACHE PATH "Howdy models path")
+set(DLIB_MODELS_PATH  "/usr/share/dlib-data"  CACHE PATH "Dlib models path")
 
 find_package(Qt5 ${QT_MIN_VERSION} CONFIG REQUIRED COMPONENTS
+    Core
+    Gui
     Quick
     Multimedia
 )
@@ -30,6 +33,10 @@ find_package(KF5 REQUIRED COMPONENTS
 )
 
 find_package(Gettext REQUIRED)
+find_package(OpenCV REQUIRED)
+find_package(dlib REQUIRED)
+find_package(lapack REQUIRED)
+find_package(OpenBLAS REQUIRED)
 
 add_compile_options(-Werror=pedantic)
 

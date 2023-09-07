@@ -25,10 +25,12 @@ public:
     Q_INVOKABLE void storeDefaultValue(QString url, QVariant value);
     void load();
     void save();
+    void defaults();
 
 Q_SIGNALS:
     void configLoaded();
     void configSaved();
+    void setDefaults();
     void errorLoadConfigFile(QString filename);
     void errorSaveConfigFile(QString message);
 

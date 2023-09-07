@@ -110,3 +110,8 @@ void KcmConfig::save()
         }
     }
 }
+
+void KcmConfig::defaults()
+{
+    Q_EMIT setDefaults();
+}

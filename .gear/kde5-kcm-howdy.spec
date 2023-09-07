@@ -21,6 +21,18 @@ BuildRequires: kf5-kcmutils-devel
 BuildRequires: kf5-kdeclarative-devel
 BuildRequires: kf5-ki18n-devel
 BuildRequires: qt5-multimedia-devel
+BuildRequires: libopencv-devel
+BuildRequires: dlib-devel
+
+# needed for dlib
+BuildRequires: libgif-devel
+BuildRequires: libsqlite3-devel
+BuildRequires: libavdevice-devel
+BuildRequires: libavfilter-devel
+BuildRequires: libswresample-devel
+BuildRequires: libswscale-devel
+BuildRequires: liblapack-devel
+BuildRequires: libopenblas-devel
 
 %description
 KDE Workspace 5 Howdy configuration module
