@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: kde5-kcm-howdy\n"
 "Report-Msgid-Bugs-To: https://bugzilla.altlinux.org\n"
-"POT-Creation-Date: 2023-09-04 15:58+0300\n"
+"POT-Creation-Date: 2023-10-25 09:20+0300\n"
 "PO-Revision-Date: 2023-09-04 14:56+0300\n"
 "Last-Translator: Anton Golubev <golubevan@altlinux.org>\n"
 "Language-Team: Russian <translation-team@basealt.ru>\n"
@@ -15,15 +15,30 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: auth_helper.cpp:56 kcm_howdy.cpp:35
+#: auth_helper.cpp:49
+#, kde-format
+msgid "Invalid key format: %1"
+msgstr "Неправильный формат ключа: %1"
+
+#: auth_helper.cpp:62
+#, kde-format
+msgid "Failed to write configuration file on disk"
+msgstr "Не удалось записать файл конфигурации на диск"
+
+#: auth_helper.cpp:82 kcm_howdy.cpp:45
 #, kde-format
 msgid "Unable to get user data"
 msgstr "Не удалось получить данные пользователя"
 
-#: auth_helper.cpp:71
+#: auth_helper.cpp:97
 #, kde-format
 msgid "Howdy is not installed correctly"
 msgstr "Howdy установлен не правильно"
+
+#: cammodel.cpp:16
+#, kde-format
+msgid "No camera selected"
+msgstr "Камера не выбрана"
 
 #: facesmodel.cpp:48
 #, kde-format
@@ -50,7 +65,7 @@ msgstr "Время"
 msgid "Name"
 msgstr "Название"
 
-#: facesmodel.cpp:124
+#: facesmodel.cpp:124 kcm_config.cpp:80
 #, kde-format
 msgid "Access denied"
 msgstr "Доступ запрещён"
@@ -65,32 +80,37 @@ msgstr "Не удалось добавить модель лица:"
 msgid "Remove face model failed:"
 msgstr "Не удалось удалить модель лица:"
 
-#: package/contents/ui/main.qml:38
+#: package/contents/ui/main.qml:57
 #, kde-format
 msgid "Model list"
 msgstr "Список моделей"
 
-#: package/contents/ui/main.qml:41
+#: package/contents/ui/main.qml:60
 #, kde-format
 msgid "Device"
 msgstr "Устройство"
 
-#: package/contents/ui/main.qml:126
+#: package/contents/ui/main.qml:65
+#, kde-format
+msgid "Settings changes will be lost."
+msgstr "Изменения настроек будут потеряны."
+
+#: package/contents/ui/main.qml:158
 #, kde-format
 msgid "No face models"
 msgstr "Нет моделей лица"
 
-#: package/contents/ui/main.qml:133
+#: package/contents/ui/main.qml:166
 #, kde-format
 msgid "Add"
 msgstr "Добавить"
 
-#: package/contents/ui/main.qml:138
+#: package/contents/ui/main.qml:171
 #, kde-format
 msgid "Delete"
 msgstr "Удалить"
 
-#: package/contents/ui/main.qml:142
+#: package/contents/ui/main.qml:175
 #, kde-format
 msgid ""
 "Are you sure you want to delete this model?\n"
@@ -99,27 +119,72 @@ msgstr ""
 "Вы уверены, что хотите удалить эту модель?\n"
 "Отменить данную операцию невозможно."
 
-#: package/contents/ui/main.qml:205
+#: package/contents/ui/main.qml:200
+#, kde-format
+msgid "Darkness threshold"
+msgstr "Порог яркости"
+
+#: package/contents/ui/main.qml:216
+#, kde-format
+msgid "Certainty"
+msgstr "Уверенность"
+
+#: package/contents/ui/main.qml:234
+#, kde-format
+msgid "Enable preview"
+msgstr "Предпросмотр"
+
+#: package/contents/ui/main.qml:322
 #, kde-format
 msgid "Enter a name for the new model"
 msgstr "Введите имя новой модели"
 
-#: package/contents/ui/main.qml:270
+#: package/contents/ui/main.qml:390
+#, kde-format
+msgid "Save settings failed:"
+msgstr "Не удалось сохранить настройки:"
+
+#: package/contents/ui/main.qml:402
 #, kde-format
 msgid "Error create faces model:"
 msgstr "Ошибка создания модели лица:"
 
-#: package/contents/ui/main.qml:281
+#: package/contents/ui/main.qml:413
 #, kde-format
 msgid "Face model added successfully"
 msgstr "Модель лица успешно добавлена"
 
-#: package/contents/ui/main.qml:285
+#: package/contents/ui/main.qml:417
 #, kde-format
 msgid "Look into the camera please"
 msgstr "Смотрите в камеру, пожалуйста"
 
-#: package/contents/ui/main.qml:293
+#: package/contents/ui/main.qml:426
+#, kde-format
+msgid "Capture error occurred:"
+msgstr "Ошибка захвата кадра:"
+
+#: package/contents/ui/main.qml:435
 #, kde-format
 msgid "Error init backend:"
 msgstr "Ошибка инициализации бекэнда:"
+
+#: previewproducer/capturethread.cpp:63
+#, kde-format
+msgid "Failed to open camera: \"%1\""
+msgstr "Не удалось открыть камеру: \"%1\""
+
+#: previewproducer/capturethread.cpp:146
+#, kde-format
+msgid "Failed to capture frame from camera: \"%1\""
+msgstr "Не удалось захватить кадр с камеры: \"%1\""
+
+#: previewproducer/previewproducer.cpp:46
+#, kde-format
+msgid "Frame copy error."
+msgstr "Ошибка копирования кадра."
+
+#: previewproducer/previewproducer.cpp:76
+#, kde-format
+msgid "Preview is not supported if CNN model is active (use_cnn option)"
+msgstr "Предпросмотр недоступен, если активна модель CNN (опция use_cnn)"
