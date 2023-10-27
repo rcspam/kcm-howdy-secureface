@@ -381,7 +381,7 @@ KCM.SimpleKCM {
         }
 
         function onErrorLoadConfigFile(filename) {
-            errorMsg.text = i18("Error load config file:") + "\n" + filename
+            errorMsg.text = i18n("Error load config file:") + "\n" + filename
             errorOccurred = true
         }
 
@@ -432,7 +432,7 @@ KCM.SimpleKCM {
         target: kcm
 
         function onErrorInitBackend(message) {
-            errorMsg.text = i18n("Error init backend:") + "\n" +  message
+            errorMsg.text = i18n("Error init backend:") + "\n" + message
             errorOccurred = true
         }
     }
