@@ -13,7 +13,6 @@
 #include <KAuth/Action>
 #include <KAuth/ExecuteJob>
 
-#define TRANSLATION_DOMAIN "kcm_howdy"
 #include <KLocalizedString>
 
 #include "mini/ini.h"

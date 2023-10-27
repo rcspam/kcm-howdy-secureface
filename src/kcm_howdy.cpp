@@ -14,7 +14,6 @@
 #include <QCameraInfo>
 
 #include <KPluginFactory>
-#define TRANSLATION_DOMAIN "kcm_howdy"
 #include <KLocalizedString>
 
 #include <unistd.h>

@@ -11,7 +11,6 @@
 
 #include <KAuth/Action>
 #include <KAuth/ExecuteJob>
-#define TRANSLATION_DOMAIN "kcm_howdy"
 #include <KLocalizedString>
 
 FacesModel::FacesModel(QString fileName, QObject *parent) : QAbstractTableModel(parent)

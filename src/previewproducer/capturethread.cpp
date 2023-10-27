@@ -16,7 +16,6 @@
 #include <QMutex>
 #include <QTime>
 
-#define TRANSLATION_DOMAIN "kcm_howdy"
 #include <KLocalizedString>
 
 #include <string>

@@ -39,6 +39,7 @@ find_package(lapack REQUIRED)
 find_package(OpenBLAS REQUIRED)
 
 add_compile_options(-Werror=pedantic)
+add_definitions(-DTRANSLATION_DOMAIN="kcm_howdy")
 
 ecm_install_icons(ICONS
     sc-apps-howdy.svg

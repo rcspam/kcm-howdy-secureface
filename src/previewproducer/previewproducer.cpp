@@ -9,7 +9,6 @@
 #include <QMutex>
 #include <QPixmap>
 
-#define TRANSLATION_DOMAIN "kcm_howdy"
 #include <KLocalizedString>
 
 #include "capturethread.h"

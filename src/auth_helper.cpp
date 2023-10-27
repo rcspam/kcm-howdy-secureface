@@ -9,7 +9,6 @@
 
 #include <QProcess>
 #include <KAuth/HelperSupport>
-#define TRANSLATION_DOMAIN "kcm_howdy"
 #include <KLocalizedString>
 #include <pwd.h>
 

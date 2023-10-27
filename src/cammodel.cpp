@@ -8,7 +8,6 @@
 
 #include <QCameraInfo>
 
-#define TRANSLATION_DOMAIN "kcm_howdy"
 #include <KLocalizedString>
 
 CamModel::CamModel(QObject *parent) : QAbstractListModel(parent)
