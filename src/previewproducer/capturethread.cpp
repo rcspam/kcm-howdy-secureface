@@ -126,6 +126,11 @@ void CaptureThread::run() {
     int darkFrames = 0;
     qint64 sec = 0;
 
+    cv::Mat origFrame;
+    cv::Mat greyFrame;
+    cv::Mat overlay;
+    cv::Mat hist;
+
     while (m_looping) {
 
         qint64 time = QDateTime::currentMSecsSinceEpoch();
@@ -138,20 +143,16 @@ void CaptureThread::run() {
             secFrames = 1;
         }
 
-        cv::Mat origFrame;
-
         m_cap >> origFrame;
         if (origFrame.empty()) {
             Q_EMIT errorOccurred(i18n("Failed to capture frame from camera: \"%1\"", m_videoPath));
             return;
         }
 
-        cv::Mat greyFrame;
         cvtColor(origFrame, greyFrame, cv::COLOR_BGR2GRAY);
 
         clahe->apply(greyFrame, greyFrame);
 
-        cv::Mat overlay;
         cvtColor(greyFrame, overlay, cv::COLOR_GRAY2RGB);
 
         const int HIST_SIZE = 8;
@@ -160,7 +161,6 @@ void CaptureThread::run() {
         float range0[] = { 0.f, 256.f };
         const float *ranges[] = { range0 };
 
-        cv::Mat hist;
         cv::calcHist(&overlay, 1, channels, cv::Mat(), hist, 1, histSizeArray, ranges);
 
         float histTotal = cv::sum(hist)[0];
@@ -251,11 +251,7 @@ void CaptureThread::run() {
         }
 
         m_dataLock->lock();
-        if (m_frame.size == overlay.size) {
-            overlay.copyTo(m_frame);
-        } else {
-            m_frame = overlay.clone();
-        }
+        cvtColor(overlay, m_frame, cv::COLOR_RGB2BGRA);
         m_dataLock->unlock();
 
         Q_EMIT frameCaptured(&m_frame);

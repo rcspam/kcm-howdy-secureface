@@ -57,7 +57,7 @@ void PreviewProducer::newFrame(cv::Mat *data)
         m_currentFrame->cols,
         m_currentFrame->rows,
         m_currentFrame->step,
-        QImage::Format_RGB888);
+        QImage::Format_RGB32);
     m_pixmap->convertFromImage(frame);
     Q_EMIT pixmapUpdated();
 }
