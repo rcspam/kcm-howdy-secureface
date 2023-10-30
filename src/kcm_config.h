@@ -38,6 +38,7 @@ private:
     using Config = QMap<QString, QString>;
 
     bool hasSomethingNew(Config &newCfg, Config &oldCfg);
+    KQuickAddons::ManagedConfigModule *client();
 
     QString m_filename;
     Config m_storedConfig;

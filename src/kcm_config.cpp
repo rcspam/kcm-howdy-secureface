@@ -33,7 +33,7 @@ void KcmConfig::updateConfigValue(QString url, QVariant value)
 {
     m_updatedConfig[url] = value.toString();
     bool needSave = hasSomethingNew(m_updatedConfig, m_storedConfig);
-    static_cast<KQuickAddons::ManagedConfigModule*>(parent())->setNeedsSave(needSave);
+    client()->setNeedsSave(needSave);
 }
 
 void KcmConfig::storeDefaultValue(QString url, QVariant value)
@@ -58,7 +58,6 @@ void KcmConfig::load()
     mINI::INIStructure ini;
     m_storedConfig.clear();
     m_updatedConfig.clear();
-    auto p = static_cast<KQuickAddons::ManagedConfigModule*>(parent());
     if(!file.read(ini)) {
         qWarning("%s: can't read config file %s", Q_FUNC_INFO, qPrintable(m_filename));
         Q_EMIT errorLoadConfigFile(m_filename);
@@ -71,7 +70,7 @@ void KcmConfig::load()
         }
     }
     Q_EMIT configLoaded();
-    p->setNeedsSave(false);
+    client()->setNeedsSave(false);
 }
 
 static QString deniedIfEmpty(QString errorString)
@@ -90,8 +89,6 @@ void KcmConfig::save()
         args[i.key()] = i.value();
     }
 
-    auto p = static_cast<KQuickAddons::ManagedConfigModule*>(parent());
-
     KAuth::Action saveAction(QStringLiteral("org.kde.kcontrol.kcmhowdy.saveconfig"));
     saveAction.setHelperId(QStringLiteral("org.kde.kcontrol.kcmhowdy"));
     saveAction.setArguments(args);
@@ -100,7 +97,7 @@ void KcmConfig::save()
     {
         qWarning() << "Save failed:" << job->errorText() << ", " << job->errorString();
         Q_EMIT errorSaveConfigFile(deniedIfEmpty(job->errorString()));
-        p->setNeedsSave(true);
+        client()->setNeedsSave(true);
     }
     else
     {
@@ -113,4 +110,9 @@ void KcmConfig::save()
 void KcmConfig::defaults()
 {
     Q_EMIT setDefaults();
+}
+
+KQuickAddons::ManagedConfigModule *KcmConfig::client()
+{
+    return static_cast<KQuickAddons::ManagedConfigModule*>(parent());
 }

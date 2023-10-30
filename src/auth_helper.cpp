@@ -86,7 +86,7 @@ KAuth::ActionReply AuthHelper::invokeForCallingUser(QStringList params, QString 
     params.append(QStringLiteral("--user"));
     params.append(userName);
 
-	QString command = QStringLiteral("howdy");
+    QString command = QStringLiteral("howdy");
     QProcess howdy;
     howdy.start(command, params);
     howdy.waitForStarted();

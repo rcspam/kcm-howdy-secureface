@@ -88,10 +88,8 @@ void CaptureThread::run() {
         val = file.readAll();
         file.close();
         QJsonDocument d = QJsonDocument::fromJson(val);
-        QJsonArray models = d.array();
-
-        for (int i = 0; i < models.size(); ++i) {
-            QJsonValueRef model = models[i];
+        const QJsonArray models = d.array();
+        for (auto model : models) {
             encodings.push_back({});
             auto &encoding = encodings.back();
             auto data = model.toObject()[QStringLiteral("data")];
@@ -202,9 +200,9 @@ void CaptureThread::run() {
             std::vector<dlib::rect_detection> rectDetections;
             face_detector(upscaledImg, rectDetections);
 
-            for (size_t i = 0; i < rectDetections.size(); ++i) {
-                rectDetections[i].rect = pyr.rect_down(rectDetections[i].rect, 1);
-                faceLocations.push_back(rectDetections[i].rect);
+            for (auto &rectDetection : rectDetections) {
+                rectDetection.rect = pyr.rect_down(rectDetection.rect, 1);
+                faceLocations.push_back(rectDetection.rect);
             }
 
             for (auto &loc : faceLocations) {
@@ -263,7 +261,6 @@ void CaptureThread::setVideoPath(QString videoPath)
     bool wasLooping = m_looping.load();
     stopCaptureSync();
     m_videoPath = videoPath;
-    m_videoPath.detach();
     // an empty video path means that the device is not selected
     if (wasLooping && m_videoPath.length() > 0) startCapture();
 }

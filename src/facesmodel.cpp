@@ -57,9 +57,9 @@ void FacesModel::Update()
         return;
     }
 
-    QJsonArray models = document.array();
+    const QJsonArray models = document.array();
 
-    for (const QJsonValue &model : models) {
+    for (auto model : models) {
 
         FaceEntry face;
 
@@ -103,7 +103,7 @@ QVariant FacesModel::data(const QModelIndex &index, int role) const
                 case 2: return m_faces.at(row).label;
             }
     }
-    return QVariant();
+    return {};
 }
 
 QVariant FacesModel::headerData(int section, Qt::Orientation orientation, int role) const
@@ -115,7 +115,7 @@ QVariant FacesModel::headerData(int section, Qt::Orientation orientation, int ro
             case 2: return i18n("Name");
         }
     }
-    return QVariant();
+    return {};
 }
 
 static QString deniedIfEmpty(QString errorString)

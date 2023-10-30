@@ -40,7 +40,7 @@ QVariant CamModel::data(const QModelIndex &index, int role) const
         case DescriptionRole:
             return m_cams[row].description;
     }
-    return QVariant();
+    return {};
 }
 
 QHash<int, QByteArray> CamModel::roleNames() const {
