@@ -41,7 +41,7 @@ KDE Workspace 5 Howdy configuration module
 %setup
 
 %build
-%K5build
+%K5build -DUSE_AUTO_VECTOR=OFF
 
 %install
 %K5install
