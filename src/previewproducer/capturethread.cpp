@@ -179,8 +179,8 @@ struct Cleanup {
     ~Cleanup() { f(); }
 };
 
-void CaptureThread::run() {
-
+void CaptureThread::run()
+{
     Q_EMIT runInitialization();
     Cleanup loopingGuard{ [this] { m_looping = false; } };
 
@@ -315,16 +315,16 @@ void CaptureThread::stopCaptureSync()
 {
     m_looping = false;
     if (!isRunning()) return;
-    if (!wait(10000)) { //ms
-        qWarning("%s: Can't stop the capture thread in 10 sec!", Q_FUNC_INFO);
-    }
-    if (!wait(20000)) { //ms
-        qWarning("%s: Can't stop the capture thread in 30 sec, have to terminate!", Q_FUNC_INFO);
-    }
+
+    if (wait(10000)) return;
+    qWarning("%s: Can't stop the capture thread in 10 sec!", Q_FUNC_INFO);
+
+    if (wait(20000)) return;
+    qWarning("%s: Can't stop the capture thread in 30 sec, have to terminate!", Q_FUNC_INFO);
+
     terminate();
     wait();
     // still try to improve the situation a little
-    m_looping = false;
     m_cap.release();
 }
 
