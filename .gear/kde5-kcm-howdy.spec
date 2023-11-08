@@ -1,7 +1,7 @@
 %define _unpackaged_files_terminate_build 1
 
 Name: kde5-kcm-howdy
-Version: 0.0.2
+Version: 0.0.3
 Release: alt1
 
 Summary: KDE Workspace 5 Howdy configuration module
@@ -10,6 +10,8 @@ Group: Graphical desktop/KDE
 Url: https://gitlab.com/golubevan/kcm-howdy
 
 Source: %name-%version.tar
+
+%K5init altplace
 
 BuildRequires(pre): rpm-build-kf5
 BuildRequires: cmake
@@ -62,6 +64,11 @@ KDE Workspace 5 Howdy configuration module
 %_K5dbus_sys_srv/org.kde.kcontrol.kcmhowdy.service
 
 %changelog
+* Wed Nov 08 2023 Anton Golubev <golubevan@altlinux.org> 0.0.3-alt1
+- enable the 'altplace' option
+- disable AVX
+- refactor
+
 * Wed Oct 25 2023 Anton Golubev <golubevan@altlinux.org> 0.0.2-alt1
 - add video preview
 
