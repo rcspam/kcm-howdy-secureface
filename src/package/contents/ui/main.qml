@@ -8,7 +8,6 @@ import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.15
 import QtMultimedia 5.15
-import org.altlinux.howdy.kcm.custom 1.0 as Custom
 
 import org.kde.kcm 1.4 as KCM
 
@@ -228,52 +227,13 @@ KCM.SimpleKCM {
                         text: sliderCertainty.value.toFixed(1)
                     }
                 }
-
                 CheckBox {
                     id: enablePreview
                     text: i18n("Enable preview")
                     checked: true
                 }
-
-                Rectangle {
-                    id: videoFinder
-
-                    property var enabled: camCombo.currentValue != "" && bar.currentIndex == 1 && enablePreview.checked
-
-                    width: videoOut.width + gap * 2
-                    height: videoOut.height + gap * 2
-
-                    radius: gap
-                    color: paletteActive.base
-                    border.color: paletteActive.mid
-                    border.width: 1
-
-                    Custom.QPixmapItem {
-                        id: videoOut
-                        x: gap
-                        y: gap
-                        width: kcm.gridUnit * 20
-                        height: kcm.gridUnit * 15
-                        pixmap: kcm.previewProducer.pixmap
-                        smooth: true
-                        fillMode: Custom.QPixmapItem.PreserveAspectFit
-                        visible: !kcm.previewProducer.waitingCamera
-                    }
-
-                    Rectangle {
-                        id: blackScreen
-                        visible: !videoFinder.enabled
-                        color: "black"
-                        anchors.fill: videoOut
-                    }
-
-                    BusyIndicator {
-                        anchors.centerIn: videoFinder
-                        running: true
-                        visible: !blackScreen.visible && kcm.previewProducer.waitingCamera
-                    }
-
-                    onEnabledChanged: kcm.previewProducer.capturing = enabled
+                Preview {
+                    enabled: camCombo.currentValue != "" && bar.currentIndex == 1 && enablePreview.checked
                 }
             }
         }
