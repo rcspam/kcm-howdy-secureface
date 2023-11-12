@@ -12,38 +12,53 @@ Rectangle {
     id: preview
 
     property var enabled: false
+    property string message: ""
 
-    width: videoOut.width + gap * 2
-    height: videoOut.height + gap * 2
+    width: kcm.gridUnit * 20 + gap * 2
+    height: kcm.gridUnit * 15 + gap * 2
 
     radius: gap
     color: paletteActive.base
     border.color: paletteActive.mid
     border.width: 1
 
-    Custom.QPixmapItem {
-        id: videoOut
-        x: gap
-        y: gap
-        width: kcm.gridUnit * 20
-        height: kcm.gridUnit * 15
-        pixmap: kcm.previewProducer.pixmap
-        smooth: true
-        fillMode: Custom.QPixmapItem.PreserveAspectFit
-        visible: preview.enabled && !kcm.previewProducer.waitingCamera
+    Item {
+        anchors.fill: parent
+        visible: message.length == 0
+
+        Custom.QPixmapItem {
+            id: videoOut
+            anchors.fill: parent
+            anchors.margins: gap
+            pixmap: kcm.previewProducer.pixmap
+            smooth: true
+            fillMode: Custom.QPixmapItem.PreserveAspectFit
+            visible: preview.enabled && !kcm.previewProducer.waitingCamera
+        }
+
+        Rectangle {
+            id: blackScreen
+            anchors.fill: videoOut
+            visible: !preview.enabled
+            color: "black"
+        }
+
+        BusyIndicator {
+            anchors.centerIn: parent
+            running: true
+            visible: preview.enabled && kcm.previewProducer.waitingCamera
+        }
     }
 
-    Rectangle {
-        id: blackScreen
-        visible: !preview.enabled
-        color: "black"
-        anchors.fill: videoOut
-    }
+    Item {
+        anchors.fill: parent
+        anchors.margins: gap
+        visible: message.length != 0
 
-    BusyIndicator {
-        anchors.centerIn: preview
-        running: true
-        visible: preview.enabled && kcm.previewProducer.waitingCamera
+        Text {
+            anchors.centerIn: parent
+            text: preview.message
+        }
     }
 
     onEnabledChanged: kcm.previewProducer.capturing = enabled

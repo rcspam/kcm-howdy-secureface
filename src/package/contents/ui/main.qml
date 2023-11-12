@@ -18,6 +18,11 @@ KCM.SimpleKCM {
     SystemPalette { id: paletteInactive; colorGroup: SystemPalette.Inactive }
     property var gap: Math.round(kcm.gridUnit / 3)
 
+    // one general condition for all instances of preview
+    // so that capture restarts do not occur
+    property var previewEnabled: camCombo.currentValue.length != 0 && bar.currentIndex == 0 && modelsOrPreview.currentIndex == 1 && preScanPreview.message.length == 0
+                                 || camCombo.currentValue.length != 0 && bar.currentIndex == 1 && enablePreview.checked
+
     property var cfg_device: ConfigValue {
         branch: "video/"
         name: "device_path"
@@ -76,103 +81,156 @@ KCM.SimpleKCM {
             anchors.top: bar.bottom
             width: parent.width
             currentIndex: bar.currentIndex
-            Column {
-                padding: gap
-                spacing: gap
-                ScrollView {
-                    id: scrollView
-                    clip: true
-                    visible: kcm.facesModel.rows > 0
-                    Component.onCompleted: {
-                        background.visible = true
-                    }
-                    Column {
-                        HorizontalHeaderView {
-                            id: facesTableHeader
-                            syncView: facesTable
-                            columnWidthProvider: facesTable.columnWidthProvider
-                            boundsBehavior: Flickable.StopAtBounds
+
+            StackLayout {
+                id: modelsOrPreview
+
+                Column {
+                    padding: gap
+                    spacing: gap
+
+                    ScrollView {
+                        id: scrollView
+                        clip: true
+                        visible: kcm.facesModel.rows > 0
+
+                        Component.onCompleted: {
+                            background.visible = true
                         }
-                        TableView {
-                            id: facesTable
-                            width: columnWidths.reduce((acc, cur) => acc + cur, 0)
-                            boundsBehavior: Flickable.StopAtBounds
-                            height: contentHeight
-                            model: kcm.facesModel
-                            property var columnWidths: [1, 3 * kcm.gridUnit, 8 * kcm.gridUnit]
-                            property var selectedRow: -1
-                            columnWidthProvider: function (column) { return columnWidths[column] }
-                            delegate: Item {
-                                id: rootDelegate
-                                Rectangle {
-                                    id: hoverRect
 
-                                    x: {
-                                        var pos = 0
-                                        for (var i = 0; i < column; ++i) {
-                                            pos += facesTable.columnWidths[i]
+                        Column {
+                            HorizontalHeaderView {
+                                id: facesTableHeader
+                                syncView: facesTable
+                                columnWidthProvider: facesTable.columnWidthProvider
+                                boundsBehavior: Flickable.StopAtBounds
+                            }
+
+                            TableView {
+                                id: facesTable
+                                width: columnWidths.reduce((acc, cur) => acc + cur, 0)
+                                boundsBehavior: Flickable.StopAtBounds
+                                height: contentHeight
+                                model: kcm.facesModel
+                                property var columnWidths: [1, 3 * kcm.gridUnit, 8 * kcm.gridUnit]
+                                property var selectedRow: -1
+                                columnWidthProvider: function (column) { return columnWidths[column] }
+
+                                delegate: Item {
+                                    id: rootDelegate
+
+                                    Rectangle {
+                                        id: hoverRect
+                                        x: {
+                                            var pos = 0
+                                            for (var i = 0; i < column; ++i) {
+                                                pos += facesTable.columnWidths[i]
+                                            }
+                                            return -pos
                                         }
-                                        return -pos
+                                        width: facesTable.width
+                                        height: parent.height
+                                        color: "transparent"
+                                        border {
+                                            width: 1
+                                            color: paletteActive.highlight
+                                        }
+                                        visible: cellArea.containsMouse
                                     }
-                                    width: facesTable.width
-                                    height: parent.height
-                                    color: "transparent"
-                                    border {
-                                        width: 1
+                                    Rectangle {
+                                        id: selectedRect
+                                        anchors.fill: rootDelegate
                                         color: paletteActive.highlight
+                                        visible: row == facesTable.selectedRow
                                     }
-                                    visible: cellArea.containsMouse
-                                }
-                                Rectangle {
-                                    id: selectedRect
-
-                                    anchors.fill: rootDelegate
-                                    color: paletteActive.highlight
-                                    visible: row == facesTable.selectedRow
-                                }
-                                Text {
-                                    id: myText
-                                    anchors.verticalCenter: parent.verticalCenter
-                                    leftPadding: gap * 2
-                                    rightPadding: gap * 2
-                                    text: display
-                                    color: row == facesTable.selectedRow ? paletteActive.highlightedText : paletteActive.text
-                                    Component.onCompleted: {
-                                        facesTable.columnWidths[column] = Math.max(facesTable.columnWidths[column], implicitWidth)
-                                        facesTable.columnWidthsChanged()
-                                        kcm.facesModel.layoutChanged()
+                                    Text {
+                                        id: myText
+                                        anchors.verticalCenter: parent.verticalCenter
+                                        leftPadding: gap * 2
+                                        rightPadding: gap * 2
+                                        text: display
+                                        color: row == facesTable.selectedRow ? paletteActive.highlightedText : paletteActive.text
+                                        Component.onCompleted: {
+                                            facesTable.columnWidths[column] = Math.max(facesTable.columnWidths[column], implicitWidth)
+                                            facesTable.columnWidthsChanged()
+                                            kcm.facesModel.layoutChanged()
+                                        }
                                     }
-                                }
-                                MouseArea {
-                                    id: cellArea
-                                    anchors.fill: parent
-                                    hoverEnabled: true
-                                    onClicked: facesTable.selectedRow = row
+                                    MouseArea {
+                                        id: cellArea
+                                        anchors.fill: parent
+                                        hoverEnabled: true
+                                        onClicked: facesTable.selectedRow = row
+                                    }
                                 }
                             }
                         }
                     }
-                }
-                Text {
-                    text: i18n("No face models")
-                    visible: kcm.facesModel.rows == 0
-                    padding: gap * 2
-                }
-                Row {
-                    spacing: gap
+                    Text {
+                        text: i18n("No face models")
+                        visible: kcm.facesModel.rows == 0
+                        padding: gap * 2
+                    }
+                    Row {
+                        spacing: gap
 
-                    Button {
-                        text: i18n("Add")
-                        onClicked: inputModelName.show()
+                        Button {
+                            text: i18n("Add")
+                            onClicked: {
+                                if (camCombo.currentValue.length == 0) {
+                                    closeAllTheBoxes()
+                                    msgBox.show(i18n("No camera selected"), msgBox.iconError)
+                                    return
+                                }
+                                newModelName.text = ""
+                                newModelName.enabled = true
+                                preScanPreview.message = ""
+                                modelsOrPreview.currentIndex = 1
+                            }
+                        }
+                        Button {
+                            text: i18n("Delete")
+                            visible: kcm.facesModel.rows > 0
+                            enabled: facesTable.selectedRow >= 0
+                            onClicked: {
+                                confirmBox.show(i18n("Are you sure you want to delete this model?\nThe operation cannot be undone."), confirmBox.iconWarning)
+                                confirmBox.acceptCallback = () => kcm.facesModel.removeFace(facesTable.selectedRow)
+                            }
+                        }
+                    }
+                }
+                Column {
+                    padding: gap
+                    spacing: gap
+                    Preview {
+                        id: preScanPreview
+                        enabled: previewEnabled
+                    }
+                    Text {
+                        wrapMode: Text.WordWrap
+                        enabled: newModelName.enabled
+                        text: i18n("Enter a name for the new model")
                     }
 
-                    Button {
-                        text: i18n("Delete")
-                        visible: kcm.facesModel.rows > 0
-                        enabled: facesTable.selectedRow >= 0
-                        onClicked: {
-                            confirmBox.show(i18n("Are you sure you want to delete this model?\nThe operation cannot be undone."), confirmBox.iconWarning)
-                            confirmBox.acceptCallback = () => kcm.facesModel.removeFace(facesTable.selectedRow)
+                    TextField {
+                        id: newModelName
+                        Keys.onReturnPressed: scanButton.onClicked()
+                    }
+                    Row {
+                        enabled: newModelName.enabled
+                        spacing: gap
+                        Button {
+                            id: scanButton
+                            text: i18n("Scan")
+                            onClicked: {
+                                preScanPreview.message = i18n("Authorization")
+                                newModelName.enabled = false
+                                kcm.facesModel.addFace(newModelName.text)
+                            }
+                        }
+                        Button {
+                            text: i18n("Cancel")
+                            onClicked: modelsOrPreview.currentIndex = 0
                         }
                     }
                 }
@@ -190,7 +248,6 @@ KCM.SimpleKCM {
                     textRole: 'description'
                     onCurrentValueChanged: kcm.previewProducer.setVideoPath(currentValue)
                 }
-
                 Grid {
                     columns: 3
                     spacing: gap
@@ -210,7 +267,6 @@ KCM.SimpleKCM {
                     Text {
                         text: sliderDarkThreshold.value
                     }
-
                     Text {
                         text: i18n("Certainty")
                     }
@@ -233,7 +289,7 @@ KCM.SimpleKCM {
                     checked: true
                 }
                 Preview {
-                    enabled: camCombo.currentValue != "" && bar.currentIndex == 1 && enablePreview.checked
+                    enabled: previewEnabled
                 }
             }
         }
@@ -250,53 +306,6 @@ KCM.SimpleKCM {
             anchors.centerIn: parent
             text: "PUT_ERROR_TEXT_HERE"
         }
-    }
-
-    Dialog {
-        id: inputModelName
-
-        // center manually so that there is an integer value
-        x: Math.round((parent.width - width) * 0.5)
-        y: Math.round((parent.height - height) * 0.5)
-
-        property var optimalWidth: footer.minWidth + contentWidth
-        property var width0: Math.min(optimalWidth, parent.width * 0.7, kcm.gridUnit * 20)
-
-        width: Math.max(footer.minWidth, contentWidth + gap * 4, width0)
-        height: width >= optimalWidth ? implicitHeight - footer.height + gap * 2 : implicitHeight
-
-        function show() {
-            value.text = ""
-            open()
-            value.forceActiveFocus()
-        }
-
-        verticalPadding: 0
-        horizontalPadding: gap * 2
-        clip: true
-
-        header: Text {
-            padding: gap * 2
-            wrapMode: Text.WordWrap
-            width: Math.min(implicitWidth, parent.width)
-            text: i18n("Enter a name for the new model")
-        }
-
-        TextField {
-            id: value
-            Keys.onReturnPressed: inputModelName.accept()
-        }
-
-        footer: DialogButtonBox {
-            padding: gap * 2
-            topPadding: gap * 2
-            property int minWidth: implicitWidth + spacing * 2
-            standardButtons: Dialog.Ok | Dialog.Cancel
-            buttonLayout: DialogButtonBox.KdeLayout
-            alignment: Qt.AlignBottom | Qt.AlignRight
-        }
-
-        onAccepted: kcm.facesModel.addFace(value.text)
     }
 
     MsgBox {
@@ -327,6 +336,7 @@ KCM.SimpleKCM {
         msgBox.reject()
         msgBoxNoButton.reject()
         confirmBox.reject()
+        modelsOrPreview.currentIndex = 0
     }
 
     ConfigValue {
@@ -374,7 +384,7 @@ KCM.SimpleKCM {
         }
 
         function onAuthorizedForAddFace() {
-            msgBoxNoButton.show(i18n("Look into the camera please"))
+            preScanPreview.message = i18n("Look into the camera please")
         }
     }
 
