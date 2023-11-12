@@ -307,8 +307,7 @@ void CaptureThread::setVideoPath(QString videoPath)
     bool wasLooping = m_looping.load();
     stopCaptureSync();
     m_videoPath = videoPath;
-    // an empty video path means that the device is not selected
-    if (wasLooping && m_videoPath.length() > 0) startCapture();
+    if (wasLooping) startCapture();
 }
 
 void CaptureThread::stopCaptureSync()
@@ -330,6 +329,8 @@ void CaptureThread::stopCaptureSync()
 
 void CaptureThread::startCapture()
 {
+    // an empty video path means that the device is not selected
+    if (m_videoPath.length() == 0) return;
     // let's turn it on in the main thread,
     // because it will also be turned off in the main thread,
     m_looping = true;
