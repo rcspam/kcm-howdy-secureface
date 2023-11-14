@@ -61,5 +61,8 @@ Rectangle {
         }
     }
 
-    onEnabledChanged: kcm.previewProducer.capturing = enabled
+    onEnabledChanged: {
+        // enabled can be undefined
+        kcm.previewProducer.capturing = enabled ? true : false
+    }
 }

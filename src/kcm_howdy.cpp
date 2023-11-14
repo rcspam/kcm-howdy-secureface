@@ -38,22 +38,22 @@ KcmHowdy::KcmHowdy(QObject *parent, const KPluginMetaData &data, const QVariantL
 
     qmlRegisterType<QPixmapItem>("org.altlinux.howdy.kcm.custom", 1, 0, "QPixmapItem");
 
-    QString username;
+    QString errorString;
     auto pw = getpwuid(getuid());
     if (!pw || strlen(pw->pw_name) == 0) {
-        Q_EMIT errorInitBackend(i18n("Unable to get user data"));
-        return;
+        m_facesModel = new FacesModel(QStringLiteral(""), this);
+        errorString = i18n("Unable to get user data");
     } else {
-        username = QLatin1String(pw->pw_name);
+        QString username = QLatin1String(pw->pw_name);
+        m_facesModel = new FacesModel(QStringLiteral("%1/%2.dat")
+                                      .arg(QStringLiteral(HOWDY_MODELS_PATH))
+                                      .arg(username), this);
     }
 
-    m_facesModel = new FacesModel(QStringLiteral("%1/%2.dat")
-                                  .arg(QStringLiteral(HOWDY_MODELS_PATH))
-                                  .arg(username), this);
     m_camModel = new CamModel(this);
 
     m_previewProducer = new PreviewProducer(m_config, this);
-    Q_EMIT previewProducerUpdated();
+    mainUi()->setProperty("errorString", errorString);
 }
 
 void KcmHowdy::load()

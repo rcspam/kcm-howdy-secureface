@@ -47,12 +47,12 @@ KCM.SimpleKCM {
         listenValue: sliderCertainty.value.toFixed(1)
     }
 
-    property bool errorOccurred: false
+    property string errorString: ""
 
     Item {
         id: normalView
         anchors.fill: parent
-        visible: !errorOccurred
+        visible: errorString.length == 0
         TabBar {
             id: bar
             width: parent.width
@@ -298,13 +298,13 @@ KCM.SimpleKCM {
     // if as a result of an error we cannot do anything at all
     Item {
         id: errorView
-        visible: errorOccurred
+        visible: errorString.length != 0
         anchors.fill: parent
 
         Label {
             id: errorMsg
             anchors.centerIn: parent
-            text: "PUT_ERROR_TEXT_HERE"
+            text: errorString
         }
     }
 
@@ -351,8 +351,7 @@ KCM.SimpleKCM {
         }
 
         function onErrorLoadConfigFile(filename) {
-            errorMsg.text = i18n("Error load config file:") + "\n" + filename
-            errorOccurred = true
+            errorString = i18n("Error load config file:") + "\n" + filename
         }
 
         function onErrorSaveConfigFile(message) {
@@ -369,8 +368,7 @@ KCM.SimpleKCM {
         target: kcm.facesModel
 
         function onErrorCreateFacesModel(message) {
-            errorMsg.text = i18n("Error create faces model:") + "\n" + message
-            errorOccurred = true
+            errorString = i18n("Error create faces model:") + "\n" + message
         }
 
         function onErrorAction(message) {
@@ -402,8 +400,7 @@ KCM.SimpleKCM {
         target: kcm
 
         function onErrorInitBackend(message) {
-            errorMsg.text = i18n("Error init backend:") + "\n" + message
-            errorOccurred = true
+            errorString = i18n("Error init backend:") + "\n" + message
         }
     }
 }
