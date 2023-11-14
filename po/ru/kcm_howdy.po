@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: kde5-kcm-howdy\n"
 "Report-Msgid-Bugs-To: https://bugzilla.altlinux.org\n"
-"POT-Creation-Date: 2023-10-27 16:55+0300\n"
+"POT-Creation-Date: 2023-11-14 13:42+0300\n"
 "PO-Revision-Date: 2023-09-04 14:56+0300\n"
 "Last-Translator: Anton Golubev <golubevan@altlinux.org>\n"
 "Language-Team: Russian <translation-team@basealt.ru>\n"
@@ -25,7 +25,7 @@ msgstr "Неправильный формат ключа: %1"
 msgid "Failed to write configuration file on disk"
 msgstr "Не удалось записать файл конфигурации на диск"
 
-#: auth_helper.cpp:81 kcm_howdy.cpp:44
+#: auth_helper.cpp:81 kcm_howdy.cpp:45
 #, kde-format
 msgid "Unable to get user data"
 msgstr "Не удалось получить данные пользователя"
@@ -35,7 +35,7 @@ msgstr "Не удалось получить данные пользовател
 msgid "Howdy is not installed correctly"
 msgstr "Howdy установлен не правильно"
 
-#: cammodel.cpp:15
+#: cammodel.cpp:15 package/contents/ui/main.qml:182
 #, kde-format
 msgid "No camera selected"
 msgstr "Камера не выбрана"
@@ -65,7 +65,7 @@ msgstr "Время"
 msgid "Name"
 msgstr "Название"
 
-#: facesmodel.cpp:123 kcm_config.cpp:79
+#: facesmodel.cpp:123 kcm_config.cpp:78
 #, kde-format
 msgid "Access denied"
 msgstr "Доступ запрещён"
@@ -80,37 +80,37 @@ msgstr "Не удалось добавить модель лица:"
 msgid "Remove face model failed:"
 msgstr "Не удалось удалить модель лица:"
 
-#: package/contents/ui/main.qml:57
+#: package/contents/ui/main.qml:61
 #, kde-format
 msgid "Model list"
 msgstr "Список моделей"
 
-#: package/contents/ui/main.qml:60
+#: package/contents/ui/main.qml:64
 #, kde-format
 msgid "Device"
 msgstr "Устройство"
 
-#: package/contents/ui/main.qml:65
+#: package/contents/ui/main.qml:69
 #, kde-format
 msgid "Settings changes will be lost."
 msgstr "Изменения настроек будут потеряны."
 
-#: package/contents/ui/main.qml:158
+#: package/contents/ui/main.qml:170
 #, kde-format
 msgid "No face models"
 msgstr "Нет моделей лица"
 
-#: package/contents/ui/main.qml:166
+#: package/contents/ui/main.qml:178
 #, kde-format
 msgid "Add"
 msgstr "Добавить"
 
-#: package/contents/ui/main.qml:171
+#: package/contents/ui/main.qml:192
 #, kde-format
 msgid "Delete"
 msgstr "Удалить"
 
-#: package/contents/ui/main.qml:175
+#: package/contents/ui/main.qml:196
 #, kde-format
 msgid ""
 "Are you sure you want to delete this model?\n"
@@ -119,67 +119,82 @@ msgstr ""
 "Вы уверены, что хотите удалить эту модель?\n"
 "Отменить данную операцию невозможно."
 
-#: package/contents/ui/main.qml:200
-#, kde-format
-msgid "Darkness threshold"
-msgstr "Порог яркости"
-
-#: package/contents/ui/main.qml:216
-#, kde-format
-msgid "Certainty"
-msgstr "Уверенность"
-
-#: package/contents/ui/main.qml:234
-#, kde-format
-msgid "Enable preview"
-msgstr "Предпросмотр"
-
-#: package/contents/ui/main.qml:322
+#: package/contents/ui/main.qml:212
 #, kde-format
 msgid "Enter a name for the new model"
 msgstr "Введите имя новой модели"
 
-#: package/contents/ui/main.qml:384
+#: package/contents/ui/main.qml:224
+#, kde-format
+msgid "Scan"
+msgstr "Сканировать"
+
+#: package/contents/ui/main.qml:226
+#, kde-format
+msgid "Authorization"
+msgstr "Авторизация"
+
+#: package/contents/ui/main.qml:232
+#, kde-format
+msgid "Cancel"
+msgstr "Отмена"
+
+#: package/contents/ui/main.qml:256
+#, kde-format
+msgid "Darkness threshold"
+msgstr "Порог яркости"
+
+#: package/contents/ui/main.qml:271
+#, kde-format
+msgid "Certainty"
+msgstr "Достоверность"
+
+#: package/contents/ui/main.qml:288
+#, kde-format
+msgid "Enable preview"
+msgstr "Предпросмотр"
+
+#: package/contents/ui/main.qml:354
 #, kde-format
 msgid "Error load config file:"
 msgstr "Ошибка загрузки файла конфигурации:"
 
-#: package/contents/ui/main.qml:390
+#: package/contents/ui/main.qml:359
 #, kde-format
 msgid "Save settings failed:"
 msgstr "Не удалось сохранить настройки:"
 
-#: package/contents/ui/main.qml:402
+#: package/contents/ui/main.qml:371
 #, kde-format
 msgid "Error create faces model:"
 msgstr "Ошибка создания модели лица:"
 
-#: package/contents/ui/main.qml:413
+#: package/contents/ui/main.qml:381
 #, kde-format
 msgid "Face model added successfully"
 msgstr "Модель лица успешно добавлена"
 
-#: package/contents/ui/main.qml:417
+#: package/contents/ui/main.qml:385
 #, kde-format
 msgid "Look into the camera please"
 msgstr "Смотрите в камеру, пожалуйста"
 
-#: package/contents/ui/main.qml:426
+#: package/contents/ui/main.qml:394
 #, kde-format
 msgid "Capture error occurred:"
 msgstr "Ошибка захвата кадра:"
 
-#: package/contents/ui/main.qml:435
+#: package/contents/ui/main.qml:403
 #, kde-format
 msgid "Error init backend:"
 msgstr "Ошибка инициализации бекэнда:"
 
-#: previewproducer/capturethread.cpp:62
+#: previewproducer/capturethread.cpp:189
 #, kde-format
 msgid "Failed to open camera: \"%1\""
 msgstr "Не удалось открыть камеру: \"%1\""
 
-#: previewproducer/capturethread.cpp:145
+#: previewproducer/capturethread.cpp:230
 #, kde-format
 msgid "Failed to capture frame from camera: \"%1\""
 msgstr "Не удалось захватить кадр с камеры: \"%1\""
