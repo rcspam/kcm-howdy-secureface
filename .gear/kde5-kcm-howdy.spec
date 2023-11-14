@@ -1,7 +1,7 @@
 %define _unpackaged_files_terminate_build 1
 
 Name: kde5-kcm-howdy
-Version: 0.0.3
+Version: 0.1.0
 Release: alt1
 
 Summary: KDE Workspace 5 Howdy configuration module
@@ -9,9 +9,12 @@ License: GPLv3+
 Group: Graphical desktop/KDE
 Url: https://gitlab.com/golubevan/kcm-howdy
 
+# howdy doesn't support ppc64le
+ExcludeArch: ppc64le
+
 Source: %name-%version.tar
 
-%K5init altplace
+%K5init
 
 BuildRequires(pre): rpm-build-kf5
 BuildRequires: cmake
@@ -35,6 +38,8 @@ BuildRequires: libswresample-devel
 BuildRequires: libswscale-devel
 BuildRequires: liblapack-devel
 BuildRequires: libopenblas-devel
+
+Requires: howdy
 
 %description
 KDE Workspace 5 Howdy configuration module
@@ -64,6 +69,11 @@ KDE Workspace 5 Howdy configuration module
 %_K5dbus_sys_srv/org.kde.kcontrol.kcmhowdy.service
 
 %changelog
+* Tue Nov 14 2023 Anton Golubev <golubevan@altlinux.org> 0.1.0-alt1
+- show preview before face scan
+- remove the 'altplace' option
+- requires howdy
+
 * Wed Nov 08 2023 Anton Golubev <golubevan@altlinux.org> 0.0.3-alt1
 - enable the 'altplace' option
 - disable AVX
