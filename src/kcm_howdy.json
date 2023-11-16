@@ -5,9 +5,9 @@
         "Description[ru]": "Настройка распознавания лица",
         "Description[x-test]": "xxConfigure Facial Authenticationxx",
         "Icon": "howdy",
-        "Name": "Facial Authentication (Howdy)",
-        "Name[ru]": "Распознавание лица (Howdy)",
-        "Name[x-test]": "xxFacial Authentication (Howdy)xx",
+        "Name": "Facial Authentication",
+        "Name[ru]": "Распознавание лица",
+        "Name[x-test]": "xxFacial Authenticationxx",
         "ServiceTypes": [
             "KCModule"
         ]
