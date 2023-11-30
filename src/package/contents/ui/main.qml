@@ -33,7 +33,7 @@ KCM.SimpleKCM {
 
     property var cfg_darkThreshold: ConfigValue {
         branch: "video/"
-        name: "dark_treshold"
+        name: "dark_threshold"
         type: cfgInteger
         defaultValue: 60
         listenValue: sliderDarkThreshold.value
