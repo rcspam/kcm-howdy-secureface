@@ -10,6 +10,7 @@ import QtQuick.Layouts 1.15
 import QtMultimedia 5.15
 
 import org.kde.kcm 1.4 as KCM
+import org.altlinux.howdy.kcm.configmodule 1.0 // ConfigModule
 
 KCM.SimpleKCM {
     id: root
@@ -49,6 +50,21 @@ KCM.SimpleKCM {
 
     property string errorString: ""
 
+    function setDefaultsButtonVisibility(visible) {
+        if (visible) {
+            kcm.buttons |= ConfigModule.Default
+        } else {
+            kcm.buttons &= ~ConfigModule.Default
+        }
+        // unfortunately I didn't find a better way
+        // to reach the function ModuleView::updateButtons() in systemsettings app
+        // see also:
+        // https://bugs.kde.org/477718
+        // https://discuss.kde.org/t/systemsettings-do-not-update-buttons-when-configmodule-buttons-property-is-changed/7946
+        kcm.needsSave = !kcm.needsSave
+        kcm.needsSave = !kcm.needsSave
+    }
+
     Item {
         id: normalView
         anchors.fill: parent
@@ -75,6 +91,7 @@ KCM.SimpleKCM {
                 } else {
                     prevIndex = currentIndex
                 }
+                setDefaultsButtonVisibility(currentIndex != 0)
             }
         }
         StackLayout {
