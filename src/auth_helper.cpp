@@ -103,7 +103,7 @@ KAuth::ActionReply AuthHelper::invokeForCallingUser(QStringList params, QString 
     }
 
     if (message.length() != 0) {
-        howdy.write(message.toLatin1());
+        howdy.write(message.toUtf8());
         howdy.waitForBytesWritten();
         howdy.closeWriteChannel();
     }
