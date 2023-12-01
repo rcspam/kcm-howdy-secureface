@@ -147,6 +147,7 @@ void FacesModel::addFace(QString modelName)
     if (!job->exec())
     {
         qWarning() << "Add face model failed:" << job->errorText() << ", " << job->errorString();
+        job->kill();
         Q_EMIT errorAction(QStringLiteral("%1\n%2").arg(i18n("Add face model failed:")).arg(deniedIfEmpty(job->errorString())));
     }
     else
@@ -172,11 +173,11 @@ void FacesModel::removeFace(int row)
     if (!job->exec())
     {
         qWarning() << "Remove face model failed:" << job->errorText() << ", " << job->errorString();
+        job->kill();
         Q_EMIT errorAction(QStringLiteral("%1\n%2").arg(i18n("Remove face model failed:")).arg(deniedIfEmpty(job->errorString())));
     }
     else
     {
-        qDebug() << "job success";
         Update();
     }
 }

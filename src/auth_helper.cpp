@@ -35,6 +35,9 @@ KAuth::ActionReply AuthHelper::removefacemodel(const QVariantMap &args)
 
 KAuth::ActionReply AuthHelper::saveconfig(const QVariantMap &args)
 {
+    if (KAuth::HelperSupport::isStopped()) {
+        return KAuth::ActionReply::HelperErrorReply();
+    }
     KAuth::ActionReply errorReply = KAuth::ActionReply::HelperErrorReply();
 
     mINI::INIFile file(HOWDY_CONFIG_FILE);
@@ -73,6 +76,9 @@ KAuth::ActionReply AuthHelper::error(QString errorText) {
 
 KAuth::ActionReply AuthHelper::invokeForCallingUser(QStringList params, QString message)
 {
+    if (KAuth::HelperSupport::isStopped()) {
+        return KAuth::ActionReply::HelperErrorReply();
+    }
     int uid = KAuth::HelperSupport::callerUid();
 
     auto pw = getpwuid(uid);

@@ -96,6 +96,7 @@ void KcmConfig::save()
     if (!job->exec())
     {
         qWarning() << "Save failed:" << job->errorText() << ", " << job->errorString();
+        job->kill();
         Q_EMIT errorSaveConfigFile(deniedIfEmpty(job->errorString()));
         client()->setNeedsSave(true);
     }
