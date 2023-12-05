@@ -65,9 +65,10 @@ KCM.SimpleKCM {
         kcm.needsSave = !kcm.needsSave
     }
 
-    Item {
+    Column {
         id: normalView
         anchors.fill: parent
+        anchors.margins: gap
         visible: errorString.length == 0
         TabBar {
             id: bar
@@ -94,9 +95,11 @@ KCM.SimpleKCM {
                 setDefaultsButtonVisibility(currentIndex != 0)
             }
         }
+
         StackLayout {
-            anchors.top: bar.bottom
+            id: stack
             width: parent.width
+            height: parent.height - bar.height
             currentIndex: bar.currentIndex
 
             StackLayout {
@@ -106,21 +109,25 @@ KCM.SimpleKCM {
                     padding: gap
                     spacing: gap
 
-                    ScrollView {
-                        id: scrollView
+                    Column {
+                        id: modelTable
                         clip: true
                         visible: kcm.facesModel.rows > 0
 
-                        Component.onCompleted: {
-                            background.visible = true
+                        HorizontalHeaderView {
+                            id: facesTableHeader
+                            syncView: facesTable
+                            columnWidthProvider: facesTable.columnWidthProvider
+                            boundsBehavior: Flickable.StopAtBounds
                         }
 
-                        Column {
-                            HorizontalHeaderView {
-                                id: facesTableHeader
-                                syncView: facesTable
-                                columnWidthProvider: facesTable.columnWidthProvider
-                                boundsBehavior: Flickable.StopAtBounds
+                        ScrollView {
+                            clip: true
+                            visible: kcm.facesModel.rows > 0
+                            height: Math.min(stack.height - modelButtons.height - y - gap, implicitHeight)
+
+                            Component.onCompleted: {
+                                background.visible = true
                             }
 
                             TableView {
@@ -161,7 +168,6 @@ KCM.SimpleKCM {
                                         visible: row == facesTable.selectedRow
                                     }
                                     Text {
-                                        id: myText
                                         anchors.verticalCenter: parent.verticalCenter
                                         leftPadding: gap * 2
                                         rightPadding: gap * 2
@@ -189,6 +195,7 @@ KCM.SimpleKCM {
                         padding: gap * 2
                     }
                     Row {
+                        id: modelButtons
                         spacing: gap
 
                         Button {
@@ -216,6 +223,7 @@ KCM.SimpleKCM {
                         }
                     }
                 }
+                ScrollView {
                 Column {
                     padding: gap
                     spacing: gap
@@ -251,7 +259,9 @@ KCM.SimpleKCM {
                         }
                     }
                 }
+                }
             }
+            ScrollView {
             Column {
                 padding: gap
                 spacing: gap
@@ -308,6 +318,7 @@ KCM.SimpleKCM {
                 Preview {
                     enabled: previewEnabled
                 }
+            }
             }
         }
     }
