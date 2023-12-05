@@ -224,101 +224,101 @@ KCM.SimpleKCM {
                     }
                 }
                 ScrollView {
-                Column {
-                    padding: gap
-                    spacing: gap
-                    Preview {
-                        id: preScanPreview
-                        enabled: previewEnabled
-                    }
-                    Text {
-                        wrapMode: Text.WordWrap
-                        enabled: newModelName.enabled
-                        text: i18n("Enter a name for the new model")
-                    }
-
-                    TextField {
-                        id: newModelName
-                        Keys.onReturnPressed: scanButton.onClicked()
-                    }
-                    Row {
-                        enabled: newModelName.enabled
+                    Column {
+                        padding: gap
                         spacing: gap
-                        Button {
-                            id: scanButton
-                            text: i18n("Scan")
-                            onClicked: {
-                                preScanPreview.message = i18n("Authorization")
-                                newModelName.enabled = false
-                                kcm.facesModel.addFace(newModelName.text)
+                        Preview {
+                            id: preScanPreview
+                            enabled: previewEnabled
+                        }
+                        Text {
+                            wrapMode: Text.WordWrap
+                            enabled: newModelName.enabled
+                            text: i18n("Enter a name for the new model")
+                        }
+
+                        TextField {
+                            id: newModelName
+                            Keys.onReturnPressed: scanButton.onClicked()
+                        }
+                        Row {
+                            enabled: newModelName.enabled
+                            spacing: gap
+                            Button {
+                                id: scanButton
+                                text: i18n("Scan")
+                                onClicked: {
+                                    preScanPreview.message = i18n("Authorization")
+                                    newModelName.enabled = false
+                                    kcm.facesModel.addFace(newModelName.text)
+                                }
+                            }
+                            Button {
+                                text: i18n("Cancel")
+                                onClicked: modelsOrPreview.currentIndex = 0
                             }
                         }
-                        Button {
-                            text: i18n("Cancel")
-                            onClicked: modelsOrPreview.currentIndex = 0
-                        }
                     }
-                }
                 }
             }
             ScrollView {
-            Column {
-                padding: gap
-                spacing: gap
-
-                ComboBox {
-                    id: camCombo
-                    // returns -1 if not found
-                    currentIndex: Math.max(indexOfValue(cfg_device.value), 0)
-                    model: kcm.camModel
-                    valueRole: 'name'
-                    textRole: 'description'
-                    onCurrentValueChanged: kcm.previewProducer.setVideoPath(currentValue)
-                }
-                Grid {
-                    columns: 3
+                Column {
+                    padding: gap
                     spacing: gap
 
-                    Text {
-                        text: i18n("Darkness threshold")
+                    ComboBox {
+                        id: camCombo
+                        // returns -1 if not found
+                        currentIndex: Math.max(indexOfValue(cfg_device.value), 0)
+                        model: kcm.camModel
+                        valueRole: 'name'
+                        textRole: 'description'
+                        onCurrentValueChanged: kcm.previewProducer.setVideoPath(currentValue)
                     }
-                    Slider {
-                        id: sliderDarkThreshold
-                        from: 0.0
-                        to: 100.0
-                        stepSize: 1.0
-                        snapMode: Slider.SnapAlways
-                        value: cfg_darkThreshold.value
-                        onValueChanged: kcm.previewProducer.setDarkThreshold(this.value)
+                    Grid {
+                        columns: 3
+                        spacing: gap
+
+                        Text {
+                            text: i18n("Darkness threshold")
+                        }
+                        Slider {
+                            id: sliderDarkThreshold
+                            from: 0.0
+                            to: 100.0
+                            stepSize: 1.0
+                            snapMode: Slider.SnapAlways
+                            value: cfg_darkThreshold.value
+                            onValueChanged: kcm.previewProducer.setDarkThreshold(this.value)
+                        }
+                        Text {
+                            text: sliderDarkThreshold.value
+                        }
+                        Text {
+                            text: i18n("Certainty")
+                        }
+                        Slider {
+                            id: sliderCertainty
+                            from: 0.0
+                            to: 15.0
+                            stepSize: 0.1
+                            snapMode: Slider.SnapAlways
+                            value: cfg_certainty.value
+                            onValueChanged: kcm.previewProducer.setCertainty(this.value)
+                        }
+                        Text {
+                            text: sliderCertainty.value.toFixed(1)
+                        }
                     }
-                    Text {
-                        text: sliderDarkThreshold.value
+                    CheckBox {
+                        id: enablePreview
+                        text: i18n("Enable preview")
+                        checked: true
                     }
-                    Text {
-                        text: i18n("Certainty")
-                    }
-                    Slider {
-                        id: sliderCertainty
-                        from: 0.0
-                        to: 15.0
-                        stepSize: 0.1
-                        snapMode: Slider.SnapAlways
-                        value: cfg_certainty.value
-                        onValueChanged: kcm.previewProducer.setCertainty(this.value)
-                    }
-                    Text {
-                        text: sliderCertainty.value.toFixed(1)
+                    Preview {
+                        enabled: previewEnabled
                     }
                 }
-                CheckBox {
-                    id: enablePreview
-                    text: i18n("Enable preview")
-                    checked: true
-                }
-                Preview {
-                    enabled: previewEnabled
-                }
-            }
             }
         }
     }
