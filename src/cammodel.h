@@ -1,5 +1,5 @@
 /*
-    SPDX-FileCopyrightText: 2023 Anton Golubev <golubevan@altlinux.org>
+    SPDX-FileCopyrightText: 2023-2024 Anton Golubev <golubevan@altlinux.org>
 
     SPDX-License-Identifier: GPL-3.0-or-later
 */
@@ -17,6 +17,7 @@ public:
     enum Roles {
         NameRole = Qt::UserRole,
         DescriptionRole,
+        InfraredRole
     };
 
     explicit CamModel(QObject *parent = nullptr);
@@ -30,6 +31,7 @@ private:
     struct CameraEntry {
         QString name;
         QString description;
+        bool infrared = false;
     };
 
     QList<CameraEntry> m_cams;
