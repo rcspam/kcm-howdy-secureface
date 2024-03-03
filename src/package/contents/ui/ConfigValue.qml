@@ -1,5 +1,5 @@
 /*
-    SPDX-FileCopyrightText: 2023 Anton Golubev <golubevan@altlinux.org>
+    SPDX-FileCopyrightText: 2023-2024 Anton Golubev <golubevan@altlinux.org>
 
     SPDX-License-Identifier: GPL-3.0-or-later
 */
@@ -22,7 +22,6 @@ QtObject {
 
     property var value: defaultValue // --> to widget
     property var listenValue         // <-- from widget
-    property var storedValue
 
     function valueFromString(stringValue) {
 
@@ -61,7 +60,6 @@ QtObject {
                     // to keep track of future changes
                     kcm.config.storeDefaultValue(item[p].branch + item[p].name, item[p].defaultValue)
                 }
-                item[p].storedValue = item[p].value
             }
         }
         return props
