@@ -211,18 +211,57 @@ Column {
             }
         }
         ScrollView {
+            id: deviceTab
             Column {
                 padding: root.gap
                 spacing: root.gap
 
-                ComboBox {
-                    id: camCombo
-                    // returns -1 if not found
-                    currentIndex: Math.max(indexOfValue(root.cfg_device.value), 0)
-                    model: kcm.camModel
-                    valueRole: 'name'
-                    textRole: 'description'
-                    onCurrentValueChanged: kcm.previewProducer.setVideoPath(currentValue)
+                Row {
+                    spacing: gap
+
+                    ComboBox {
+                        id: camCombo
+                        // returns -1 if not found
+                        currentIndex: Math.max(indexOfValue(root.cfg_device.value), 0)
+                        model: kcm.camModel
+                        valueRole: 'name'
+                        textRole: 'description'
+                        property var maxItemWidth: 0
+
+                        delegate: ItemDelegate {
+
+                            property var infrared: model.infrared
+                            width: ListView.view.width
+                            contentItem: Text {
+                                id: label
+                                text: description + (infrared ? " - " + i18n("IR camera, recommended") : "")
+                            }
+                            Component.onCompleted: camCombo.maxItemWidth = Math.max(camCombo.maxItemWidth, implicitWidth)
+
+                            highlighted: camCombo.highlightedIndex === index
+                            ToolTip.text: label.text
+                            ToolTip.visible: highlighted && width < implicitWidth
+                            ToolTip.delay: 500
+                        }
+                        onCurrentValueChanged: kcm.previewProducer.setVideoPath(currentValue)
+                        popup.width: Math.min(camCombo.maxItemWidth, deviceTab.availableWidth - x * 2)
+                    }
+                    Image {
+                        width: kcm.gridUnit
+                        height: width
+                        anchors.verticalCenter: parent.verticalCenter
+                        visible: {
+                            var result = kcm.camModel.getItemProperty(camCombo.currentIndex, 'infrared')
+                            return result !== undefined && !result
+                        }
+                        source: "image://icon/data-warning"
+                        MouseArea {
+                            anchors.fill: parent
+                            hoverEnabled: true
+                            ToolTip.visible: containsMouse
+                            ToolTip.text: i18n("Non IR camera, not recommended")
+                        }
+                    }
                 }
                 Grid {
                     columns: 3

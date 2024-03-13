@@ -108,6 +108,12 @@ CamModel::CamModel(QObject *parent) : QAbstractListModel(parent)
     for(auto role = roles.begin(); role != roles.end(); ++role) {
         m_invRoleNames[role.value()] = role.key();
     }
+
+    // infrared cameras will appear at the top
+    std::sort(m_cams.begin(), m_cams.end(), [](const CameraEntry &a, const CameraEntry &b) {
+        if (a.infrared != b.infrared) return a.infrared > b.infrared;
+        return a.description < b.description;
+    });
 }
 
 int CamModel::rowCount(const QModelIndex&) const
