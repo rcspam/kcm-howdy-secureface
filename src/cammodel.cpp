@@ -102,6 +102,12 @@ CamModel::CamModel(QObject *parent) : QAbstractListModel(parent)
             camera_is_infrared(cameraInfo.deviceName())
         });
     }
+
+    // to provide data to QML by index and name
+    auto roles = roleNames();
+    for(auto role = roles.begin(); role != roles.end(); ++role) {
+        m_invRoleNames[role.value()] = role.key();
+    }
 }
 
 int CamModel::rowCount(const QModelIndex&) const

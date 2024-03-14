@@ -26,6 +26,12 @@ public:
     QVariant data(const QModelIndex &index, int role) const override;
     QHash<int, QByteArray> roleNames() const override;
 
+    Q_INVOKABLE QVariant getItemProperty(int ind, QByteArray name)
+    {
+        QModelIndex qi = index(ind, 0);
+        return data(qi, m_invRoleNames[name]);
+    }
+
 private:
 
     struct CameraEntry {
@@ -35,4 +41,5 @@ private:
     };
 
     QList<CameraEntry> m_cams;
+    QHash<QByteArray, int> m_invRoleNames;
 };
