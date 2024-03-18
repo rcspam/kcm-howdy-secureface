@@ -1,5 +1,5 @@
 /*
-    SPDX-FileCopyrightText: 2023 Anton Golubev <golubevan@altlinux.org>
+    SPDX-FileCopyrightText: 2023-2024 Anton Golubev <golubevan@altlinux.org>
 
     SPDX-License-Identifier: GPL-3.0-or-later
 */
@@ -34,6 +34,7 @@ KcmHowdy::KcmHowdy(QObject *parent, const KPluginMetaData &data, const QVariantL
     qmlRegisterAnonymousType<KcmConfig>("org.altlinux.howdy.kcm", 1);
     qmlRegisterAnonymousType<FacesModel>("org.altlinux.howdy.kcm", 1);
     qmlRegisterAnonymousType<CamModel>("org.altlinux.howdy.kcm", 1);
+    qmlRegisterAnonymousType<CamModelEmptyItemProxy>("org.altlinux.howdy.kcm", 1);
     qmlRegisterAnonymousType<PreviewProducer>("org.altlinux.howdy.kcm", 1);
 
     qmlRegisterType<QPixmapItem>("org.altlinux.howdy.kcm.custom", 1, 0, "QPixmapItem");

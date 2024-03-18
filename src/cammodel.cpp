@@ -92,8 +92,6 @@ bool camera_is_infrared(QString deviceName)
 
 CamModel::CamModel(QObject *parent) : QAbstractListModel(parent)
 {
-    m_cams = {{{}, i18n("No camera selected") }};
-
     const QList<QCameraInfo> cameras = QCameraInfo::availableCameras();
     for (const QCameraInfo &cameraInfo : cameras) {
         m_cams.push_back({
@@ -124,17 +122,21 @@ int CamModel::rowCount(const QModelIndex&) const
 QVariant CamModel::data(const QModelIndex &index, int role) const
 {
     int row = index.row();
+    return dataFromEntry(m_cams[row], role);
+}
 
+QVariant CamModel::dataFromEntry(const CameraEntry &entry, int role) const
+{
     switch (role) {
 
         case NameRole:
-            return m_cams[row].name;
+            return entry.name;
 
         case DescriptionRole:
-            return m_cams[row].description;
+            return entry.description;
         case InfraredRole:
         {
-            return m_cams[row].infrared;
+            return entry.infrared;
         }
     }
     return {};
@@ -146,4 +148,39 @@ QHash<int, QByteArray> CamModel::roleNames() const {
     roles[DescriptionRole] = "description";
     roles[InfraredRole] = "infrared";
     return roles;
+}
+
+CamModelEmptyItemProxy *CamModel::getEmptyItemProxy()
+{
+    if (!m_emptyItemProxy) {
+        m_emptyItemProxy = new CamModelEmptyItemProxy(this);
+    }
+    return m_emptyItemProxy;
+}
+
+CamModel::CameraEntry CamModelEmptyItemProxy::s_noCameraItem{ {}, i18n("No camera selected") };
+
+CamModelEmptyItemProxy::CamModelEmptyItemProxy(CamModel *source)
+    : QAbstractProxyModel(source)
+{
+    setSourceModel(source);
+}
+
+QModelIndex CamModelEmptyItemProxy::mapToSource(const QModelIndex &proxyIndex) const
+{
+    if (proxyIndex.row() == 0) return QModelIndex();
+    return sourceModel()->index(proxyIndex.row() - 1, proxyIndex.column());
+}
+
+QModelIndex CamModelEmptyItemProxy::mapFromSource(const QModelIndex &sourceIndex) const
+{
+    return createIndex(sourceIndex.row() + 1, sourceIndex.column());
+}
+
+QVariant CamModelEmptyItemProxy::data(const QModelIndex &index, int role) const
+{
+    if (index.row() == 0) {
+        return static_cast<CamModel*>(sourceModel())->dataFromEntry(s_noCameraItem, role);
+    }
+    return sourceModel()->data(mapToSource(index), role);
 }

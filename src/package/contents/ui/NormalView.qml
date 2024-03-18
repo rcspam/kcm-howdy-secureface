@@ -223,7 +223,7 @@ Column {
                         id: camCombo
                         // returns -1 if not found
                         currentIndex: Math.max(indexOfValue(root.cfg_device.value), 0)
-                        model: kcm.camModel
+                        model: kcm.camModel.emptyItemProxy
                         valueRole: 'name'
                         textRole: 'description'
                         property var maxItemWidth: 0
@@ -251,7 +251,7 @@ Column {
                         height: width
                         anchors.verticalCenter: parent.verticalCenter
                         visible: {
-                            var result = kcm.camModel.getItemProperty(camCombo.currentIndex, 'infrared')
+                            var result = camCombo.model.getItemProperty(camCombo.currentIndex, 'infrared')
                             return result !== undefined && !result
                         }
                         source: "image://icon/data-warning"
