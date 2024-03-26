@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: kde5-kcm-howdy\n"
 "Report-Msgid-Bugs-To: https://bugzilla.altlinux.org\n"
-"POT-Creation-Date: 2023-11-14 13:42+0300\n"
-"PO-Revision-Date: 2023-09-04 14:56+0300\n"
+"POT-Creation-Date: 2024-04-16 17:28+0300\n"
+"PO-Revision-Date: 2024-04-16 17:28+0300\n"
 "Last-Translator: Anton Golubev <golubevan@altlinux.org>\n"
 "Language-Team: Russian <translation-team@basealt.ru>\n"
 "Language: \n"
@@ -15,102 +15,147 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: auth_helper.cpp:48
+#: auth_helper.cpp:72
 #, kde-format
 msgid "Invalid key format: %1"
 msgstr "Неправильный формат ключа: %1"
 
-#: auth_helper.cpp:61
+#: auth_helper.cpp:85
 #, kde-format
 msgid "Failed to write configuration file on disk"
 msgstr "Не удалось записать файл конфигурации на диск"
 
-#: auth_helper.cpp:81 kcm_howdy.cpp:45
-#, kde-format
-msgid "Unable to get user data"
-msgstr "Не удалось получить данные пользователя"
-
-#: auth_helper.cpp:96
+#: auth_helper.cpp:114
 #, kde-format
 msgid "Howdy is not installed correctly"
 msgstr "Howdy установлен не правильно"
 
-#: cammodel.cpp:15 package/contents/ui/main.qml:182
+#: auth_helper.cpp:142 usersmodel.cpp:26
+#, kde-format
+msgid "Unable to get user data"
+msgstr "Не удалось получить данные пользователя"
+
+#: cammodel.cpp:161 package/contents/ui/NormalView.qml:178
 #, kde-format
 msgid "No camera selected"
 msgstr "Камера не выбрана"
 
-#: facesmodel.cpp:47
+#: facesmodel.cpp:52
 #, kde-format
 msgid "Model file exists but cannot be opened"
 msgstr "Файл модели существует, но не может быть открыт"
 
-#: facesmodel.cpp:56
+#: facesmodel.cpp:61
 #, kde-format
 msgid "Invalid model file"
 msgstr "Файл модели повреждён"
 
-#: facesmodel.cpp:113
+#: facesmodel.cpp:118
 #, kde-format
 msgid "Id"
 msgstr "№"
 
-#: facesmodel.cpp:114
+#: facesmodel.cpp:119
 #, kde-format
 msgid "Time"
 msgstr "Время"
 
-#: facesmodel.cpp:115
+#: facesmodel.cpp:120
 #, kde-format
 msgid "Name"
 msgstr "Название"
 
-#: facesmodel.cpp:123 kcm_config.cpp:78
+#: facesmodel.cpp:128 kcm_config.cpp:78
 #, kde-format
 msgid "Access denied"
 msgstr "Доступ запрещён"
 
-#: facesmodel.cpp:150
+#: facesmodel.cpp:149
 #, kde-format
 msgid "Add face model failed:"
 msgstr "Не удалось добавить модель лица:"
 
-#: facesmodel.cpp:175
+#: facesmodel.cpp:168
 #, kde-format
 msgid "Remove face model failed:"
 msgstr "Не удалось удалить модель лица:"
 
-#: package/contents/ui/main.qml:61
+#: kcm_howdy.cpp:56
+#, kde-format
+msgid "No cameras found"
+msgstr "Камер не найдено"
+
+#: package/contents/ui/CameraComboBox.qml:40
+#, kde-format
+msgid "IR camera, recommended"
+msgstr "ИК камера, рекомендуется"
+
+#: package/contents/ui/CameraComboBox.qml:65
+#, kde-format
+msgid "Non IR camera, not recommended"
+msgstr "Не ИК камера, не рекомендуется"
+
+#: package/contents/ui/main.qml:120
+#, kde-format
+msgid "Error load config file:"
+msgstr "Ошибка загрузки файла конфигурации:"
+
+#: package/contents/ui/main.qml:125
+#, kde-format
+msgid "Save settings failed:"
+msgstr "Не удалось сохранить настройки:"
+
+#: package/contents/ui/main.qml:133
+#, kde-format
+msgid "Error create faces model:"
+msgstr "Ошибка создания модели лица:"
+
+#: package/contents/ui/main.qml:147
+#, kde-format
+msgid "Capture error occurred:"
+msgstr "Ошибка захвата кадра:"
+
+#: package/contents/ui/main.qml:156
+#, kde-format
+msgid "Error init backend:"
+msgstr "Ошибка инициализации бекэнда:"
+
+#: package/contents/ui/NormalView.qml:28
 #, kde-format
 msgid "Model list"
 msgstr "Список моделей"
 
-#: package/contents/ui/main.qml:64
+#: package/contents/ui/NormalView.qml:31
 #, kde-format
 msgid "Device"
 msgstr "Устройство"
 
-#: package/contents/ui/main.qml:69
+#: package/contents/ui/NormalView.qml:36
 #, kde-format
 msgid "Settings changes will be lost."
 msgstr "Изменения настроек будут потеряны."
 
-#: package/contents/ui/main.qml:170
+#: package/contents/ui/NormalView.qml:67
+#, kde-format
+msgid "User:"
+msgstr "Пользователь:"
+
+#: package/contents/ui/NormalView.qml:165
 #, kde-format
 msgid "No face models"
 msgstr "Нет моделей лица"
 
-#: package/contents/ui/main.qml:178
+#: package/contents/ui/NormalView.qml:174
 #, kde-format
 msgid "Add"
 msgstr "Добавить"
 
-#: package/contents/ui/main.qml:192
+#: package/contents/ui/NormalView.qml:188
 #, kde-format
 msgid "Delete"
 msgstr "Удалить"
 
-#: package/contents/ui/main.qml:196
+#: package/contents/ui/NormalView.qml:192
 #, kde-format
 msgid ""
 "Are you sure you want to delete this model?\n"
@@ -119,82 +164,184 @@ msgstr ""
 "Вы уверены, что хотите удалить эту модель?\n"
 "Отменить данную операцию невозможно."
 
-#: package/contents/ui/main.qml:212
+#: package/contents/ui/NormalView.qml:201
+#, kde-format
+msgid "Test"
+msgstr "Проверить"
+
+#: package/contents/ui/NormalView.qml:225
 #, kde-format
 msgid "Enter a name for the new model"
 msgstr "Введите имя новой модели"
 
-#: package/contents/ui/main.qml:224
+#: package/contents/ui/NormalView.qml:237
+#: package/contents/ui/OnboardingView.qml:159
 #, kde-format
 msgid "Scan"
 msgstr "Сканировать"
 
-#: package/contents/ui/main.qml:226
+#: package/contents/ui/NormalView.qml:239
+#: package/contents/ui/OnboardingView.qml:164
 #, kde-format
 msgid "Authorization"
 msgstr "Авторизация"
 
-#: package/contents/ui/main.qml:232
+#: package/contents/ui/NormalView.qml:249
 #, kde-format
 msgid "Cancel"
 msgstr "Отмена"
 
-#: package/contents/ui/main.qml:256
+#: package/contents/ui/NormalView.qml:265
+#, kde-format
+msgid "Testing the model: %1"
+msgstr "Проверка модели: %1"
+
+#: package/contents/ui/NormalView.qml:274
+#: package/contents/ui/OnboardingView.qml:335
+#, kde-format
+msgid "Back"
+msgstr "Назад"
+
+#: package/contents/ui/NormalView.qml:303
 #, kde-format
 msgid "Darkness threshold"
 msgstr "Порог яркости"
 
-#: package/contents/ui/main.qml:271
+#: package/contents/ui/NormalView.qml:318
 #, kde-format
 msgid "Certainty"
 msgstr "Достоверность"
 
-#: package/contents/ui/main.qml:288
+#: package/contents/ui/NormalView.qml:335
 #, kde-format
 msgid "Enable preview"
 msgstr "Предпросмотр"
 
-#: package/contents/ui/main.qml:354
-#, kde-format
-msgid "Error load config file:"
-msgstr "Ошибка загрузки файла конфигурации:"
-
-#: package/contents/ui/main.qml:359
-#, kde-format
-msgid "Save settings failed:"
-msgstr "Не удалось сохранить настройки:"
-
-#: package/contents/ui/main.qml:371
-#, kde-format
-msgid "Error create faces model:"
-msgstr "Ошибка создания модели лица:"
-
-#: package/contents/ui/main.qml:381
-#, kde-format
-msgid "Face model added successfully"
-msgstr "Модель лица успешно добавлена"
-
-#: package/contents/ui/main.qml:385
+#: package/contents/ui/NormalView.qml:350
+#: package/contents/ui/OnboardingView.qml:184
 #, kde-format
 msgid "Look into the camera please"
 msgstr "Смотрите в камеру, пожалуйста"
 
-#: package/contents/ui/main.qml:394
+#: package/contents/ui/NormalView.qml:357
+#: package/contents/ui/OnboardingView.qml:189
 #, kde-format
-msgid "Capture error occurred:"
-msgstr "Ошибка захвата кадра:"
+msgid "Face model added successfully"
+msgstr "Модель лица успешно добавлена"
 
-#: package/contents/ui/main.qml:403
+#: package/contents/ui/OnboardingView.qml:21
 #, kde-format
-msgid "Error init backend:"
-msgstr "Ошибка инициализации бекэнда:"
+msgid "Face authentication setup wizard"
+msgstr "Мастер настройки аутентификации по лицу"
 
-#: previewproducer/capturethread.cpp:189
+#: package/contents/ui/OnboardingView.qml:37
+#, kde-format
+msgid ""
+"Please select a camera. It is highly recommended to use an IR camera for "
+"authentication."
+msgstr ""
+"Пожалуйста, выберите камеру. Настоятельно рекомендуется использовать только "
+"ИК камеру для аутентификации."
+
+#: package/contents/ui/OnboardingView.qml:91
+#, kde-format
+msgid "You need to choose a camera."
+msgstr "Требуется выбрать камеру."
+
+#: package/contents/ui/OnboardingView.qml:95
+#, kde-format
+msgid ""
+"Using a non-IR camera for facial recognition is highly discouraged. For "
+"example, someone will be able to use your photo for successful "
+"authentication. Are you sure you want to proceed?"
+msgstr ""
+"Использование не ИК камеры для распознавания лица крайне не рекомендуется. "
+"Например, можно использовать ваше фото для успешной аутентификации. Вы "
+"уверены, что хотите продолжить?"
+
+#: package/contents/ui/OnboardingView.qml:126
+#, kde-format
+msgid ""
+"Your face needs to be scanned to create a reference model. During "
+"authentication, a check will be made against this model."
+msgstr ""
+"Требуется отсканировать ваше лицо для создания эталонной модели. Во время "
+"аутентификации будет происходить сверка с этой моделью."
+
+#: package/contents/ui/OnboardingView.qml:217
+#, kde-format
+msgid "Please select an operating mode:"
+msgstr "Пожалуйста, выберите режим:"
+
+#: package/contents/ui/OnboardingView.qml:253
+#, kde-format
+msgid "Fast"
+msgstr "Быстро"
+
+#: package/contents/ui/OnboardingView.qml:254
+#, kde-format
+msgid "Allows more fuzzy matches, but speeds up the scanning process greatly."
+msgstr ""
+"Допускается больше неточных совпадений, но значительно ускоряется процесс "
+"сканирования."
+
+#: package/contents/ui/OnboardingView.qml:265
+#, kde-format
+msgid "Balanced"
+msgstr "Сбалансированно"
+
+#: package/contents/ui/OnboardingView.qml:266
+#, kde-format
+msgid ""
+"Still relatively quick detection, but might not log you in when furher away."
+msgstr ""
+"По-прежнему относительно быстрая идентификация, но иногда может не "
+"получаться войти в систему."
+
+#: package/contents/ui/OnboardingView.qml:275
+#, kde-format
+msgid "Secure"
+msgstr "Безопасно"
+
+#: package/contents/ui/OnboardingView.qml:276
+#, kde-format
+msgid ""
+"The slightly safer option, but will take much longer to authenticate you."
+msgstr ""
+"Несколько более безопасный вариант, но для аутентификации потребуется "
+"гораздо больше времени."
+
+#: package/contents/ui/OnboardingView.qml:293
+#, kde-format
+msgid ""
+"The setup process is complete. Please note that you may need to additionally "
+"configure PAM to use facial recognition for authentication."
+msgstr ""
+"Процесс настройки завершён. Обратите внимание, возможно дополнительно "
+"потребуется настроить PAM, чтоб распознавание по лицу использовалось для "
+"аутентификации."
+
+#: package/contents/ui/OnboardingView.qml:346
+#, kde-format
+msgid "Next"
+msgstr "Далее"
+
+#: package/contents/ui/OnboardingView.qml:351
+#, kde-format
+msgid "Finish"
+msgstr "Закончить"
+
+#: previewproducer/capturethread.cpp:200
 #, kde-format
 msgid "Failed to open camera: \"%1\""
 msgstr "Не удалось открыть камеру: \"%1\""
 
-#: previewproducer/capturethread.cpp:230
+#: previewproducer/capturethread.cpp:206 usersmodel.cpp:51
+#, kde-format
+msgid "User unavailable"
+msgstr "Пользователь недоступен"
+
+#: previewproducer/capturethread.cpp:255
 #, kde-format
 msgid "Failed to capture frame from camera: \"%1\""
 msgstr "Не удалось захватить кадр с камеры: \"%1\""
@@ -204,7 +351,7 @@ msgstr "Не удалось захватить кадр с камеры: \"%1\""
 msgid "Frame copy error."
 msgstr "Ошибка копирования кадра."
 
-#: previewproducer/previewproducer.cpp:75
+#: previewproducer/previewproducer.cpp:80
 #, kde-format
 msgid "Preview is not supported if CNN model is active (use_cnn option)"
 msgstr "Предпросмотр недоступен, если активна модель CNN (опция use_cnn)"
