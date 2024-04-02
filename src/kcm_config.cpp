@@ -1,5 +1,5 @@
 /*
-    SPDX-FileCopyrightText: 2023 Anton Golubev <golubevan@altlinux.org>
+    SPDX-FileCopyrightText: 2023-2024 Anton Golubev <golubevan@altlinux.org>
 
     SPDX-License-Identifier: GPL-3.0-or-later
 */
@@ -105,6 +105,7 @@ void KcmConfig::save()
         for (auto i = m_updatedConfig.begin(); i != m_updatedConfig.end(); ++i) {
             m_storedConfig[i.key()] = i.value();
         }
+        client()->setNeedsSave(false);
     }
 }
 

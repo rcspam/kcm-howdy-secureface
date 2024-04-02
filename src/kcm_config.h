@@ -1,5 +1,5 @@
 /*
-    SPDX-FileCopyrightText: 2023 Anton Golubev <golubevan@altlinux.org>
+    SPDX-FileCopyrightText: 2023-2024 Anton Golubev <golubevan@altlinux.org>
 
     SPDX-License-Identifier: GPL-3.0-or-later
 */
@@ -23,8 +23,8 @@ public:
     Q_INVOKABLE QVariant getConfigValue(QString url);
     Q_INVOKABLE void updateConfigValue(QString url, QVariant value);
     Q_INVOKABLE void storeDefaultValue(QString url, QVariant value);
+    Q_INVOKABLE void save();
     void load();
-    void save();
     void defaults();
 
 Q_SIGNALS:
