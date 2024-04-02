@@ -78,7 +78,7 @@ static QString deniedIfEmpty(QString errorString)
     return errorString.length() == 0 ? i18n("Access denied") : errorString;
 }
 
-void KcmConfig::save()
+bool KcmConfig::save()
 {
     QVariantMap args;
     for (auto i = m_storedConfig.begin(); i != m_storedConfig.end(); ++i) {
@@ -99,6 +99,7 @@ void KcmConfig::save()
         job->kill();
         Q_EMIT errorSaveConfigFile(deniedIfEmpty(job->errorString()));
         client()->setNeedsSave(true);
+        return false;
     }
     else
     {
@@ -106,6 +107,7 @@ void KcmConfig::save()
             m_storedConfig[i.key()] = i.value();
         }
         client()->setNeedsSave(false);
+        return true;
     }
 }
 

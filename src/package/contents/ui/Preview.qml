@@ -1,5 +1,5 @@
 /*
-    SPDX-FileCopyrightText: 2023 Anton Golubev <golubevan@altlinux.org>
+    SPDX-FileCopyrightText: 2023-2024 Anton Golubev <golubevan@altlinux.org>
 
     SPDX-License-Identifier: GPL-3.0-or-later
 */
@@ -14,8 +14,11 @@ Rectangle {
     property var enabled: false
     property string message: ""
 
-    width: kcm.gridUnit * 20 + gap * 2
-    height: kcm.gridUnit * 15 + gap * 2
+    property int defaultWidth: kcm.gridUnit * 20 + gap * 2
+    property int defaultHeight: kcm.gridUnit * 15 + gap * 2
+
+    width: defaultWidth
+    height: defaultHeight
 
     radius: gap
     color: paletteActive.base
@@ -59,10 +62,5 @@ Rectangle {
             anchors.centerIn: parent
             text: preview.message
         }
-    }
-
-    onEnabledChanged: {
-        // enabled can be undefined
-        kcm.previewProducer.capturing = enabled ? true : false
     }
 }

@@ -43,9 +43,17 @@ KCM.SimpleKCM {
     SystemPalette { id: paletteInactive; colorGroup: SystemPalette.Inactive }
     property var gap: Math.round(kcm.gridUnit / 3)
 
+    // activate video capture centrally
+    property var previewEnabled: onboardingView.wantPreview || normalView.wantPreview
+    onPreviewEnabledChanged: {
+        // enabled can be undefined
+        kcm.previewProducer.capturing = previewEnabled ? true : false
+    }
+
     // one general condition for all instances of preview
     // so that capture restarts do not occur
     property string errorString: ""
+    property bool enableOnboarding: true
 
     function setDefaultsButtonVisibility(visible) {
         if (visible) {
@@ -90,11 +98,17 @@ KCM.SimpleKCM {
     }
 
     StackLayout {
-        currentIndex: errorString.length == 0 ? 0 : 1;
         anchors.fill: parent
 
-        NormalView{ id: normalView }
-        ErrorView{}
+        currentIndex: {
+            if (errorString.length > 0) return 0
+            if (enableOnboarding) return 1
+            return 2
+        }
+
+        ErrorView {}
+        OnboardingView { id: onboardingView }
+        NormalView { id: normalView }
     }
 
     property var configValue: ConfigValue {}

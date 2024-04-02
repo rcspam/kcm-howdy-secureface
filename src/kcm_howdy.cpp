@@ -64,7 +64,10 @@ KcmHowdy::KcmHowdy(QObject *parent, const KPluginMetaData &data, const QVariantL
 
     // it may fail to initialize, if, for example, there is an error in the QML
     auto qmlRoot = mainUi();
-    if (qmlRoot) qmlRoot->setProperty("errorString", errorString);
+    if (!qmlRoot) return;
+    qmlRoot->setProperty("errorString", errorString);
+    QDir modelsDir(QStringLiteral(HOWDY_MODELS_PATH));
+    qmlRoot->setProperty("enableOnboarding", !modelsDir.exists());
 }
 
 void KcmHowdy::load()

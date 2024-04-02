@@ -11,8 +11,8 @@ import QtQuick.Layouts 1.15
 Column {
     id: normalView
 
-    property var previewEnabled: camCombo.currentValue.length != 0 && bar.currentIndex == 0 && modelsOrPreview.currentIndex == 1 && preScanPreview.message.length == 0
-                                 || camCombo.currentValue.length != 0 && bar.currentIndex == 1 && enablePreview.checked
+    property var wantPreview: camCombo.currentValue.length != 0 && bar.currentIndex == 0 && modelsOrPreview.currentIndex == 1 && preScanPreview.message.length == 0
+                              || camCombo.currentValue.length != 0 && bar.currentIndex == 1 && enablePreview.checked
 
 
     property alias devicePath: camCombo.currentValue
@@ -178,7 +178,7 @@ Column {
                     spacing: root.gap
                     Preview {
                         id: preScanPreview
-                        enabled: previewEnabled
+                        enabled: visible && normalView.wantPreview
                     }
                     Text {
                         wrapMode: Text.WordWrap
@@ -266,7 +266,7 @@ Column {
                     checked: true
                 }
                 Preview {
-                    enabled: previewEnabled
+                    enabled: visible && normalView.wantPreview
                 }
             }
         }

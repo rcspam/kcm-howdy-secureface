@@ -23,7 +23,8 @@ public:
     Q_INVOKABLE QVariant getConfigValue(QString url);
     Q_INVOKABLE void updateConfigValue(QString url, QVariant value);
     Q_INVOKABLE void storeDefaultValue(QString url, QVariant value);
-    Q_INVOKABLE void save();
+    // return false if error occurs
+    Q_INVOKABLE bool save();
     void load();
     void defaults();
 
