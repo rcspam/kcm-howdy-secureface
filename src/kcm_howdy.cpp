@@ -54,6 +54,10 @@ KcmHowdy::KcmHowdy(QObject *parent, const KPluginMetaData &data, const QVariantL
 
     m_camModel = new CamModel(this);
 
+    if (m_camModel->rowCount(QModelIndex()) == 0) {
+        errorString = i18n("No cameras found");
+    }
+
     m_previewProducer = new PreviewProducer(m_config, this);
 
     setButtons(buttons() & ~Button::Default);
