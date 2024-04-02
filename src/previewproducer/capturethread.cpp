@@ -1,5 +1,5 @@
 /*
-    SPDX-FileCopyrightText: 2023 Anton Golubev <golubevan@altlinux.org>
+    SPDX-FileCopyrightText: 2023-2024 Anton Golubev <golubevan@altlinux.org>
 
     SPDX-License-Identifier: GPL-3.0-or-later
 */
@@ -305,6 +305,7 @@ void CaptureThread::run()
 void CaptureThread::setVideoPath(QString videoPath)
 {
     bool wasLooping = m_looping.load();
+    if (videoPath == m_videoPath && wasLooping) return;
     stopCaptureSync();
     m_videoPath = videoPath;
     if (wasLooping) startCapture();

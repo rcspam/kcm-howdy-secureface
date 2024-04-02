@@ -1,5 +1,5 @@
 /*
-    SPDX-FileCopyrightText: 2023 Anton Golubev <golubevan@altlinux.org>
+    SPDX-FileCopyrightText: 2023-2024 Anton Golubev <golubevan@altlinux.org>
 
     SPDX-License-Identifier: GPL-3.0-or-later
 */
@@ -69,7 +69,12 @@ bool PreviewProducer::isCapturing()
 
 void PreviewProducer::setCapturing(bool wantCapturing)
 {
-    if (wantCapturing && !isCapturing()) {
+    if (wantCapturing && !m_capturer->isLooping()) {
+
+        // apparently it is going through the cycle for the last time
+        // and may not have released the device yet
+        if (isCapturing()) m_capturer->stopCaptureSync();
+
         auto useCnn = m_config->getConfigValue(QStringLiteral("core/use_cnn"));
         if (useCnn.toBool()) {
             Q_EMIT captureErrorOccurred(i18n("Preview is not supported if CNN model is active (use_cnn option)"));

@@ -1,5 +1,5 @@
 /*
-    SPDX-FileCopyrightText: 2023 Anton Golubev <golubevan@altlinux.org>
+    SPDX-FileCopyrightText: 2023-2024 Anton Golubev <golubevan@altlinux.org>
 
     SPDX-License-Identifier: GPL-3.0-or-later
 */
@@ -19,7 +19,8 @@ class CaptureThread : public QThread
 public:
     explicit CaptureThread(QMutex *lock, QObject *parent = nullptr);
     void setVideoPath(QString videoPath);
-    void setLooping(bool looping) { m_looping.store(looping); };
+    void setLooping(bool looping) { m_looping.store(looping); }
+    bool isLooping() { return m_looping.load(); }
     void setDarkThreshold(int threshold) { m_darkThreshold.store(threshold); }
     void setCertainty(double certainty) { m_certainty.store(certainty); }
     void stopCaptureSync();
