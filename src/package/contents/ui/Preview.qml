@@ -59,7 +59,10 @@ Rectangle {
         visible: message.length != 0
 
         Text {
-            anchors.centerIn: parent
+            anchors.fill: parent
+            wrapMode: Text.WordWrap
+            verticalAlignment: Text.AlignVCenter
+            horizontalAlignment: Text.AlignHCenter
             text: preview.message
         }
     }
