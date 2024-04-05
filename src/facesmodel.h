@@ -1,5 +1,5 @@
 /*
-    SPDX-FileCopyrightText: 2023 Anton Golubev <golubevan@altlinux.org>
+    SPDX-FileCopyrightText: 2023-2024 Anton Golubev <golubevan@altlinux.org>
 
     SPDX-License-Identifier: GPL-3.0-or-later
 */
@@ -24,6 +24,10 @@ public:
 
     Q_INVOKABLE void addFace(QString modelName);
     Q_INVOKABLE void removeFace(int row);
+    Q_INVOKABLE QVariant getCell(int row, int col)
+    {
+        return data(index(row, col), Qt::DisplayRole);
+    }
 
 Q_SIGNALS:
 

@@ -28,6 +28,7 @@ public:
         m_fontRatio.store(fontRatio);
         m_fontThickness.store(thickness);
     }
+    void selectModel(int modelId) { m_selectModel.store(modelId); }
     void stopCaptureSync();
     void startCapture();
 
@@ -49,6 +50,7 @@ private:
     std::atomic<double> m_certainty;
     std::atomic<float> m_fontRatio;
     std::atomic<int> m_fontThickness;
+    std::atomic<int> m_selectModel;
 };
 
 #endif // CAPTURETHREAD_H

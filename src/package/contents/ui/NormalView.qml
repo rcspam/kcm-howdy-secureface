@@ -11,7 +11,8 @@ import QtQuick.Layouts 1.15
 Column {
     id: normalView
 
-    property var wantPreview: camCombo.currentValue.length != 0 && bar.currentIndex == 0 && modelsOrPreview.currentIndex == 1 && preScanPreview.message.length == 0
+    property var wantPreview: camCombo.currentValue.length != 0 && bar.currentIndex == 0 && modelsTab.currentIndex == 1 && preScanPreview.message.length == 0
+                              || camCombo.currentValue.length != 0 && bar.currentIndex == 0 && modelsTab.currentIndex == 2
                               || camCombo.currentValue.length != 0 && bar.currentIndex == 1 && enablePreview.checked
 
 
@@ -52,7 +53,7 @@ Column {
         currentIndex: bar.currentIndex
 
         StackLayout {
-            id: modelsOrPreview
+            id: modelsTab
 
             Column {
                 padding: root.gap
@@ -160,7 +161,7 @@ Column {
                             newModelName.text = ""
                             newModelName.enabled = true
                             preScanPreview.message = ""
-                            modelsOrPreview.currentIndex = 1
+                            modelsTab.currentIndex = 1
                         }
                     }
                     Button {
@@ -172,9 +173,21 @@ Column {
                             confirmBox.acceptCallback = () => kcm.facesModel.removeFace(facesTable.selectedRow)
                         }
                     }
+                    Button {
+                        text: i18n("Test")
+                        visible: kcm.facesModel.rows > 0
+                        enabled: facesTable.selectedRow >= 0
+                        onClicked: {
+                            modelsTab.currentIndex = 2
+                            testModelView.modelName = kcm.facesModel.getCell(facesTable.selectedRow, 2)
+                            kcm.previewProducer.selectModel(facesTable.selectedRow)
+                        }
+                    }
                 }
             }
+
             ScrollView {
+                id: preScanView
                 Column {
                     padding: root.gap
                     spacing: root.gap
@@ -206,7 +219,34 @@ Column {
                         }
                         Button {
                             text: i18n("Cancel")
-                            onClicked: modelsOrPreview.currentIndex = 0
+                            onClicked: modelsTab.currentIndex = 0
+                        }
+                    }
+                }
+            }
+
+            ScrollView {
+                id: testModelView
+                property string modelName: ""
+                Column {
+                    padding: root.gap
+                    spacing: root.gap
+
+                    Text {
+                        wrapMode: Text.WordWrap
+                        text: i18n("Testing the model: %1", testModelView.modelName)
+                    }
+
+                    Preview {
+                        id: testPreview
+                        enabled: visible && normalView.wantPreview
+                    }
+
+                    Button {
+                        text: i18n("Back")
+                        onClicked: {
+                            modelsTab.currentIndex = 0
+                            kcm.previewProducer.unSelectModel()
                         }
                     }
                 }
@@ -284,7 +324,7 @@ Column {
 
         function onSuccessAddFace() {
             if (!preScanPreview.visible) return
-            modelsOrPreview.currentIndex = 0
+            modelsTab.currentIndex = 0
             closeAllTheBoxes()
             msgBox.show(i18n("Face model added successfully"), msgBox.iconInfo)
         }

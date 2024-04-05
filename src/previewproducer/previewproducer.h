@@ -29,6 +29,8 @@ public:
 
     Q_INVOKABLE void setVideoPath(QString videoPath);
     Q_INVOKABLE void setFontParams(float fontRatio, int thickness);
+    Q_INVOKABLE void selectModel(int modelId);
+    Q_INVOKABLE void unSelectModel();
     Q_INVOKABLE void setDarkThreshold(int threshold);
     Q_INVOKABLE void setCertainty(double certainty);
 

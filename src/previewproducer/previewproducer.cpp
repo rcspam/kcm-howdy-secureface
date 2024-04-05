@@ -105,6 +105,16 @@ void PreviewProducer::setFontParams(float fontRatio, int thickness)
     m_capturer->setFontParams(fontRatio, thickness);
 }
 
+void PreviewProducer::selectModel(int modelId)
+{
+    m_capturer->selectModel(modelId);
+}
+
+void PreviewProducer::unSelectModel()
+{
+    m_capturer->selectModel(-1);
+}
+
 void PreviewProducer::setDarkThreshold(int threshold)
 {
     m_capturer->setDarkThreshold(threshold);

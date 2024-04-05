@@ -38,7 +38,8 @@ CaptureThread::CaptureThread(QMutex *lock, QObject *parent) :
     m_dataLock(lock),
     m_looping(false),
     m_fontRatio(0.01f),
-    m_fontThickness(0)
+    m_fontThickness(0),
+    m_selectModel(-1)
 {}
 
 static constexpr int OVERLAY_FONT = cv::FONT_HERSHEY_SIMPLEX;
@@ -128,7 +129,7 @@ public:
         size_t index;
     };
 
-    MatchResult matchFace(dlib::array2d<rgb_pixel> &rgbImg, const dlib::rectangle &loc)
+    MatchResult matchFace(dlib::array2d<rgb_pixel> &rgbImg, const dlib::rectangle &loc, int modelId = -1)
     {
         auto faceLandmark = m_posePredictor(rgbImg, loc);
         auto faceEncoding = m_faceEncoder->compute_face_descriptor(rgbImg, faceLandmark, 1);
@@ -136,12 +137,20 @@ public:
         std::vector<double> matches;
         matches.reserve(m_encodings.size());
 
-        for (auto &encoding : m_encodings) {
+        for (int i = 0; i < m_encodings.size(); ++i) {
+
+            // if selecting only one model
+            if (modelId >= 0 && i != modelId) continue;
+
+            auto &encoding = m_encodings[i];
             auto diff = encoding - faceEncoding;
             auto norm = std::sqrt(dlib::sum(dlib::squared(diff)));
             matches.push_back(norm);
         }
-        size_t bestMatchIndex = std::min_element(matches.begin(), matches.end()) - matches.begin();
+
+        if (modelId >= 0) return { matches[0], size_t(modelId) };
+
+        size_t bestMatchIndex =  std::min_element(matches.begin(), matches.end()) - matches.begin();
         return { matches[bestMatchIndex], bestMatchIndex };
     }
 
@@ -290,7 +299,7 @@ void CaptureThread::run()
                 cv::Scalar color{ 230, 0, 0 };
 
                 if (faceHelper.matchNeeded()) {
-                    auto match = faceHelper.matchFace(rgbImg, loc);
+                    auto match = faceHelper.matchFace(rgbImg, loc, m_selectModel.load());
                     cv::Point p{ x + r / 3, y - r };
                     if (match.certainty * 10 < m_certainty) {
                         color = { 0, 230, 0 };
