@@ -17,6 +17,9 @@ Rectangle {
     property int defaultWidth: kcm.gridUnit * 20 + gap * 2
     property int defaultHeight: kcm.gridUnit * 15 + gap * 2
 
+    property int prevPaintedHeight: 0
+    property int prevPaintedWidth: 0
+
     width: defaultWidth
     height: defaultHeight
 
@@ -37,6 +40,34 @@ Rectangle {
             smooth: true
             fillMode: Custom.QPixmapItem.PreserveAspectFit
             visible: preview.enabled && !kcm.previewProducer.waitingCamera
+
+            onPaintedWidthChanged: if (visible && prevPaintedWidth != paintedWidth) {
+                updateFontParams()
+            }
+
+            onPaintedHeightChanged: if (visible && prevPaintedHeight != paintedHeight) {
+                updateFontParams()
+            }
+
+            onVisibleChanged: if (visible) {
+                updateFontParams()
+            }
+
+            function updateFontParams() {
+
+                var fontHeight = kcm.gridUnit * 0.4
+                // use the ratio of the font height to the frame width, because there is more empty space vertically
+                var newFontRatio = paintedWidth > 0 ? fontHeight / paintedWidth : 0.01
+                // limit it so that nothing overlaps
+                newFontRatio = Math.min(0.03, newFontRatio)
+                // increase the font thickness because the image will shrink
+                var thickness = paintedHeight > 0 && nativeHeight > 0 ? Math.round(nativeHeight / paintedHeight - 0.5) : 1
+
+                kcm.previewProducer.setFontParams(newFontRatio, thickness)
+
+                prevPaintedHeight = paintedHeight
+                prevPaintedWidth = paintedWidth
+            }
         }
 
         Rectangle {

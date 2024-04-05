@@ -23,6 +23,11 @@ public:
     bool isLooping() { return m_looping.load(); }
     void setDarkThreshold(int threshold) { m_darkThreshold.store(threshold); }
     void setCertainty(double certainty) { m_certainty.store(certainty); }
+    void setFontParams(float fontRatio, int thickness)
+    {
+        m_fontRatio.store(fontRatio);
+        m_fontThickness.store(thickness);
+    }
     void stopCaptureSync();
     void startCapture();
 
@@ -42,6 +47,8 @@ private:
     std::atomic<bool> m_looping;
     std::atomic<int> m_darkThreshold;
     std::atomic<double> m_certainty;
+    std::atomic<float> m_fontRatio;
+    std::atomic<int> m_fontThickness;
 };
 
 #endif // CAPTURETHREAD_H

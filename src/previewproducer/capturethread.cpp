@@ -36,13 +36,23 @@
 CaptureThread::CaptureThread(QMutex *lock, QObject *parent) :
     QThread(parent),
     m_dataLock(lock),
-    m_looping(false)
+    m_looping(false),
+    m_fontRatio(0.01f),
+    m_fontThickness(0)
 {}
 
-static void print_text(cv::Mat &overlay, int height, int line_number, QString text, float scale = 1.f)
+static constexpr int OVERLAY_FONT = cv::FONT_HERSHEY_SIMPLEX;
+
+struct FontParam {
+    float size;
+    float scale;
+    int thickness;
+};
+
+static void print_text(cv::Mat &overlay, int height, int line_number, QString text, FontParam font)
 {
-    cv::putText(overlay, text.toStdString(), { int(10 * scale), height - int(scale * (10 + (10 * line_number))) },
-                cv::FONT_HERSHEY_SIMPLEX, .3 * scale, { 0, 255, 0 }, 0, cv::LINE_AA);
+    cv::putText(overlay, text.toStdString(), { int(1.4f * font.size), height - int(font.size * (1.4f + (1.4f * line_number))) },
+                OVERLAY_FONT, font.scale, { 0, 255, 0 }, font.thickness, cv::LINE_AA);
 }
 
 class FaceHelper {
@@ -196,11 +206,6 @@ void CaptureThread::run()
     int frameWidth = m_cap.get(cv::CAP_PROP_FRAME_WIDTH);
     int frameHeight = m_cap.get(cv::CAP_PROP_FRAME_HEIGHT);
 
-    float scale = frameHeight / 340.f;
-    auto sc = [scale] (auto x) {
-        return int(scale * x);
-    };
-
     auto clahe = cv::createCLAHE(2.0, { 8, 8 });
 
     int fps = 0;
@@ -213,7 +218,22 @@ void CaptureThread::run()
     cv::Mat greyFrame;
     cv::Mat overlay;
 
+    int baseSize;
+    auto hersheySize = cv::getTextSize("M", OVERLAY_FONT, 1.0, 0, &baseSize);
+
     while (m_looping) {
+
+        FontParam font;
+
+        font.size = m_fontRatio.load() * frameWidth;
+        font.scale = font.size / hersheySize.height;
+        font.thickness = m_fontThickness.load();
+
+        // some arbitrary units, for non-text elements
+        float scale = font.size / 6;
+        auto sc = [scale] (auto x) {
+            return int(scale * x);
+        };
 
         qint64 time = QDateTime::currentMSecsSinceEpoch();
         ++totalFrames;
@@ -246,10 +266,10 @@ void CaptureThread::run()
             // sometimes dark and light frames alternate quickly, and this causes flickering
             // we will show dark frames only if there are a lot of them in a row
             if (darkFrames < 3) continue;
-            cv::putText(overlay, "DARK FRAME", { frameWidth - sc(68), sc(16) }, cv::FONT_HERSHEY_SIMPLEX, .3f * scale, { 255, 0, 0 }, 0, cv::LINE_AA);
+            cv::putText(overlay, "DARK FRAME", { frameWidth - sc(68), sc(16) }, OVERLAY_FONT, font.scale, { 255, 0, 0 }, font.thickness, cv::LINE_AA);
         } else {
             darkFrames = 0;
-            cv::putText(overlay, "SCAN FRAME", { frameWidth - sc(68), sc(16) }, cv::FONT_HERSHEY_SIMPLEX, .3f * scale, { 0, 255, 0 }, 0, cv::LINE_AA);
+            cv::putText(overlay, "SCAN FRAME", { frameWidth - sc(68), sc(16) }, OVERLAY_FONT, font.scale, { 0, 255, 0 }, font.thickness, cv::LINE_AA);
 
             dlib::array2d<uint8_t> greyImg;
             dlib::assign_image(greyImg, dlib::cv_image<uint8_t>(greyFrame));
@@ -275,10 +295,10 @@ void CaptureThread::run()
                     if (match.certainty * 10 < m_certainty) {
                         color = { 0, 230, 0 };
                         QString circleText = QStringLiteral("Model #%1 (c: %2)").arg(match.index).arg(match.certainty * 10.0, 4, 'f', 2);
-                        cv::putText(overlay, circleText.toStdString(), p, cv::FONT_HERSHEY_SIMPLEX, .3 * scale, { 0, 255, 0 }, 0, cv::LINE_AA);
+                        cv::putText(overlay, circleText.toStdString(), p, OVERLAY_FONT, font.scale, { 0, 255, 0 }, font.thickness, cv::LINE_AA);
                     } else {
                         QString circle_text = QStringLiteral("no match (c: %1)").arg(match.certainty * 10.0, 4, 'f', 2);
-                        cv::putText(overlay, circle_text.toStdString(), p, cv::FONT_HERSHEY_SIMPLEX, .3 * scale, { 255, 0, 0 }, 0, cv::LINE_AA);
+                        cv::putText(overlay, circle_text.toStdString(), p, OVERLAY_FONT, font.scale, { 255, 0, 0 }, font.thickness, cv::LINE_AA);
                     }
                 }
                 cv::circle(overlay, { x, y }, r, color, 2);
@@ -287,11 +307,11 @@ void CaptureThread::run()
 
         recTime = QDateTime::currentMSecsSinceEpoch() - recTime;
 
-        print_text(overlay, frameHeight, 0, QStringLiteral("RESOLUTION: %1x%2").arg(frameWidth).arg(frameHeight), scale);
-        print_text(overlay, frameHeight, 1, QStringLiteral("FPS: %1").arg(fps), scale);
-        print_text(overlay, frameHeight, 2, QStringLiteral("FRAMES: %1").arg(totalFrames), scale);
+        print_text(overlay, frameHeight, 0, QStringLiteral("RESOLUTION: %1x%2").arg(frameWidth).arg(frameHeight), font);
+        print_text(overlay, frameHeight, 1, QStringLiteral("FPS: %1").arg(fps), font);
+        print_text(overlay, frameHeight, 2, QStringLiteral("FRAMES: %1").arg(totalFrames), font);
         if (darkFrames == 0) {
-            print_text(overlay, frameHeight, 3, QStringLiteral("RECOGNITION: %1 ms").arg(recTime), scale);
+            print_text(overlay, frameHeight, 3, QStringLiteral("RECOGNITION: %1 ms").arg(recTime), font);
         }
 
         m_dataLock->lock();

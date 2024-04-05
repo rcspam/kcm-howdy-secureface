@@ -100,6 +100,11 @@ void PreviewProducer::setVideoPath(QString videoPath)
     m_capturer->setVideoPath(videoPath);
 }
 
+void PreviewProducer::setFontParams(float fontRatio, int thickness)
+{
+    m_capturer->setFontParams(fontRatio, thickness);
+}
+
 void PreviewProducer::setDarkThreshold(int threshold)
 {
     m_capturer->setDarkThreshold(threshold);

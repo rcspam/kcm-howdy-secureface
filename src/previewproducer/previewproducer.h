@@ -1,5 +1,5 @@
 /*
-    SPDX-FileCopyrightText: 2023 Anton Golubev <golubevan@altlinux.org>
+    SPDX-FileCopyrightText: 2023-2024 Anton Golubev <golubevan@altlinux.org>
 
     SPDX-License-Identifier: GPL-3.0-or-later
 */
@@ -28,6 +28,7 @@ public:
     Q_PROPERTY(bool waitingCamera MEMBER m_waitingCamera NOTIFY waitingCameraChanged)
 
     Q_INVOKABLE void setVideoPath(QString videoPath);
+    Q_INVOKABLE void setFontParams(float fontRatio, int thickness);
     Q_INVOKABLE void setDarkThreshold(int threshold);
     Q_INVOKABLE void setCertainty(double certainty);
 
