@@ -92,6 +92,8 @@ Column {
                             delegate: Item {
                                 id: rootDelegate
 
+                                implicitHeight: kcm.gridUnit * 2
+
                                 Rectangle {
                                     id: hoverRect
                                     x: {
