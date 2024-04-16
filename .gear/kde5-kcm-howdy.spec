@@ -1,7 +1,7 @@
 %define _unpackaged_files_terminate_build 1
 
 Name: kde5-kcm-howdy
-Version: 0.1.1
+Version: 0.1.2
 Release: alt1
 
 Summary: KDE Workspace 5 Howdy configuration module
@@ -69,6 +69,13 @@ KDE Workspace 5 Howdy configuration module
 %_K5dbus_sys_srv/org.kde.kcontrol.kcmhowdy.service
 
 %changelog
+* Tue Apr 16 2024 Anton Golubev <golubevan@altlinux.org> 0.1.2-alt1
+- add initial setup wizard
+- recommend IR cameras (ALT #48796)
+- improve font scaling in preview
+- add the ability to test only one model
+- edit other users models
+
 * Tue Dec 05 2023 Anton Golubev <golubevan@altlinux.org> 0.1.1-alt1
 - make more proper ScrollViews (ALT #48540)
 - use utf-8 for model name (ALT #48538)
