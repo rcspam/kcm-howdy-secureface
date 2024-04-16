@@ -59,6 +59,26 @@ Column {
                 padding: root.gap
                 spacing: root.gap
 
+                Row {
+                    padding: root.gap
+                    spacing: root.gap
+                    Label {
+                        anchors.verticalCenter: parent.verticalCenter
+                        text: i18n("User:")
+                    }
+                    ComboBox {
+                        id: usersCombo
+                        valueRole: 'name'
+                        textRole: 'realName'
+                        model: kcm.usersModel
+                        currentIndex: kcm.usersModel.currentUserIndex
+                        onCurrentValueChanged: {
+                            kcm.facesModel.setUserName(currentValue)
+                            kcm.previewProducer.setUserName(currentValue)
+                        }
+                    }
+                }
+
                 Column {
                     id: modelTable
                     clip: true
@@ -170,7 +190,11 @@ Column {
                         enabled: facesTable.selectedRow >= 0
                         onClicked: {
                             confirmBox.show(i18n("Are you sure you want to delete this model?\nThe operation cannot be undone."), confirmBox.iconWarning)
-                            confirmBox.acceptCallback = () => kcm.facesModel.removeFace(facesTable.selectedRow)
+                            if (kcm.usersModel.currentUserIndex == usersCombo.currentIndex) {
+                                confirmBox.acceptCallback = () => kcm.facesModel.removeFace(facesTable.selectedRow)
+                            } else {
+                                confirmBox.acceptCallback = () => kcm.facesModel.removeOtherFace(usersCombo.currentValue, facesTable.selectedRow)
+                            }
                         }
                     }
                     Button {
@@ -214,7 +238,11 @@ Column {
                             onClicked: {
                                 preScanPreview.message = i18n("Authorization")
                                 newModelName.enabled = false
-                                kcm.facesModel.addFace(newModelName.text)
+                                if (kcm.usersModel.currentUserIndex == usersCombo.currentIndex) {
+                                    kcm.facesModel.addFace(newModelName.text)
+                                } else {
+                                    kcm.facesModel.addOtherFace(usersCombo.currentValue, newModelName.text)
+                                }
                             }
                         }
                         Button {

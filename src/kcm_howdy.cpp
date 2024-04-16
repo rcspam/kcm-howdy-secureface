@@ -16,12 +16,10 @@
 #include <KPluginFactory>
 #include <KLocalizedString>
 
-#include <unistd.h>
-#include <pwd.h>
-
 #include "kcm_config.h"
 #include "facesmodel.h"
 #include "cammodel.h"
+#include "usersmodel.h"
 #include "previewproducer.h"
 #include "qpixmapitem.h"
 
@@ -35,27 +33,27 @@ KcmHowdy::KcmHowdy(QObject *parent, const KPluginMetaData &data, const QVariantL
     qmlRegisterAnonymousType<FacesModel>("org.altlinux.howdy.kcm", 1);
     qmlRegisterAnonymousType<CamModel>("org.altlinux.howdy.kcm", 1);
     qmlRegisterAnonymousType<CamModelEmptyItemProxy>("org.altlinux.howdy.kcm", 1);
+    qmlRegisterAnonymousType<UsersModel>("org.altlinux.howdy.kcm", 1);
     qmlRegisterAnonymousType<PreviewProducer>("org.altlinux.howdy.kcm", 1);
 
     qmlRegisterType<QPixmapItem>("org.altlinux.howdy.kcm.custom", 1, 0, "QPixmapItem");
     qmlRegisterUncreatableType<ConfigModule>("org.altlinux.howdy.kcm.configmodule", 1, 0, "ConfigModule", QStringLiteral("Only for enums"));
 
     QString errorString;
-    auto pw = getpwuid(getuid());
-    if (!pw || strlen(pw->pw_name) == 0) {
-        m_facesModel = new FacesModel(QStringLiteral(""), this);
-        errorString = i18n("Unable to get user data");
-    } else {
-        QString username = QLatin1String(pw->pw_name);
-        m_facesModel = new FacesModel(QStringLiteral("%1/%2.dat")
-                                      .arg(QStringLiteral(HOWDY_MODELS_PATH))
-                                      .arg(username), this);
-    }
+    // We remember only the first error that appears
+    auto consumeError = [&errorString] (QString &&error) {
+        if (errorString.isEmpty()) errorString = error;
+    };
+
+    m_usersModel = new UsersModel(this);
+    consumeError(m_usersModel->fillUsers());
+
+    m_facesModel = new FacesModel(this);
 
     m_camModel = new CamModel(this);
 
     if (m_camModel->rowCount(QModelIndex()) == 0) {
-        errorString = i18n("No cameras found");
+        consumeError(i18n("No cameras found"));
     }
 
     m_previewProducer = new PreviewProducer(m_config, this);

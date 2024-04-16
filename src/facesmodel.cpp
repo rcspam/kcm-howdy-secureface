@@ -1,10 +1,11 @@
 /*
-    SPDX-FileCopyrightText: 2023 Anton Golubev <golubevan@altlinux.org>
+    SPDX-FileCopyrightText: 2023-2024 Anton Golubev <golubevan@altlinux.org>
 
     SPDX-License-Identifier: GPL-3.0-or-later
 */
 
 #include "facesmodel.h"
+#include "config.h"
 
 #include <QJsonArray>
 #include <QJsonDocument>
@@ -13,9 +14,13 @@
 #include <KAuth/ExecuteJob>
 #include <KLocalizedString>
 
-FacesModel::FacesModel(QString fileName, QObject *parent) : QAbstractTableModel(parent)
+FacesModel::FacesModel(QObject *parent) : QAbstractTableModel(parent) {}
+
+void FacesModel::setUserName(QString userName)
 {
-    m_file.setFileName(fileName);
+    m_file.setFileName(QStringLiteral("%1/%2.dat")
+                       .arg(QStringLiteral(HOWDY_MODELS_PATH))
+                       .arg(userName));
     Update();
 }
 
@@ -123,15 +128,8 @@ static QString deniedIfEmpty(QString errorString)
     return errorString.length() == 0 ? i18n("Access denied") : errorString;
 }
 
-void FacesModel::addFace(QString modelName)
+void FacesModel::actionAddFace(KAuth::Action &addAction)
 {
-    QVariantMap args;
-    args[QStringLiteral("modelName")] = modelName;
-    KAuth::Action addAction(QStringLiteral("org.kde.kcontrol.kcmhowdy.addfacemodel"));
-
-    addAction.setHelperId(QStringLiteral("org.kde.kcontrol.kcmhowdy"));
-    addAction.setArguments(args);
-
     auto job = addAction.execute();
 
     if (addAction.status() == KAuth::Action::AuthorizedStatus) {
@@ -157,16 +155,9 @@ void FacesModel::addFace(QString modelName)
     }
 }
 
-void FacesModel::removeFace(int row)
+void FacesModel::actionRemoveFace(KAuth::Action &removeAction)
 {
     QVariantMap args;
-
-    int id = m_faces.at(row).id;
-    args[QStringLiteral("modelID")] = id;
-    KAuth::Action removeAction(QStringLiteral("org.kde.kcontrol.kcmhowdy.removefacemodel"));
-
-    removeAction.setHelperId(QStringLiteral("org.kde.kcontrol.kcmhowdy"));
-    removeAction.setArguments(args);
 
     auto job = removeAction.execute();
 
@@ -180,4 +171,58 @@ void FacesModel::removeFace(int row)
     {
         Update();
     }
+}
+
+void FacesModel::addFace(QString modelName)
+{
+    QVariantMap args;
+    args[QStringLiteral("modelName")] = modelName;
+
+    KAuth::Action addAction(QStringLiteral("org.kde.kcontrol.kcmhowdy.addfacemodel"));
+    addAction.setHelperId(QStringLiteral("org.kde.kcontrol.kcmhowdy"));
+    addAction.setArguments(args);
+
+    actionAddFace(addAction);
+}
+
+void FacesModel::addOtherFace(QString userName, QString modelName)
+{
+    QVariantMap args;
+    args[QStringLiteral("modelName")] = modelName;
+    args[QStringLiteral("userName")] = userName;
+
+    KAuth::Action addAction(QStringLiteral("org.kde.kcontrol.kcmhowdy.addotherfacemodel"));
+    addAction.setHelperId(QStringLiteral("org.kde.kcontrol.kcmhowdy"));
+    addAction.setArguments(args);
+
+    actionAddFace(addAction);
+}
+
+void FacesModel::removeFace(int row)
+{
+    QVariantMap args;
+
+    int id = m_faces.at(row).id;
+    args[QStringLiteral("modelID")] = id;
+
+    KAuth::Action removeAction(QStringLiteral("org.kde.kcontrol.kcmhowdy.removefacemodel"));
+    removeAction.setHelperId(QStringLiteral("org.kde.kcontrol.kcmhowdy"));
+    removeAction.setArguments(args);
+
+    actionRemoveFace(removeAction);
+}
+
+void FacesModel::removeOtherFace(QString userName, int row)
+{
+    QVariantMap args;
+
+    int id = m_faces.at(row).id;
+    args[QStringLiteral("modelID")] = id;
+    args[QStringLiteral("userName")] = userName;
+
+    KAuth::Action removeAction(QStringLiteral("org.kde.kcontrol.kcmhowdy.removeotherfacemodel"));
+    removeAction.setHelperId(QStringLiteral("org.kde.kcontrol.kcmhowdy"));
+    removeAction.setArguments(args);
+
+    actionRemoveFace(removeAction);
 }

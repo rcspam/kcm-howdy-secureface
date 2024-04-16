@@ -5,6 +5,7 @@ target_sources(kcm_howdy PRIVATE
     kcm_config.cpp
     facesmodel.cpp
     cammodel.cpp
+    usersmodel.cpp
     qpixmapitem.cpp
     )
 

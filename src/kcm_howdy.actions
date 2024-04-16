@@ -25,6 +25,26 @@ Description[x-test]=xxScan a new face modelxx
 Policy=auth_self
 Persistence=session
 
+[org.kde.kcontrol.kcmhowdy.removeotherfacemodel]
+Name=Remove Other User Face Model
+Name[ru]=Удалить модель лица другого пользователя
+Name[x-test]=xxRemove Other User Face Modelxx
+Description=Remove other user face model
+Description[ru]=Удалить модель лица другого пользователя
+Description[x-test]=xxRemove other user face modelxx
+Policy=auth_admin
+Persistence=session
+
+[org.kde.kcontrol.kcmhowdy.addotherfacemodel]
+Name=Add Other User Face Model
+Name[ru]=Добавить модель лица другого пользователя
+Name[x-test]=xxAdd Other User Face Modelxx
+Description=Scan a new face model for another user
+Description[ru]=Отсканировать новую модель лица для другого пользователя
+Description[x-test]=xxScan a new face model for another userxx
+Policy=auth_admin
+Persistence=session
+
 [org.kde.kcontrol.kcmhowdy.saveconfig]
 Name=Save Settings
 Name[ru]=Сохранить параметры

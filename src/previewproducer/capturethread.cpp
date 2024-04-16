@@ -64,20 +64,12 @@ class FaceHelper {
     QList<dlib::matrix<double,0,1>> m_encodings;
 
 public:
-    FaceHelper() :
+    FaceHelper(QString userName) :
         m_faceDetector(dlib::get_frontal_face_detector()),
         m_posePredictor(dlib::shape_predictor())
     {
-        auto pw = getpwuid(getuid());
-        QString username;
-        if (!pw || strlen(pw->pw_name) == 0) {
-            qWarning("%s: unable to get user data", Q_FUNC_INFO);
-        } else {
-            username = QLatin1String(pw->pw_name);
-        }
-
         QFile file;
-        file.setFileName(QStringLiteral("%1/%2.dat").arg(QStringLiteral(HOWDY_MODELS_PATH)).arg(username));
+        file.setFileName(QStringLiteral("%1/%2.dat").arg(QStringLiteral(HOWDY_MODELS_PATH)).arg(userName));
         if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
             QByteArray val = file.readAll();
             file.close();
@@ -210,7 +202,11 @@ void CaptureThread::run()
     }
     Cleanup capturerGuard{ [this] { m_cap.release(); } };
 
-    FaceHelper faceHelper;
+    if (m_userName.isEmpty()) {
+        Q_EMIT errorOccurred(i18n("User unavailable"));
+        return;
+    }
+    FaceHelper faceHelper(m_userName);
 
     int frameWidth = m_cap.get(cv::CAP_PROP_FRAME_WIDTH);
     int frameHeight = m_cap.get(cv::CAP_PROP_FRAME_HEIGHT);
@@ -333,10 +329,19 @@ void CaptureThread::run()
 
 void CaptureThread::setVideoPath(QString videoPath)
 {
+    if (videoPath == m_videoPath) return;
     bool wasLooping = m_looping.load();
-    if (videoPath == m_videoPath && wasLooping) return;
     stopCaptureSync();
     m_videoPath = videoPath;
+    if (wasLooping) startCapture();
+}
+
+void CaptureThread::setUserName(QString userName)
+{
+    if (userName == m_userName) return;
+    bool wasLooping = m_looping.load();
+    stopCaptureSync();
+    m_userName = userName;
     if (wasLooping) startCapture();
 }
 

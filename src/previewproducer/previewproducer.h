@@ -33,6 +33,7 @@ public:
     Q_INVOKABLE void unSelectModel();
     Q_INVOKABLE void setDarkThreshold(int threshold);
     Q_INVOKABLE void setCertainty(double certainty);
+    Q_INVOKABLE void setUserName(QString userName);
 
 public:
     QVariant getPixmap();

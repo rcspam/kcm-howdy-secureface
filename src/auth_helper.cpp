@@ -1,5 +1,5 @@
 /*
-    SPDX-FileCopyrightText: 2023 Anton Golubev <golubevan@altlinux.org>
+    SPDX-FileCopyrightText: 2023-2024 Anton Golubev <golubevan@altlinux.org>
 
     SPDX-License-Identifier: GPL-3.0-or-later
 */
@@ -31,6 +31,27 @@ KAuth::ActionReply AuthHelper::removefacemodel(const QVariantMap &args)
     QString modelID = args[QStringLiteral("modelID")].toString();
     QStringList params{ QStringLiteral("remove"), modelID, QStringLiteral("-y") };
     return invokeForCallingUser(params);
+}
+
+KAuth::ActionReply AuthHelper::addotherfacemodel(const QVariantMap &args)
+{
+    QString userName = args[QStringLiteral("userName")].toString();
+    QString modelName = args[QStringLiteral("modelName")].toString();
+    QStringList params{ QStringLiteral("add") };
+
+    if (modelName.length() == 0) {
+        params.append(QStringLiteral("-y"));
+    }
+
+    return invokeForUser(userName, params, modelName);
+}
+
+KAuth::ActionReply AuthHelper::removeotherfacemodel(const QVariantMap &args)
+{
+    QString userName = args[QStringLiteral("userName")].toString();
+    QString modelID = args[QStringLiteral("modelID")].toString();
+    QStringList params{ QStringLiteral("remove"), modelID, QStringLiteral("-y") };
+    return invokeForUser(userName, params);
 }
 
 KAuth::ActionReply AuthHelper::saveconfig(const QVariantMap &args)
@@ -74,19 +95,10 @@ KAuth::ActionReply AuthHelper::error(QString errorText) {
     return errorReplyAction;
 }
 
-KAuth::ActionReply AuthHelper::invokeForCallingUser(QStringList params, QString message)
+KAuth::ActionReply AuthHelper::invokeForUser(QString userName, QStringList params, QString message)
 {
     if (KAuth::HelperSupport::isStopped()) {
         return KAuth::ActionReply::HelperErrorReply();
-    }
-    int uid = KAuth::HelperSupport::callerUid();
-
-    auto pw = getpwuid(uid);
-    QString userName;
-    if (!pw || strlen(pw->pw_name) == 0) {
-        return error(i18n("Unable to get user data"));
-    } else {
-        userName = QLatin1String(pw->pw_name);
     }
 
     params.append(QStringLiteral("--user"));
@@ -118,6 +130,21 @@ KAuth::ActionReply AuthHelper::invokeForCallingUser(QStringList params, QString 
         return error(replyMessage);
     }
     return KAuth::ActionReply::SuccessReply();
+}
+
+KAuth::ActionReply AuthHelper::invokeForCallingUser(QStringList params, QString message)
+{
+    int uid = KAuth::HelperSupport::callerUid();
+
+    auto pw = getpwuid(uid);
+    QString userName;
+    if (!pw || strlen(pw->pw_name) == 0) {
+        return error(i18n("Unable to get user data"));
+    } else {
+        userName = QLatin1String(pw->pw_name);
+    }
+
+    return invokeForUser(userName, params, message);
 }
 
 KAUTH_HELPER_MAIN("org.kde.kcontrol.kcmhowdy", AuthHelper)

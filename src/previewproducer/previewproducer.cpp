@@ -125,6 +125,11 @@ void PreviewProducer::setCertainty(double certainty)
     m_capturer->setCertainty(certainty);
 }
 
+void PreviewProducer::setUserName(QString userName)
+{
+    m_capturer->setUserName(userName);
+}
+
 void PreviewProducer::cameraIsWaiting()
 {
     m_waitingCamera = true;

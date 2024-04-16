@@ -28,6 +28,7 @@ public:
         m_fontRatio.store(fontRatio);
         m_fontThickness.store(thickness);
     }
+    void setUserName(QString userName);
     void selectModel(int modelId) { m_selectModel.store(modelId); }
     void stopCaptureSync();
     void startCapture();
@@ -42,6 +43,7 @@ Q_SIGNALS:
 
 private:
     QString m_videoPath;
+    QString m_userName;
     QMutex *m_dataLock;
     cv::Mat m_frame;
     cv::VideoCapture m_cap;
