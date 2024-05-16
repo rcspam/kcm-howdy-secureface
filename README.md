@@ -5,5 +5,6 @@
 #### Current features:
 
 - list/add/remove face models for current user (without elevated privileges)
+- add/remove face models for other users (with elevated privileges)
 - select camera, adjust `certainty` and `dark_threshold` (with elevated privileges)
 - preview with recognition as in `howdy test` command
