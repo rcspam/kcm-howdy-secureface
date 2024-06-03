@@ -36,7 +36,7 @@ Dialog {
     horizontalPadding: gap * 2
     clip: true
 
-    Text {
+    Label {
         id: measureText
         visible: false
         text: message
@@ -53,7 +53,7 @@ Dialog {
             anchors.verticalCenter: parent.verticalCenter
             source: "image://icon/image-missing"
         }
-        Text {
+        Label {
             id: messageItem
             wrapMode: Text.WordWrap
             width: parent.width - x

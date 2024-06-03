@@ -35,7 +35,7 @@ Row {
             property var infrared: model.infrared
 
             width: ListView.view.width
-            contentItem: Text {
+            contentItem: Label {
                 id: label
                 text: description + (infrared ? " - " + i18n("IR camera, recommended") : "")
             }

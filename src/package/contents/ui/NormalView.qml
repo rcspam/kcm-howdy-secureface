@@ -139,7 +139,7 @@ Column {
                                     color: paletteActive.highlight
                                     visible: row == facesTable.selectedRow
                                 }
-                                Text {
+                                Label {
                                     anchors.verticalCenter: parent.verticalCenter
                                     leftPadding: root.gap * 2
                                     rightPadding: root.gap * 2
@@ -161,7 +161,7 @@ Column {
                         }
                     }
                 }
-                Text {
+                Label {
                     text: i18n("No face models")
                     visible: kcm.facesModel.rows == 0
                     padding: root.gap * 2
@@ -219,7 +219,7 @@ Column {
                         id: preScanPreview
                         enabled: visible && normalView.wantPreview
                     }
-                    Text {
+                    Label {
                         wrapMode: Text.WordWrap
                         enabled: newModelName.enabled
                         text: i18n("Enter a name for the new model")
@@ -260,7 +260,7 @@ Column {
                     padding: root.gap
                     spacing: root.gap
 
-                    Text {
+                    Label {
                         wrapMode: Text.WordWrap
                         text: i18n("Testing the model: %1", testModelView.modelName)
                     }
@@ -299,7 +299,7 @@ Column {
                     columns: 3
                     spacing: root.gap
 
-                    Text {
+                    Label {
                         text: i18n("Darkness threshold")
                     }
                     Slider {
@@ -311,10 +311,10 @@ Column {
                         value: root.cfg_darkThreshold.value
                         onValueChanged: kcm.previewProducer.setDarkThreshold(this.value)
                     }
-                    Text {
+                    Label {
                         text: sliderDarkThreshold.value
                     }
-                    Text {
+                    Label {
                         text: i18n("Certainty")
                     }
                     Slider {
@@ -326,7 +326,7 @@ Column {
                         value: root.cfg_certainty.value
                         onValueChanged: kcm.previewProducer.setCertainty(this.value)
                     }
-                    Text {
+                    Label {
                         text: sliderCertainty.value.toFixed(1)
                     }
                 }

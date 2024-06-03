@@ -89,7 +89,7 @@ Rectangle {
         anchors.margins: gap
         visible: message.length != 0
 
-        Text {
+        Label {
             anchors.fill: parent
             wrapMode: Text.WordWrap
             verticalAlignment: Text.AlignVCenter
