@@ -5,6 +5,8 @@
 */
 
 #include "usersmodel.h"
+#include "config.h"
+#include "mini/ini.h"
 
 #include <KLocalizedString>
 
@@ -15,7 +17,10 @@ UsersModel::UsersModel(QObject *parent) : QAbstractListModel(parent) {}
 
 QString UsersModel::fillUsers()
 {
-    const int minimumUid = 500;
+    mINI::INIFile file(MODULE_CONFIG_FILE);
+    mINI::INIStructure ini;
+    unsigned minimumUid = file.read(ini) ? atoi(ini["UserList"]["minimum-uid"].c_str()) : 500;
+
     m_currentUserIndex = -1;
 
     QStringList hiddenShells{ QStringLiteral("/bin/false"), QStringLiteral("/sbin/nologin"), QStringLiteral("/bin/nologin"), QStringLiteral("/dev/null") };
