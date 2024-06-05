@@ -110,11 +110,11 @@ ColumnLayout {
         ColumnLayout {
             id: viewScanFace
 
-            readonly property int face_not_scanned: 0
-            readonly property int face_scanning: 1
-            readonly property int face_scanned: 2
+            readonly property int faceNotScanned: 0
+            readonly property int faceScanning: 1
+            readonly property int faceScanned: 2
 
-            property int faceScanStatus: face_not_scanned
+            property int faceScanStatus: faceNotScanned
 
             Label {
                 Layout.fillWidth: true
@@ -157,18 +157,18 @@ ColumnLayout {
                 Layout.alignment: Qt.AlignHCenter
 
                 text: i18n("Scan")
-                enabled: viewScanFace.faceScanStatus == viewScanFace.face_not_scanned
+                enabled: viewScanFace.faceScanStatus == viewScanFace.faceNotScanned
 
                 onClicked: {
-                    viewScanFace.faceScanStatus = viewScanFace.face_scanning
+                    viewScanFace.faceScanStatus = viewScanFace.faceScanning
                     viewScanFacePreview.message = i18n("Authorization")
                     kcm.facesModel.addFace("")
                 }
             }
 
             function begin() {
-                buttonBack.enabled = faceScanStatus == face_not_scanned
-                buttonForward.enabled = faceScanStatus == face_scanned
+                buttonBack.enabled = faceScanStatus == faceNotScanned
+                buttonForward.enabled = faceScanStatus == faceScanned
                 buttonForward.state = ""
             }
 
@@ -187,19 +187,19 @@ ColumnLayout {
                 function onSuccessAddFace() {
                     if (!viewScanFacePreview.visible) return
                     viewScanFacePreview.message = i18n("Face model added successfully")
-                    viewScanFace.faceScanStatus = viewScanFace.face_scanned
+                    viewScanFace.faceScanStatus = viewScanFace.faceScanned
                     buttonForward.enabled = true
                     buttonBack.enabled = false
                 }
 
                 function onErrorCreateFacesModel(message) {
                     viewScanFacePreview.message = ""
-                    viewScanFace.faceScanStatus = viewScanFace.face_not_scanned
+                    viewScanFace.faceScanStatus = viewScanFace.faceNotScanned
                 }
 
                 function onErrorAction(message) {
                     viewScanFacePreview.message = ""
-                    viewScanFace.faceScanStatus = viewScanFace.face_not_scanned
+                    viewScanFace.faceScanStatus = viewScanFace.faceNotScanned
                 }
             }
         }
