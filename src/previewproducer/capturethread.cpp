@@ -126,6 +126,15 @@ public:
         auto faceLandmark = m_posePredictor(rgbImg, loc);
         auto faceEncoding = m_faceEncoder->compute_face_descriptor(rgbImg, faceLandmark, 1);
 
+        if (modelId >= 0) {
+
+            if (modelId >= m_encodings.size()) return {};
+
+            auto diff = m_encodings[modelId] - faceEncoding;
+            auto norm = std::sqrt(dlib::sum(dlib::squared(diff)));
+            return { norm, size_t(modelId) };
+        }
+
         std::vector<double> matches;
         matches.reserve(m_encodings.size());
 
@@ -134,13 +143,10 @@ public:
             // if selecting only one model
             if (modelId >= 0 && i != modelId) continue;
 
-            auto &encoding = m_encodings[i];
-            auto diff = encoding - faceEncoding;
+            auto diff = m_encodings[i] - faceEncoding;
             auto norm = std::sqrt(dlib::sum(dlib::squared(diff)));
             matches.push_back(norm);
         }
-
-        if (modelId >= 0) return { matches[0], size_t(modelId) };
 
         size_t bestMatchIndex =  std::min_element(matches.begin(), matches.end()) - matches.begin();
         return { matches[bestMatchIndex], bestMatchIndex };
