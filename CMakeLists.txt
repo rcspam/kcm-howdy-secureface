@@ -39,6 +39,9 @@ find_package(dlib REQUIRED)
 find_package(lapack REQUIRED)
 find_package(OpenBLAS REQUIRED)
 
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(Libsystemd REQUIRED IMPORTED_TARGET "libsystemd")
+
 add_compile_options(-Werror=pedantic)
 add_definitions(-DTRANSLATION_DOMAIN="kcm_howdy")
 

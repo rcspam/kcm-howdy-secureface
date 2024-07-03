@@ -18,6 +18,7 @@ target_link_libraries(kcm_howdy
     KF5::CoreAddons
     KF5::I18n
     KF5::QuickAddons
+    PkgConfig::Libsystemd
     previewproducer
 )
 

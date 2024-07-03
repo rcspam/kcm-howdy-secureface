@@ -15,6 +15,7 @@
 #include <linux/version.h>
 #include <linux/videodev2.h>
 #include <sys/ioctl.h>
+#include <systemd/sd-device.h>
 
 uint32_t camera_pixel_format(int fd)
 {
@@ -75,6 +76,30 @@ bool pixel_format_is_grey(uint32_t pixelFormat)
     return false;
 }
 
+template <class CleanupFunction>
+struct Cleanup {
+    CleanupFunction f;
+    Cleanup(CleanupFunction f) : f(f) {}
+    ~Cleanup() { f(); }
+};
+bool camera_has_infrared_property(QString deviceName)
+{
+    sd_device *device;
+    const char *path = deviceName.toLocal8Bit().constData();
+    int r = sd_device_new_from_path(&device, path);
+    if (r < 0) {
+        qDebug("%s: Failed to allocate device: %s (%d)", __func__, path, r);
+        return false;
+    }
+    Cleanup deviceGuard{ [device] { sd_device_unref(device); } };
+
+    const char *val;
+    r = sd_device_get_property_value(device, "ID_INFRARED_CAMERA", &val);
+    if (r < 0) return false;
+    if (val && val[0] == '1') return true;
+    return false;
+}
+
 bool camera_is_infrared(QString deviceName)
 {
     QFile devFile(deviceName);
@@ -87,7 +112,7 @@ bool camera_is_infrared(QString deviceName)
         qDebug("%s: can't get pixel format for device file: %s", __func__, qPrintable(deviceName));
         return false;
     }
-    return pixel_format_is_grey(pixelFormat);
+    return pixel_format_is_grey(pixelFormat) || camera_has_infrared_property(deviceName);
 }
 
 CamModel::CamModel(QObject *parent) : QAbstractListModel(parent)
