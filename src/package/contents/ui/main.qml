@@ -12,7 +12,7 @@ import QtMultimedia 5.15
 import org.kde.kcm 1.4 as KCM
 import org.altlinux.howdy.kcm.configmodule 1.0 // ConfigModule
 
-KCM.SimpleKCM {
+KCM.AbstractKCM {
     id: root
 
     property var cfg_device: ConfigValue {
@@ -50,8 +50,6 @@ KCM.SimpleKCM {
         kcm.previewProducer.capturing = previewEnabled ? true : false
     }
 
-    // one general condition for all instances of preview
-    // so that capture restarts do not occur
     property string errorString: ""
     property bool enableOnboarding: true
 

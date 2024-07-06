@@ -60,6 +60,8 @@ Column {
                 spacing: root.gap
 
                 Row {
+                    id: selectUser
+
                     padding: root.gap
                     spacing: root.gap
                     Label {
@@ -89,12 +91,14 @@ Column {
                         syncView: facesTable
                         columnWidthProvider: facesTable.columnWidthProvider
                         boundsBehavior: Flickable.StopAtBounds
+                        // slightly better aligned to the table content, a few pixels
+                        x: facesTable.x
                     }
 
                     ScrollView {
                         clip: true
                         visible: kcm.facesModel.rows > 0
-                        height: Math.min(stack.height - modelButtons.height - y - root.gap, implicitHeight)
+                        height: Math.min(stack.height - modelButtons.height - selectUser.height - y - root.gap * 3, implicitHeight)
 
                         Component.onCompleted: {
                             background.visible = true
