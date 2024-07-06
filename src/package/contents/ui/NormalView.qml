@@ -204,7 +204,8 @@ Column {
                         onClicked: {
                             modelsTab.currentIndex = 2
                             testModelView.modelName = kcm.facesModel.getCell(facesTable.selectedRow, 2)
-                            kcm.previewProducer.selectModel(facesTable.selectedRow)
+                            var modelId = kcm.facesModel.getCell(facesTable.selectedRow, 0)
+                            kcm.previewProducer.selectModel(modelId)
                         }
                     }
                 }

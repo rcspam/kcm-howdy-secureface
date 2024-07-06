@@ -58,10 +58,15 @@ static void print_text(cv::Mat &overlay, int height, int line_number, QString te
 
 class FaceHelper {
 
+    struct Face {
+        int id;
+        dlib::matrix<double,0,1> data;
+    };
+
     frontal_face_detector m_faceDetector;
     dlib::shape_predictor m_posePredictor;
     std::optional<face_recognition_model_v1> m_faceEncoder;
-    QList<dlib::matrix<double,0,1>> m_encodings;
+    QList<Face> m_faces;
 
 public:
     FaceHelper(QString userName) :
@@ -76,13 +81,35 @@ public:
             QJsonDocument d = QJsonDocument::fromJson(val);
             const QJsonArray models = d.array();
             for (auto model : models) {
-                m_encodings.push_back({});
-                auto &encoding = m_encodings.back();
-                auto data = model.toObject()[QStringLiteral("data")];
+
+                auto obj = model.toObject();
+
+                const int COULD_NOT_READ = -100;
+                int id = obj[QStringLiteral("id")].toInt(COULD_NOT_READ);
+                if (id == COULD_NOT_READ) {
+                    qWarning("%s: unable to read model id, skip", Q_FUNC_INFO);
+                    continue;
+                }
+
+                auto data = obj[QStringLiteral("data")];
+                if (data.isNull() || !data.isArray() || !data.toArray().at(0).isArray()) {
+                    qWarning("%s: unable to get model data, skip", Q_FUNC_INFO);
+                    continue;
+                }
+
                 auto coefficients = data.toArray().at(0).toArray();
-                encoding.set_size(coefficients.size());
+                if (coefficients.size() == 0) {
+                    qWarning("%s: there are no coefficients in the model data, skip", Q_FUNC_INFO);
+                    continue;
+                }
+
+                m_faces.push_back({});
+                auto &face = m_faces.back();
+
+                face.id = id;
+                face.data.set_size(coefficients.size());
                 for(int j = 0; j < coefficients.size(); ++j) {
-                    encoding(j) = coefficients.at(j).toDouble();
+                    face.data(j) = coefficients.at(j).toDouble();
                 }
             }
         } else {
@@ -117,8 +144,9 @@ public:
     }
 
     struct MatchResult {
+        static constexpr int INVALID = -1;
+        int index;
         double certainty;
-        size_t index;
     };
 
     MatchResult matchFace(dlib::array2d<rgb_pixel> &rgbImg, const dlib::rectangle &loc, int modelId = -1)
@@ -128,33 +156,33 @@ public:
 
         if (modelId >= 0) {
 
-            if (modelId >= m_encodings.size()) return {};
+            auto face = std::find_if(m_faces.cbegin(), m_faces.cend(), [modelId](const Face &f) {
+                return modelId == f.id;
+            });
+            if (face == m_faces.cend()) return { MatchResult::INVALID };
 
-            auto diff = m_encodings[modelId] - faceEncoding;
+            auto diff = face->data - faceEncoding;
             auto norm = std::sqrt(dlib::sum(dlib::squared(diff)));
-            return { norm, size_t(modelId) };
+            return { modelId, norm };
         }
 
         std::vector<double> matches;
-        matches.reserve(m_encodings.size());
+        matches.reserve(m_faces.size());
 
-        for (int i = 0; i < m_encodings.size(); ++i) {
+        for (int i = 0; i < m_faces.size(); ++i) {
 
-            // if selecting only one model
-            if (modelId >= 0 && i != modelId) continue;
-
-            auto diff = m_encodings[i] - faceEncoding;
+            auto diff = m_faces[i].data - faceEncoding;
             auto norm = std::sqrt(dlib::sum(dlib::squared(diff)));
             matches.push_back(norm);
         }
 
         size_t bestMatchIndex =  std::min_element(matches.begin(), matches.end()) - matches.begin();
-        return { matches[bestMatchIndex], bestMatchIndex };
+        return { m_faces[bestMatchIndex].id, matches[bestMatchIndex]};
     }
 
     bool matchNeeded()
     {
-        return !m_encodings.empty() && m_faceEncoder.has_value();
+        return !m_faces.empty() && m_faceEncoder.has_value();
     }
 };
 
@@ -303,7 +331,10 @@ void CaptureThread::run()
                 if (faceHelper.matchNeeded()) {
                     auto match = faceHelper.matchFace(rgbImg, loc, m_selectModel.load());
                     cv::Point p{ x + r / 3, y - r };
-                    if (match.certainty * 10 < m_certainty) {
+                    if (match.index == FaceHelper::MatchResult::INVALID) {
+                        QString circle_text = QStringLiteral("match failed");
+                        cv::putText(overlay, circle_text.toStdString(), p, OVERLAY_FONT, font.scale, { 255, 0, 0 }, font.thickness, cv::LINE_AA);
+                    } else if (match.index != FaceHelper::MatchResult::INVALID && match.certainty * 10 < m_certainty) {
                         color = { 0, 230, 0 };
                         QString circleText = QStringLiteral("Model #%1 (c: %2)").arg(match.index).arg(match.certainty * 10.0, 4, 'f', 2);
                         cv::putText(overlay, circleText.toStdString(), p, OVERLAY_FONT, font.scale, { 0, 255, 0 }, font.thickness, cv::LINE_AA);
