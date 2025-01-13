@@ -1,5 +1,5 @@
 /*
-    SPDX-FileCopyrightText: 2024 Anton Golubev <golubevan@altlinux.org>
+    SPDX-FileCopyrightText: 2024-2025 Anton Golubev <golubevan@altlinux.org>
 
     SPDX-License-Identifier: GPL-3.0-or-later
 */
@@ -296,7 +296,8 @@ Column {
                     spacing: root.gap
                     model: kcm.camModel.emptyItemProxy
                     setValue: root.cfg_device.value
-                    maxWidth: deviceTab.availableWidth - x * 2
+                    maxComboWidth: cameraPreview.width
+                    maxPopupWidth: deviceTab.availableWidth - x * 2
                     onCurrentValueChanged: kcm.previewProducer.setVideoPath(currentValue)
                 }
 
@@ -341,6 +342,7 @@ Column {
                     checked: true
                 }
                 Preview {
+                    id: cameraPreview
                     enabled: visible && normalView.wantPreview
                 }
             }

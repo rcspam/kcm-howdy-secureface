@@ -4,9 +4,9 @@ add_library(previewproducer STATIC
     )
 
 target_link_libraries(previewproducer PRIVATE
-    Qt5::Core
-    Qt5::Gui
-    KF5::I18n
+    Qt6::Core
+    Qt6::Gui
+    KF6::I18n
     dlib::dlib
     lapack
     ${OpenCV_LIBS}

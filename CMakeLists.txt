@@ -2,10 +2,9 @@ cmake_minimum_required(VERSION 3.16.0)
 
 project(kcm-howdy)
 
-set(QT_MIN_VERSION "5.15.0")
-set(KF5_MIN_VERSION "5.97.0")
+set(KF6_MIN_VERSION "6.3.0")
 
-find_package(ECM ${KF5_MIN_VERSION} REQUIRED NO_MODULE)
+find_package(ECM ${KF6_MIN_VERSION} REQUIRED NO_MODULE)
 set(CMAKE_MODULE_PATH ${ECM_MODULE_PATH})
 set(CMAKE_EXPORT_COMPILE_COMMANDS 1)
 
@@ -19,14 +18,14 @@ set(HOWDY_MODELS_PATH  "/etc/howdy/models"                CACHE PATH "Howdy mode
 set(DLIB_MODELS_PATH   "/usr/share/dlib-data"             CACHE PATH "Dlib models path")
 set(MODULE_CONFIG_FILE "/etc/xdg/kcm-howdy/kcm-howdy.ini" CACHE PATH "Own module configuration file")
 
-find_package(Qt5 ${QT_MIN_VERSION} CONFIG REQUIRED COMPONENTS
+find_package(Qt6 CONFIG REQUIRED COMPONENTS
     Core
     Gui
     Quick
     Multimedia
 )
 
-find_package(KF5 REQUIRED COMPONENTS
+find_package(KF6 REQUIRED COMPONENTS
     I18n
     KCMUtils
     Declarative

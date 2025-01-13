@@ -1,5 +1,5 @@
 /*
-    SPDX-FileCopyrightText: 2023-2024 Anton Golubev <golubevan@altlinux.org>
+    SPDX-FileCopyrightText: 2023-2025 Anton Golubev <golubevan@altlinux.org>
 
     SPDX-License-Identifier: GPL-3.0-or-later
 */
@@ -9,7 +9,7 @@ import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.15
 import QtMultimedia 5.15
 
-import org.kde.kcm 1.4 as KCM
+import org.kde.kcmutils as KCM
 import org.altlinux.howdy.kcm.configmodule 1.0 // ConfigModule
 
 KCM.AbstractKCM {
@@ -50,8 +50,8 @@ KCM.AbstractKCM {
         kcm.previewProducer.capturing = previewEnabled ? true : false
     }
 
-    property string errorString: ""
-    property bool enableOnboarding: true
+    property string errorString: kcm.errorString
+    property bool enableOnboarding: kcm.enableOnboarding
 
     function setDefaultsButtonVisibility(visible) {
         if (visible) {

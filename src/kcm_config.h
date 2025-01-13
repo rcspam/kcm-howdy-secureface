@@ -1,5 +1,5 @@
 /*
-    SPDX-FileCopyrightText: 2023-2024 Anton Golubev <golubevan@altlinux.org>
+    SPDX-FileCopyrightText: 2023-2025 Anton Golubev <golubevan@altlinux.org>
 
     SPDX-License-Identifier: GPL-3.0-or-later
 */
@@ -9,16 +9,14 @@
 #include <QMap>
 #include <QVariant>
 
-namespace KQuickAddons {
-    class ManagedConfigModule;
-}
+class KQuickManagedConfigModule;
 
 class KcmConfig: public QObject
 {
     Q_OBJECT
 
 public:
-    explicit KcmConfig(QString fileName, KQuickAddons::ManagedConfigModule *parent);
+    explicit KcmConfig(QString fileName, KQuickManagedConfigModule *parent);
 
     Q_INVOKABLE QVariant getConfigValue(QString url);
     Q_INVOKABLE void updateConfigValue(QString url, QVariant value);
@@ -39,7 +37,7 @@ private:
     using Config = QMap<QString, QString>;
 
     bool hasSomethingNew(Config &newCfg, Config &oldCfg);
-    KQuickAddons::ManagedConfigModule *client();
+    KQuickManagedConfigModule *client();
 
     QString m_filename;
     Config m_storedConfig;

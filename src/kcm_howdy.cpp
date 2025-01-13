@@ -1,5 +1,5 @@
 /*
-    SPDX-FileCopyrightText: 2023-2024 Anton Golubev <golubevan@altlinux.org>
+    SPDX-FileCopyrightText: 2023-2025 Anton Golubev <golubevan@altlinux.org>
 
     SPDX-License-Identifier: GPL-3.0-or-later
 */
@@ -8,10 +8,10 @@
 #include "kcm_howdy.h"
 #include "config.h"
 
-#include <QQuickItem>
 #include <QGuiApplication>
 #include <QFontMetrics>
-#include <QCameraInfo>
+#include <QQuickItem>
+#include <QDir>
 
 #include <KPluginFactory>
 #include <KLocalizedString>
@@ -25,8 +25,8 @@
 
 K_PLUGIN_CLASS_WITH_JSON(KcmHowdy, "kcm_howdy.json")
 
-KcmHowdy::KcmHowdy(QObject *parent, const KPluginMetaData &data, const QVariantList &args)
-    : KQuickAddons::ManagedConfigModule(parent, data, args)
+KcmHowdy::KcmHowdy(QObject *parent, const KPluginMetaData &data, const QVariantList &/*args*/)
+    : KQuickManagedConfigModule(parent, data)
     , m_config(new KcmConfig(QStringLiteral(HOWDY_CONFIG_FILE), this))
 {
     qmlRegisterAnonymousType<KcmConfig>("org.altlinux.howdy.kcm", 1);
@@ -37,12 +37,11 @@ KcmHowdy::KcmHowdy(QObject *parent, const KPluginMetaData &data, const QVariantL
     qmlRegisterAnonymousType<PreviewProducer>("org.altlinux.howdy.kcm", 1);
 
     qmlRegisterType<QPixmapItem>("org.altlinux.howdy.kcm.custom", 1, 0, "QPixmapItem");
-    qmlRegisterUncreatableType<ConfigModule>("org.altlinux.howdy.kcm.configmodule", 1, 0, "ConfigModule", QStringLiteral("Only for enums"));
+    qmlRegisterUncreatableType<KAbstractConfigModule>("org.altlinux.howdy.kcm.configmodule", 1, 0, "ConfigModule", QStringLiteral("Only for enums"));
 
-    QString errorString;
     // We remember only the first error that appears
-    auto consumeError = [&errorString] (QString &&error) {
-        if (errorString.isEmpty()) errorString = error;
+    auto consumeError = [this] (QString &&error) {
+        if (m_errorString.isEmpty()) m_errorString = error;
     };
 
     m_usersModel = new UsersModel(this);
@@ -60,12 +59,8 @@ KcmHowdy::KcmHowdy(QObject *parent, const KPluginMetaData &data, const QVariantL
 
     setButtons(buttons() & ~Button::Default);
 
-    // it may fail to initialize, if, for example, there is an error in the QML
-    auto qmlRoot = mainUi();
-    if (!qmlRoot) return;
-    qmlRoot->setProperty("errorString", errorString);
     QDir modelsDir(QStringLiteral(HOWDY_MODELS_PATH));
-    qmlRoot->setProperty("enableOnboarding", !modelsDir.exists());
+    m_enableOnboarding = !modelsDir.exists();
 }
 
 void KcmHowdy::load()

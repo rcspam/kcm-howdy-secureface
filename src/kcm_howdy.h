@@ -1,20 +1,21 @@
 /*
-    SPDX-FileCopyrightText: 2023 Anton Golubev <golubevan@altlinux.org>
+    SPDX-FileCopyrightText: 2023-2025 Anton Golubev <golubevan@altlinux.org>
 
     SPDX-License-Identifier: GPL-3.0-or-later
 */
 
 #pragma once
 
-#include <KQuickAddons/ManagedConfigModule>
+#include <KQuickManagedConfigModule>
+
+#include "previewproducer.h"
+#include "usersmodel.h"
 
 class KcmConfig;
 class FacesModel;
 class CamModel;
-class UsersModel;
-class PreviewProducer;
 
-class KcmHowdy: public KQuickAddons::ManagedConfigModule
+class KcmHowdy: public KQuickManagedConfigModule
 {
     Q_OBJECT
 public:
@@ -26,6 +27,8 @@ public:
     Q_PROPERTY(CamModel *camModel MEMBER m_camModel CONSTANT)
     Q_PROPERTY(UsersModel *usersModel MEMBER m_usersModel CONSTANT)
     Q_PROPERTY(PreviewProducer *previewProducer MEMBER m_previewProducer NOTIFY previewProducerUpdated)
+    Q_PROPERTY(bool enableOnboarding MEMBER m_enableOnboarding CONSTANT)
+    Q_PROPERTY(QString errorString MEMBER m_errorString CONSTANT)
 
 Q_SIGNALS:
     void errorInitBackend(QString message);
@@ -44,4 +47,6 @@ private:
     PreviewProducer *m_previewProducer;
     int m_gridUnit = 0;
     int gridUnit();
+    bool m_enableOnboarding = false;
+    QString m_errorString;
 };

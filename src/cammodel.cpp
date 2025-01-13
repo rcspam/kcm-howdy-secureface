@@ -1,12 +1,13 @@
 /*
-    SPDX-FileCopyrightText: 2023-2024 Anton Golubev <golubevan@altlinux.org>
+    SPDX-FileCopyrightText: 2023-2025 Anton Golubev <golubevan@altlinux.org>
 
     SPDX-License-Identifier: GPL-3.0-or-later
 */
 
 #include "cammodel.h"
 
-#include <QCameraInfo>
+#include <QCameraDevice>
+#include <QMediaDevices>
 #include <QFile>
 
 #include <KLocalizedString>
@@ -117,12 +118,12 @@ bool camera_is_infrared(QString deviceName)
 
 CamModel::CamModel(QObject *parent) : QAbstractListModel(parent)
 {
-    const QList<QCameraInfo> cameras = QCameraInfo::availableCameras();
-    for (const QCameraInfo &cameraInfo : cameras) {
+    const QList<QCameraDevice> cameras = QMediaDevices::videoInputs();
+    for (const QCameraDevice &cameraDevice : cameras) {
         m_cams.push_back({
-            cameraInfo.deviceName(),
-            cameraInfo.description(),
-            camera_is_infrared(cameraInfo.deviceName())
+            QString::fromLatin1(cameraDevice.id()),
+            cameraDevice.description(),
+            camera_is_infrared(QString::fromLatin1(cameraDevice.id()))
         });
     }
 

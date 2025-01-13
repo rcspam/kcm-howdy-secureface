@@ -1,5 +1,5 @@
 /*
-    SPDX-FileCopyrightText: 2024 Anton Golubev <golubevan@altlinux.org>
+    SPDX-FileCopyrightText: 2024-2025 Anton Golubev <golubevan@altlinux.org>
 
     SPDX-License-Identifier: GPL-3.0-or-later
 */
@@ -27,6 +27,8 @@ ColumnLayout {
         ColumnLayout {
             id: viewSelectCamera
 
+            anchors.fill: parent
+
             Label {
                 Layout.fillWidth: true
                 Layout.leftMargin: kcm.gridUnit
@@ -51,7 +53,8 @@ ColumnLayout {
                     x: viewSelectCameraPreview.x
                     spacing: root.gap
                     model: kcm.camModel.emptyItemProxy
-                    maxWidth: viewSelectCamera.width - x - kcm.gridUnit
+                    maxComboWidth: viewSelectCameraPreview.width
+                    maxPopupWidth: viewSelectCamera.width - x - kcm.gridUnit
                     onCurrentValueChanged: kcm.previewProducer.setVideoPath(currentValue)
                 }
             }
@@ -109,6 +112,8 @@ ColumnLayout {
 
         ColumnLayout {
             id: viewScanFace
+
+            anchors.fill: parent
 
             readonly property int faceNotScanned: 0
             readonly property int faceScanning: 1
@@ -207,6 +212,8 @@ ColumnLayout {
         ColumnLayout {
             id: viewSelectMode
 
+            anchors.fill: parent
+
             Label {
                 Layout.fillWidth: true
                 Layout.leftMargin: kcm.gridUnit
@@ -228,7 +235,7 @@ ColumnLayout {
                     Label {
                         id: name
                         text: control.name
-                        font.weight: 'Bold'
+                        font.weight: Font.Bold
                     }
 
                     Label {

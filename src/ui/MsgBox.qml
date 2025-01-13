@@ -1,11 +1,12 @@
 /*
-    SPDX-FileCopyrightText: 2023 Anton Golubev <golubevan@altlinux.org>
+    SPDX-FileCopyrightText: 2023-2025 Anton Golubev <golubevan@altlinux.org>
 
     SPDX-License-Identifier: GPL-3.0-or-later
 */
 
 import QtQuick 2.15
 import QtQuick.Controls 2.15
+import org.kde.kirigami as Kirigami
 
 Dialog {
 
@@ -27,7 +28,7 @@ Dialog {
 
     function show(msg, icon) {
         if (!icon || icon === "") icon = iconInfo
-        messageIcon.source = "image://icon/" + icon
+        messageIcon.source = icon
         message = msg
         open()
     }
@@ -45,13 +46,15 @@ Dialog {
     contentItem: Row {
 
         spacing: gap * 2
+        bottomPadding: gap * 4
+        topPadding: gap * 4
 
-        Image {
+        Kirigami.Icon {
             width: kcm.gridUnit * 2
             height: width
             id: messageIcon
             anchors.verticalCenter: parent.verticalCenter
-            source: "image://icon/image-missing"
+            source: "image-missing"
         }
         Label {
             id: messageItem

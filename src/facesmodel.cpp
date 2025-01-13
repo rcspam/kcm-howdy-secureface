@@ -1,5 +1,5 @@
 /*
-    SPDX-FileCopyrightText: 2023-2024 Anton Golubev <golubevan@altlinux.org>
+    SPDX-FileCopyrightText: 2023-2025 Anton Golubev <golubevan@altlinux.org>
 
     SPDX-License-Identifier: GPL-3.0-or-later
 */
@@ -102,7 +102,7 @@ QVariant FacesModel::data(const QModelIndex &index, int role) const
                 case 1:
                 {
                     QDateTime timestamp;
-                    timestamp.setTime_t(m_faces.at(row).time);
+                    timestamp.setSecsSinceEpoch(m_faces.at(row).time);
                     return timestamp.toString(QLocale().dateTimeFormat(QLocale::ShortFormat));;
                 }
                 case 2: return m_faces.at(row).label;

@@ -1,5 +1,5 @@
 /*
-    SPDX-FileCopyrightText: 2023-2024 Anton Golubev <golubevan@altlinux.org>
+    SPDX-FileCopyrightText: 2023-2025 Anton Golubev <golubevan@altlinux.org>
 
     SPDX-License-Identifier: GPL-3.0-or-later
 */
@@ -7,17 +7,16 @@
 #include "kcm_config.h"
 
 #include <QVariant>
-#include <QQuickItem>
 
-#include <KQuickAddons/ManagedConfigModule>
 #include <KAuth/Action>
 #include <KAuth/ExecuteJob>
+#include <KQuickManagedConfigModule>
 
 #include <KLocalizedString>
 
 #include "mini/ini.h"
 
-KcmConfig::KcmConfig(QString filename, KQuickAddons::ManagedConfigModule *parent) : QObject(parent), m_filename(filename) {}
+KcmConfig::KcmConfig(QString filename, KQuickManagedConfigModule *parent) : QObject(parent), m_filename(filename) {}
 
 bool KcmConfig::hasSomethingNew(Config &newCfg, Config &oldCfg)
 {
@@ -116,7 +115,7 @@ void KcmConfig::defaults()
     Q_EMIT setDefaults();
 }
 
-KQuickAddons::ManagedConfigModule *KcmConfig::client()
+KQuickManagedConfigModule *KcmConfig::client()
 {
-    return static_cast<KQuickAddons::ManagedConfigModule*>(parent());
+    return static_cast<KQuickManagedConfigModule*>(parent());
 }
