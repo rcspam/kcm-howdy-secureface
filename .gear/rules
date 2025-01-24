@@ -1,2 +1,2 @@
-spec: .gear/kde5-kcm-howdy.spec
+spec: .gear/kcm-howdy.spec
 tar: . exclude=.gear/**

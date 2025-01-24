@@ -2,34 +2,38 @@
 
 %define rname kcm-howdy
 
-Name: kde5-%rname
-Version: 0.1.3
+Name: %rname
+Version: 6.0.0
 Release: alt1
 
-Summary: KDE Workspace 5 Howdy configuration module
+Summary: KDE Workspace 6 Howdy configuration module
 License: GPLv3+
 Group: Graphical desktop/KDE
 Url: https://gitlab.com/golubevan/kcm-howdy
+
+Provides: kde5-kcm-howdy = %EVR
+Obsoletes: kde5-kcm-howdy < %EVR
 
 # howdy doesn't support ppc64le
 ExcludeArch: ppc64le
 
 Source: %name-%version.tar
 
-%K5init
+%K6init
 
-BuildRequires(pre): rpm-build-kf5
+BuildRequires(pre): rpm-build-kf6
 BuildRequires: cmake
 BuildRequires: extra-cmake-modules
 BuildRequires: gcc-c++
-BuildRequires: kf5-kcoreaddons-devel
-BuildRequires: kf5-kpackage-devel
-BuildRequires: kf5-kcmutils-devel
-BuildRequires: kf5-kdeclarative-devel
-BuildRequires: kf5-ki18n-devel
-BuildRequires: qt5-multimedia-devel
+BuildRequires: kf6-kcoreaddons-devel
+BuildRequires: kf6-kpackage-devel
+BuildRequires: kf6-kcmutils-devel
+BuildRequires: kf6-kdeclarative-devel
+BuildRequires: kf6-ki18n-devel
+BuildRequires: qt6-multimedia-devel
 BuildRequires: libopencv-devel
 BuildRequires: dlib-devel
+BuildRequires: libsystemd-devel
 
 # needed for dlib
 BuildRequires: libgif-devel
@@ -46,19 +50,19 @@ Requires: howdy
 %define module_config_file %_xdgconfigdir/%rname/%rname.ini
 
 %description
-KDE Workspace 5 Howdy configuration module
+KDE Workspace 6 Howdy configuration module
 
 %prep
 %setup
 
 %build
-%K5build \
+%K6build \
     -DUSE_AUTO_VECTOR=OFF \
     -DMODULE_CONFIG_FILE="%module_config_file"
 
 %install
-%K5install
-%K5install_move data kcm_howdy kpackage
+%K6install
+%K6install_move data kcm_howdy kpackage
 
 %find_lang --with-kde --append --output=%name.lang kcm_howdy
 
@@ -69,18 +73,24 @@ sed -i "s/^minimum-uid=.*/minimum-uid=$UID_MIN/" %module_config_file
 
 %files -f %name.lang
 %config %module_config_file
-%_K5xdgapp/kcm_howdy.desktop
-%_K5plug/plasma/kcms/systemsettings/kcm_howdy.so
-%_K5data/kpackage/kcms/kcm_howdy/
-%_K5data/icons/hicolor/scalable/apps/howdy.svg
+%_K6xdgapp/kcm_howdy.desktop
+%_K6plug/plasma/kcms/systemsettings/kcm_howdy.so
+%_K6data/icons/hicolor/scalable/apps/howdy.svg
 
 # auth helper
-%_K5libexecdir/kauth/kcm-howdy-auth-helper
+%_K6exec/kauth/kcm-howdy-auth-helper
 %_datadir/dbus-1/system.d/org.kde.kcontrol.kcmhowdy.conf
 %_datadir/polkit-1/actions/org.kde.kcontrol.kcmhowdy.policy
-%_K5dbus_sys_srv/org.kde.kcontrol.kcmhowdy.service
+%_K6dbus_sys_srv/org.kde.kcontrol.kcmhowdy.service
 
 %changelog
+* Fri Jan 24 2025 Anton Golubev <golubevan@altlinux.org> 6.0.0-alt1
+- rename package kde5-kcm-howdy -> kcm-howdy
+- port to kde6
+- correct the maximum height of the models table (ALT #48540)
+- correctly display model id in preview (ALT #50758)
+- check the ID_INFRARED_CAMERA property (ALT #50757)
+
 * Wed Jun 05 2024 Anton Golubev <golubevan@altlinux.org> 0.1.3-alt1
 - better display of labels in dark theme
 - get MIN_UID from login.defs when installing and updating
