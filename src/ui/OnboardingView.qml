@@ -9,7 +9,7 @@ import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.15
 
 ColumnLayout {
-    id: onboadingView
+    id: onboardingView
 
     property bool wantPreview: views.currentIndex == 0 && camCombo.currentValue.length != 0
                             || views.currentIndex == 1 && camCombo.currentValue.length != 0 && viewScanFacePreview.message.length == 0
@@ -203,6 +203,7 @@ ColumnLayout {
                 }
 
                 function onErrorAction(message) {
+                    if (!onboardingView.StackLayout.isCurrentItem) return
                     viewScanFacePreview.message = ""
                     viewScanFace.faceScanStatus = viewScanFace.faceNotScanned
                 }

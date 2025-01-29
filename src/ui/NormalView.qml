@@ -363,5 +363,11 @@ Column {
             closeAllTheBoxes()
             msgBox.show(i18n("Face model added successfully"), msgBox.iconInfo)
         }
+
+        function onErrorAction(message) {
+            if (!normalView.StackLayout.isCurrentItem) return
+            preScanPreview.message = ""
+            newModelName.enabled = true
+        }
     }
 }
