@@ -48,6 +48,8 @@ KcmHowdy::KcmHowdy(QObject *parent, const KPluginMetaData &data, const QVariantL
     consumeError(m_usersModel->fillUsers());
 
     m_facesModel = new FacesModel(this);
+    // keep the "N face models" subtitles of the user list up to date
+    connect(m_facesModel, &FacesModel::modelUpdated, m_usersModel, &UsersModel::refreshModelCounts);
 
     m_camModel = new CamModel(this);
 

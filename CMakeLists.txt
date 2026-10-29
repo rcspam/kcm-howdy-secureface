@@ -56,4 +56,8 @@ configure_file(config.h.in ${CMAKE_CURRENT_BINARY_DIR}/config.h @ONLY)
 
 add_subdirectory(src)
 
+if(BUILD_TESTING)
+    add_subdirectory(autotests)
+endif()
+
 ki18n_install(po)

@@ -17,6 +17,8 @@ public:
     enum Roles {
         NameRole = Qt::UserRole,
         RealNameRole,
+        AvatarRole,
+        ModelCountRole,
     };
 
     explicit UsersModel(QObject *parent = nullptr);
@@ -28,11 +30,22 @@ public:
     QVariant data(const QModelIndex &index, int role) const override;
     QHash<int, QByteArray> roleNames() const override;
 
+    // the roles of one row, to open a user page without going through a delegate
+    Q_INVOKABLE QVariantMap get(int row) const;
+
+public Q_SLOTS:
+    // re-read the number of face models of every user, after an add or a remove
+    void refreshModelCounts();
+
 private:
+
+    static int countModels(const QString &userName);
 
     struct UserEntry {
         QString name;
         QString realName;
+        QString avatar;
+        int modelCount = 0;
     };
 
     QList<UserEntry> m_users;
