@@ -37,6 +37,10 @@ CaptureThread::CaptureThread(QMutex *lock, QObject *parent) :
     QThread(parent),
     m_dataLock(lock),
     m_looping(false),
+    // Howdy's defaults until the config is sent: a default-constructed atomic
+    // holds no defined value before C++20, and 0 marks every IR frame as dark
+    m_darkThreshold(60),
+    m_certainty(3.5),
     m_fontRatio(0.01f),
     m_fontThickness(0),
     m_selectModel(-1)
