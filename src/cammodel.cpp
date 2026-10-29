@@ -18,6 +18,8 @@
 #include <sys/ioctl.h>
 #include <systemd/sd-device.h>
 
+#include "devicelinks.h"
+
 uint32_t camera_pixel_format(int fd)
 {
     v4l2_capability vcap{};
@@ -86,10 +88,11 @@ struct Cleanup {
 bool camera_has_infrared_property(QString deviceName)
 {
     sd_device *device;
-    const char *path = deviceName.toLocal8Bit().constData();
-    int r = sd_device_new_from_path(&device, path);
+    // kept alive for the whole call, constData() of a temporary would dangle
+    const QByteArray path = deviceName.toLocal8Bit();
+    int r = sd_device_new_from_path(&device, path.constData());
     if (r < 0) {
-        qDebug("%s: Failed to allocate device: %s (%d)", __func__, path, r);
+        qDebug("%s: Failed to allocate device: %s (%d)", __func__, path.constData(), r);
         return false;
     }
     Cleanup deviceGuard{ [device] { sd_device_unref(device); } };
@@ -120,10 +123,13 @@ CamModel::CamModel(QObject *parent) : QAbstractListModel(parent)
 {
     const QList<QCameraDevice> cameras = QMediaDevices::videoInputs();
     for (const QCameraDevice &cameraDevice : cameras) {
+        const QString node = QString::fromLatin1(cameraDevice.id());
+        // the by-path link Howdy advises, which survives a change of /dev/videoN
+        const QString link = DeviceLinks::stableLink(node);
         m_cams.push_back({
-            QString::fromLatin1(cameraDevice.id()),
+            link.isEmpty() ? node : link,
             cameraDevice.description(),
-            camera_is_infrared(QString::fromLatin1(cameraDevice.id()))
+            camera_is_infrared(node)
         });
     }
 
@@ -138,6 +144,16 @@ CamModel::CamModel(QObject *parent) : QAbstractListModel(parent)
         if (a.infrared != b.infrared) return a.infrared > b.infrared;
         return a.description < b.description;
     });
+}
+
+QString CamModel::matchingName(const QString &path) const
+{
+    for (const CameraEntry &cam : m_cams) {
+        if (cam.name == path || DeviceLinks::sameDevice(cam.name, path)) {
+            return cam.name;
+        }
+    }
+    return path;
 }
 
 int CamModel::rowCount(const QModelIndex&) const

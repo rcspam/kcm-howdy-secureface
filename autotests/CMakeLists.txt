@@ -25,3 +25,9 @@ ecm_add_test(stamprules_test.cpp
     LINK_LIBRARIES Qt6::Core Qt6::Test
 )
 target_include_directories(stamprules_test PRIVATE ${CMAKE_SOURCE_DIR}/src)
+
+ecm_add_test(devicelinks_test.cpp
+    TEST_NAME devicelinks_test
+    LINK_LIBRARIES Qt6::Core Qt6::Test
+)
+target_include_directories(devicelinks_test PRIVATE ${CMAKE_SOURCE_DIR}/src)

@@ -29,8 +29,9 @@ Row {
 
         property var maxItemWidth: 0
 
-        // returns -1 if not found; "count" makes it run again once the model is filled
-        currentIndex: count, Math.max(indexOfValue(node.setValue), 0)
+        // returns -1 if not found; "count" makes it run again once the model is filled.
+        // The config may name the camera by another path than the list does.
+        currentIndex: count, Math.max(indexOfValue(kcm.camModel.matchingName(node.setValue)), 0)
         onActivated: node.activated(currentValue)
         model: node.model
         valueRole: 'name'

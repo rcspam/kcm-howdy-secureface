@@ -45,6 +45,9 @@ public:
         QModelIndex qi = index(ind, 0);
         return data(qi, m_invRoleNames[name]);
     }
+    // the name of the camera the path leads to, or the path itself if none:
+    // a config holding /dev/videoN or another link still selects its camera
+    Q_INVOKABLE QString matchingName(const QString &path) const;
 
 private:
 
