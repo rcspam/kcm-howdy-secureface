@@ -257,9 +257,33 @@ KCM.ScrollViewKCM {
         showPage("SettingsPage.qml", {})
     }
 
+    // the account to go back to when the settings are closed
+    property int lastUserRow: kcm.usersModel.currentUserIndex
+
+    function closeSettings() {
+        if (selected === "settings") openUser(lastUserRow)
+    }
+
+    function toggleSettings() {
+        if (selected === "settings") {
+            closeSettings()
+        } else {
+            openSettings()
+        }
+    }
+
+    // Escape leaves the settings, from the sidebar and from the settings page
+    // alike; otherwise it is left to the window
+    function handleEscape(event) {
+        event.accepted = selected === "settings"
+        closeSettings()
+    }
+    Keys.onEscapePressed: (event) => handleEscape(event)
+
     function openUser(row) {
         const user = kcm.usersModel.get(row)
         if (!user.name) return
+        lastUserRow = row
         selected = user.name
         setDefaultsButtonVisibility(false)
         // load the models before the page binds to them
@@ -304,13 +328,35 @@ KCM.ScrollViewKCM {
             spacing: 0
             visible: usersList.ready
 
-            // core/disabled of Howdy, for every account: on top, where it is found
-            QQC2.SwitchDelegate {
+            // core/disabled of Howdy, for every account: on top, where it is found,
+            // next to the shared camera and recognition settings
+            RowLayout {
                 Layout.fillWidth: true
-                text: i18n("Facial authentication")
-                icon.name: "user-identity"
-                checked: !root.howdyDisabled
-                onToggled: root.howdyDisabled = !checked
+                Layout.rightMargin: Kirigami.Units.smallSpacing
+                spacing: 0
+
+                QQC2.SwitchDelegate {
+                    Layout.fillWidth: true
+                    text: i18n("Facial authentication")
+                    icon.name: "user-identity"
+                    checked: !root.howdyDisabled
+                    onToggled: root.howdyDisabled = !checked
+                }
+                QQC2.ToolButton {
+                    icon.name: "configure"
+                    text: i18n("Camera and recognition")
+                    display: QQC2.AbstractButton.IconOnly
+                    // pressed in while the settings are open, whatever closes them
+                    checkable: true
+                    checked: root.selected === "settings"
+                    onClicked: {
+                        root.toggleSettings()
+                        checked = Qt.binding(() => root.selected === "settings")
+                    }
+                    QQC2.ToolTip.text: text
+                    QQC2.ToolTip.visible: hovered
+                    QQC2.ToolTip.delay: Kirigami.Units.toolTipDelay
+                }
             }
             QQC2.Label {
                 Layout.fillWidth: true
@@ -322,18 +368,6 @@ KCM.ScrollViewKCM {
                 font: Kirigami.Theme.smallFont
                 wrapMode: Text.WordWrap
                 opacity: 0.7
-            }
-
-            Kirigami.Separator {
-                Layout.fillWidth: true
-            }
-
-            QQC2.ItemDelegate {
-                Layout.fillWidth: true
-                highlighted: root.selected === "settings"
-                text: i18n("Camera and recognition")
-                icon.name: "camera-web"
-                onClicked: root.openSettings()
             }
 
             Kirigami.ListSectionHeader {

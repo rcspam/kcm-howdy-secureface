@@ -18,6 +18,31 @@ KCM.SimpleKCM {
 
     title: i18n("Camera and Recognition")
 
+    // Kirigami's own title, with a way back to the account on its left
+    titleDelegate: RowLayout {
+        Layout.fillWidth: true
+        Layout.minimumWidth: 0
+        spacing: Kirigami.Units.smallSpacing
+
+        QQC2.ToolButton {
+            icon.name: "go-previous"
+            text: i18n("Back")
+            display: QQC2.AbstractButton.IconOnly
+            onClicked: page.host.closeSettings()
+            QQC2.ToolTip.text: text
+            QQC2.ToolTip.visible: hovered
+            QQC2.ToolTip.delay: Kirigami.Units.toolTipDelay
+        }
+        Kirigami.Heading {
+            Layout.fillWidth: true
+            text: page.title
+            maximumLineCount: 1
+            elide: Text.ElideRight
+            textFormat: Text.PlainText
+        }
+    }
+    Keys.onEscapePressed: (event) => page.host.handleEscape(event)
+
     // Settings that weaken or break the unlock on this setup: shown, never edited here
     function lockedValue(url, fallback) {
         host.configRevision // re-read after every load
