@@ -16,6 +16,7 @@ include(KDECompilerSettings NO_POLICY_SCOPE)
 set(HOWDY_CONFIG_FILE  "/etc/howdy/config.ini"            CACHE PATH "Howdy config file")
 set(HOWDY_MODELS_PATH  "/etc/howdy/models"                CACHE PATH "Howdy models path")
 set(DLIB_MODELS_PATH   "/usr/share/dlib-data"             CACHE PATH "Dlib models path")
+set(HOWDY_COMMAND      "/usr/bin/howdy"                   CACHE FILEPATH "Howdy CLI run by the root helper")
 set(MODULE_CONFIG_FILE "/etc/xdg/kcm-howdy/kcm-howdy.ini" CACHE PATH "Own module configuration file")
 
 find_package(Qt6 CONFIG REQUIRED COMPONENTS

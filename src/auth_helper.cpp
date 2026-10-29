@@ -104,7 +104,9 @@ KAuth::ActionReply AuthHelper::invokeForUser(QString userName, QStringList param
     params.append(QStringLiteral("--user"));
     params.append(userName);
 
-    QString command = QStringLiteral("howdy");
+    // Absolute path: the helper is started by D-Bus with an almost empty
+    // environment, and a PATH lookup as root is not wanted anyway.
+    QString command = QStringLiteral(HOWDY_COMMAND);
     QProcess howdy;
     howdy.start(command, params);
     howdy.waitForStarted();
