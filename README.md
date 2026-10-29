@@ -71,13 +71,27 @@ An IR camera is strongly advised: with a plain webcam, a photo of you can be eno
 
 #### Unlocking the Plasma lock screen
 
-The lock screen runs the `kde-fingerprint` PAM service next to the password field. Copy `/usr/lib/pam.d/kde-fingerprint` to `/etc/pam.d/`, then in the copy:
+**These steps replace fingerprint unlock on the lock screen. On a machine with a fingerprint reader, use the variant below that keeps both, or fingerprint unlock stops working there.**
+
+The lock screen runs the `kde-fingerprint` PAM service next to the password field, and it has no other slot for password-free unlock. Copy `/usr/lib/pam.d/kde-fingerprint` to `/etc/pam.d/`, then in the copy:
 
 - replace the `pam_fprintd.so` auth line with
   `auth [success=ok new_authtok_reqd=ok default=die] /usr/local/lib/x86_64-linux-gnu/security/pam_howdy.so`
 - remove the `auth optional pam_kwallet5.so` line: with no password it waits for one and blocks the face unlock.
 
 Keep `default=die`. With a plain `required`, pam_howdy can return PAM_IGNORE, and the `pam_succeed_if` line before it would then unlock the screen on its own. Test without locking with `pamtester kde-fingerprint $USER authenticate`.
+
+With a fingerprint reader, keep `pam_fprintd.so` after Howdy instead of replacing it. The face is tried first; if it fails, the reader takes over, and if the finger fails too the unlock is denied:
+
+```
+auth  required  pam_succeed_if.so user != root quiet_success
+auth  [success=done new_authtok_reqd=done default=ignore]  /usr/local/lib/x86_64-linux-gnu/security/pam_howdy.so
+auth  [success=done new_authtok_reqd=done default=die]     pam_fprintd.so
+```
+
+The two do not run at the same time: the reader only listens once the face search is over, after the search time set in Howdy. The `pam_kwallet5.so` auth line goes here too. This variant has not been tested on a machine with a reader.
+
+The copy in `/etc/pam.d` hides the one in `/usr/lib/pam.d`: when Plasma or the distribution updates the original, the copy does not follow, so compare them after upgrades.
 
 ### Building the module
 
