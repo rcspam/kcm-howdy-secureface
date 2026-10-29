@@ -40,7 +40,7 @@ Changes:
 - a layout like the Users page of System Settings, with more settings; settings that weaken facial unlock are shown read only
 - the preview overlay is drawn by QML and stays sharp; the preview uses about 40 % of one core
 - a facial authentication switch on top of the sidebar, for every account
-- the camera list keeps the stable `/dev/v4l/by-path` link that Howdy advises
+- the camera list keeps the stable `/dev/v4l/by-path` link that Howdy advises, and follows cameras plugged in or out
 - an optional head nod after recognition (Howdy's `nod` rubber stamp)
 - a French translation
 

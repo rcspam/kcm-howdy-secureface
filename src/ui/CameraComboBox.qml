@@ -29,15 +29,20 @@ Row {
 
         property var maxItemWidth: 0
 
-        // returns -1 if not found; "count" makes it run again once the model is filled.
-        // The config may name the camera by another path than the list does.
-        currentIndex: count, Math.max(indexOfValue(kcm.camModel.matchingName(node.setValue)), 0)
+        // returns -1 if not found; "count" and "revision" make it run again once the
+        // model is filled or scanned again. The config may name the camera by
+        // another path than the list does.
+        currentIndex: {
+            count
+            kcm.camModel.revision
+            return Math.max(indexOfValue(kcm.camModel.matchingName(node.setValue)), 0)
+        }
         onActivated: node.activated(currentValue)
         model: node.model
         valueRole: 'name'
         textRole: 'description'
 
-        width: maxComboWidth ? Math.min(implicitWidth, maxComboWidth - warningIcon.width - node.spacing * 2) : implicitWidth
+        width: maxComboWidth ? Math.min(implicitWidth, maxComboWidth - refreshButton.width - warningIcon.width - node.spacing * 3) : implicitWidth
 
         delegate: ItemDelegate {
 
@@ -59,6 +64,18 @@ Row {
 
         }
         popup.width: Math.min(combo.maxItemWidth, node.maxPopupWidth)
+    }
+    // the list also follows cameras plugged in or out, this is the fallback
+    ToolButton {
+        id: refreshButton
+        anchors.verticalCenter: parent.verticalCenter
+        icon.name: "view-refresh"
+        text: i18n("Look for cameras again")
+        display: AbstractButton.IconOnly
+        onClicked: kcm.camModel.refresh()
+        ToolTip.text: text
+        ToolTip.visible: hovered
+        ToolTip.delay: Kirigami.Units.toolTipDelay
     }
     Kirigami.Icon {
         id: warningIcon

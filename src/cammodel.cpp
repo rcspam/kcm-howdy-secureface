@@ -119,19 +119,32 @@ bool camera_is_infrared(QString deviceName)
     return pixel_format_is_grey(pixelFormat) || camera_has_infrared_property(deviceName);
 }
 
-CamModel::CamModel(QObject *parent) : QAbstractListModel(parent)
+static QList<CamModel::CameraEntry> scanCameras()
 {
+    QList<CamModel::CameraEntry> cams;
     const QList<QCameraDevice> cameras = QMediaDevices::videoInputs();
     for (const QCameraDevice &cameraDevice : cameras) {
         const QString node = QString::fromLatin1(cameraDevice.id());
         // the by-path link Howdy advises, which survives a change of /dev/videoN
         const QString link = DeviceLinks::stableLink(node);
-        m_cams.push_back({
+        cams.push_back({
             link.isEmpty() ? node : link,
             cameraDevice.description(),
             camera_is_infrared(node)
         });
     }
+
+    // infrared cameras will appear at the top
+    std::sort(cams.begin(), cams.end(), [](const CamModel::CameraEntry &a, const CamModel::CameraEntry &b) {
+        if (a.infrared != b.infrared) return a.infrared > b.infrared;
+        return a.description < b.description;
+    });
+    return cams;
+}
+
+CamModel::CamModel(QObject *parent) : QAbstractListModel(parent), m_mediaDevices(new QMediaDevices(this))
+{
+    m_cams = scanCameras();
 
     // to provide data to QML by index and name
     auto roles = roleNames();
@@ -139,11 +152,17 @@ CamModel::CamModel(QObject *parent) : QAbstractListModel(parent)
         m_invRoleNames[role.value()] = role.key();
     }
 
-    // infrared cameras will appear at the top
-    std::sort(m_cams.begin(), m_cams.end(), [](const CameraEntry &a, const CameraEntry &b) {
-        if (a.infrared != b.infrared) return a.infrared > b.infrared;
-        return a.description < b.description;
-    });
+    // a camera plugged in or out while the module is open
+    connect(m_mediaDevices, &QMediaDevices::videoInputsChanged, this, &CamModel::refresh);
+}
+
+void CamModel::refresh()
+{
+    beginResetModel();
+    m_cams = scanCameras();
+    endResetModel();
+    m_revision++;
+    Q_EMIT revisionChanged();
 }
 
 QString CamModel::matchingName(const QString &path) const
@@ -206,6 +225,9 @@ CamModelEmptyItemProxy::CamModelEmptyItemProxy(CamModel *source)
     : QAbstractProxyModel(source)
 {
     setSourceModel(source);
+    // QAbstractProxyModel does not pass a new camera list on by itself
+    connect(source, &QAbstractItemModel::modelAboutToBeReset, this, [this] { beginResetModel(); });
+    connect(source, &QAbstractItemModel::modelReset, this, [this] { endResetModel(); });
 }
 
 QModelIndex CamModelEmptyItemProxy::mapToSource(const QModelIndex &proxyIndex) const

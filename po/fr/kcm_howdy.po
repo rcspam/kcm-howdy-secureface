@@ -27,7 +27,7 @@ msgstr "Howdy n'est pas installé correctement"
 msgid "Unable to get user data"
 msgstr "Impossible d'obtenir les données de l'utilisateur"
 
-#: cammodel.cpp:187 ui/UserPage.qml:29
+#: cammodel.cpp:222 ui/UserPage.qml:29
 msgid "No camera selected"
 msgstr "Aucune caméra sélectionnée"
 
@@ -121,19 +121,27 @@ msgstr "Regardez la caméra, s'il vous plaît"
 msgid "Face model added successfully"
 msgstr "Modèle de visage ajouté"
 
-#: ui/CameraComboBox.qml:49
+#: ui/CameraComboBox.qml:55
 msgid "IR camera, recommended"
 msgstr "Caméra infrarouge, recommandée"
 
-#: ui/CameraComboBox.qml:78
+#: ui/CameraComboBox.qml:73
+msgid "Look for cameras again"
+msgstr "Rechercher à nouveau les caméras"
+
+#: ui/CameraComboBox.qml:96
 msgid "Non IR camera, not recommended"
 msgstr "Caméra non infrarouge, déconseillée"
 
-#: ui/main.qml:310
+#: ui/main.qml:340
 msgid "Facial authentication"
 msgstr "Reconnaissance faciale"
 
-#: ui/main.qml:321
+#: ui/main.qml:347
+msgid "Camera and recognition"
+msgstr "Caméra et reconnaissance"
+
+#: ui/main.qml:367
 msgid ""
 "Off for every account: unlocking asks for the password only. The face models"
 " are kept."
@@ -141,45 +149,41 @@ msgstr ""
 "Désactivée pour tous les comptes : le déverrouillage demande seulement le "
 "mot de passe. Les modèles de visage sont conservés."
 
-#: ui/main.qml:334
-msgid "Camera and recognition"
-msgstr "Caméra et reconnaissance"
-
-#: ui/main.qml:341
+#: ui/main.qml:375
 msgid "Users"
 msgstr "Utilisateurs"
 
-#: ui/main.qml:380
+#: ui/main.qml:414
 msgid "%1 face model"
 msgid_plural "%1 face models"
 msgstr[0] "%1 modèle de visage"
 msgstr[1] "%1 modèles de visage"
 
-#: ui/main.qml:381
+#: ui/main.qml:415
 msgid "No face model"
 msgstr "Aucun modèle de visage"
 
-#: ui/main.qml:395
+#: ui/main.qml:429
 msgid "Set up facial authentication first"
 msgstr "Configurez d'abord la reconnaissance faciale"
 
-#: ui/main.qml:436
+#: ui/main.qml:470
 msgid "Error load config file:"
 msgstr "Erreur de chargement du fichier de configuration :"
 
-#: ui/main.qml:441
+#: ui/main.qml:475
 msgid "Save settings failed:"
 msgstr "Échec de l'enregistrement des réglages :"
 
-#: ui/main.qml:459
+#: ui/main.qml:493
 msgid "Error create faces model:"
 msgstr "Erreur de création de la liste des modèles :"
 
-#: ui/main.qml:473
+#: ui/main.qml:507
 msgid "Capture error occurred:"
 msgstr "Erreur de capture :"
 
-#: ui/main.qml:482
+#: ui/main.qml:516
 msgid "Error init backend:"
 msgstr "Erreur d'initialisation du moteur :"
 
@@ -263,7 +267,7 @@ msgstr ""
 "La configuration est terminée. Il faudra peut-être aussi configurer PAM pour"
 " utiliser la reconnaissance faciale à l'authentification."
 
-#: ui/OnboardingView.qml:345
+#: ui/OnboardingView.qml:345 ui/SettingsPage.qml:29
 msgid "Back"
 msgstr "Précédent"
 
@@ -311,7 +315,7 @@ msgstr "Image sombre"
 msgid "Scan frame"
 msgstr "Image analysée"
 
-#: ui/PreviewSizeSlider.qml:25 ui/SettingsPage.qml:78
+#: ui/PreviewSizeSlider.qml:25 ui/SettingsPage.qml:103
 msgid "Preview size:"
 msgstr "Taille de l'aperçu :"
 
@@ -324,132 +328,132 @@ msgstr "%1 %"
 msgid "Camera and Recognition"
 msgstr "Caméra et reconnaissance"
 
-#: ui/SettingsPage.qml:53
+#: ui/SettingsPage.qml:78
 msgid "Camera"
 msgstr "Caméra"
 
-#: ui/SettingsPage.qml:57
+#: ui/SettingsPage.qml:82
 msgid "Device:"
 msgstr "Périphérique :"
 
-#: ui/SettingsPage.qml:69
+#: ui/SettingsPage.qml:94
 msgid "Show the camera preview"
 msgstr "Afficher l'aperçu de la caméra"
 
-#: ui/SettingsPage.qml:100
+#: ui/SettingsPage.qml:125
 msgid "Darkness threshold:"
 msgstr "Seuil d'obscurité :"
 
-#: ui/SettingsPage.qml:119
+#: ui/SettingsPage.qml:144
 msgid ""
 "Frames with a larger share of dark pixels than this percentage are skipped."
 msgstr ""
 "Les images dont la part de pixels sombres dépasse ce pourcentage sont "
 "ignorées."
 
-#: ui/SettingsPage.qml:127
+#: ui/SettingsPage.qml:152
 msgid "Recognition"
 msgstr "Reconnaissance"
 
-#: ui/SettingsPage.qml:131
+#: ui/SettingsPage.qml:156
 msgid "Certainty:"
 msgstr "Certitude :"
 
-#: ui/SettingsPage.qml:151
+#: ui/SettingsPage.qml:176
 msgid "Lower is stricter. Howdy advises against values above 5."
 msgstr ""
 "Plus bas, c'est plus strict. Howdy déconseille les valeurs au-dessus de 5."
 
-#: ui/SettingsPage.qml:161
+#: ui/SettingsPage.qml:186
 msgid "Above 4, another person's face is more likely to be accepted."
 msgstr ""
 "Au-dessus de 4, le visage d'une autre personne risque davantage d'être "
 "accepté."
 
-#: ui/SettingsPage.qml:165
+#: ui/SettingsPage.qml:190
 msgid "Search for:"
 msgstr "Durée de recherche :"
 
-#: ui/SettingsPage.qml:169
+#: ui/SettingsPage.qml:194
 msgid "%1 second"
 msgid_plural "%1 seconds"
 msgstr[0] "%1 seconde"
 msgstr[1] "%1 secondes"
 
-#: ui/SettingsPage.qml:175
+#: ui/SettingsPage.qml:200
 msgid "Use the CNN face detector"
 msgstr "Utiliser le détecteur de visage CNN"
 
-#: ui/SettingsPage.qml:181
+#: ui/SettingsPage.qml:206
 msgid "More accurate, but much slower than the default detector."
 msgstr "Plus précis, mais bien plus lent que le détecteur par défaut."
 
-#: ui/SettingsPage.qml:188
+#: ui/SettingsPage.qml:213
 msgid "Analysis height:"
 msgstr "Hauteur d'analyse :"
 
-#: ui/SettingsPage.qml:193
+#: ui/SettingsPage.qml:218
 msgctxt "height in pixels"
 msgid "%1 px"
 msgstr "%1 px"
 
-#: ui/SettingsPage.qml:199
+#: ui/SettingsPage.qml:224
 msgid "Taller frames are scaled down before analysis. Lower is faster."
 msgstr ""
 "Les images plus hautes sont réduites avant l'analyse. Plus bas, c'est plus "
 "rapide."
 
-#: ui/SettingsPage.qml:206
+#: ui/SettingsPage.qml:231
 msgid "Frame rate:"
 msgstr "Fréquence d'images :"
 
-#: ui/SettingsPage.qml:211
+#: ui/SettingsPage.qml:236
 msgid "Highest available"
 msgstr "La plus élevée possible"
 
-#: ui/SettingsPage.qml:212 ui/SettingsPage.qml:213
+#: ui/SettingsPage.qml:237 ui/SettingsPage.qml:238
 msgctxt "frames per second"
 msgid "%1 fps"
 msgstr "%1 i/s"
 
-#: ui/SettingsPage.qml:216
+#: ui/SettingsPage.qml:241
 msgctxt "frames per second, value set by hand"
 msgid "%1 fps (custom)"
 msgstr "%1 i/s (personnalisée)"
 
-#: ui/SettingsPage.qml:226
+#: ui/SettingsPage.qml:251
 msgid "General"
 msgstr "Général"
 
-#: ui/SettingsPage.qml:230
+#: ui/SettingsPage.qml:255
 msgid "Messages:"
 msgstr "Messages :"
 
-#: ui/SettingsPage.qml:231
+#: ui/SettingsPage.qml:256
 msgid "Announce the face scan"
 msgstr "Annoncer la recherche du visage"
 
-#: ui/SettingsPage.qml:236
+#: ui/SettingsPage.qml:261
 msgid "Tell when no face was recognized in time"
 msgstr "Signaler quand aucun visage n'a été reconnu à temps"
 
-#: ui/SettingsPage.qml:241
+#: ui/SettingsPage.qml:266
 msgid "Show who was recognized"
 msgstr "Afficher qui a été reconnu"
 
-#: ui/SettingsPage.qml:248
+#: ui/SettingsPage.qml:273
 msgid "Safety"
 msgstr "Sécurité"
 
-#: ui/SettingsPage.qml:252
+#: ui/SettingsPage.qml:277
 msgid "Skip facial authentication:"
 msgstr "Ne pas utiliser la reconnaissance faciale :"
 
-#: ui/SettingsPage.qml:253
+#: ui/SettingsPage.qml:278
 msgid "In SSH sessions"
 msgstr "Dans les sessions SSH"
 
-#: ui/SettingsPage.qml:262
+#: ui/SettingsPage.qml:287
 msgid ""
 "Someone connected remotely could then be let in by whoever sits in front of "
 "the camera."
@@ -457,11 +461,11 @@ msgstr ""
 "Quelqu'un connecté à distance pourrait alors être laissé entrer par la "
 "personne assise devant la caméra."
 
-#: ui/SettingsPage.qml:265
+#: ui/SettingsPage.qml:290
 msgid "When the lid is closed"
 msgstr "Quand l'écran est rabattu"
 
-#: ui/SettingsPage.qml:274
+#: ui/SettingsPage.qml:299
 msgid ""
 "With the lid closed the camera sees nothing: every attempt waits for the "
 "search time before the password is asked."
@@ -469,15 +473,15 @@ msgstr ""
 "Écran rabattu, la caméra ne voit rien : chaque tentative attend la fin de la"
 " durée de recherche avant que le mot de passe soit demandé."
 
-#: ui/SettingsPage.qml:278
+#: ui/SettingsPage.qml:303
 msgid "After recognition:"
 msgstr "Après la reconnaissance :"
 
-#: ui/SettingsPage.qml:279
+#: ui/SettingsPage.qml:304
 msgid "Ask for a nod"
 msgstr "Demander un hochement de tête"
 
-#: ui/SettingsPage.qml:288
+#: ui/SettingsPage.qml:313
 msgid ""
 "Once your face is recognized, nod within %1 second or the password is asked."
 " Shaking your head cancels. The lock screen does not show this step."
@@ -493,7 +497,7 @@ msgstr[1] ""
 "sinon le mot de passe est demandé. Secouer la tête annule. L'écran de "
 "verrouillage n'affiche pas cette étape."
 
-#: ui/SettingsPage.qml:300
+#: ui/SettingsPage.qml:325
 msgid ""
 "This stops a photo held still in front of the camera, not one moved up and "
 "down."
@@ -501,7 +505,7 @@ msgstr ""
 "Cela arrête une photo tenue immobile devant la caméra, pas une photo bougée "
 "de haut en bas."
 
-#: ui/SettingsPage.qml:307
+#: ui/SettingsPage.qml:332
 msgid ""
 "The stamp rules in Howdy's config.ini are not a single nod that asks for the"
 " password on timeout, so the nod cannot be turned on here."
@@ -510,11 +514,11 @@ msgstr ""
 "hochement qui demande le mot de passe une fois le délai écoulé : le "
 "hochement ne peut pas être activé ici."
 
-#: ui/SettingsPage.qml:312
+#: ui/SettingsPage.qml:337
 msgid "Locked Settings"
 msgstr "Réglages verrouillés"
 
-#: ui/SettingsPage.qml:317
+#: ui/SettingsPage.qml:342
 msgid ""
 "These settings can only be changed in Howdy's config.ini, as root, because "
 "they weaken or break facial unlock here."
@@ -522,16 +526,16 @@ msgstr ""
 "Ces réglages ne se modifient que dans le config.ini de Howdy, en root, car "
 "ils affaiblissent ou cassent ici le déverrouillage par le visage."
 
-#: ui/SettingsPage.qml:326
+#: ui/SettingsPage.qml:351
 msgid "At least one of them has a risky value. Check Howdy's config.ini."
 msgstr ""
 "Au moins l'un d'eux a une valeur risquée. Vérifiez le config.ini de Howdy."
 
-#: ui/SettingsPage.qml:330
+#: ui/SettingsPage.qml:355
 msgid "Password workaround:"
 msgstr "Contournement du mot de passe :"
 
-#: ui/SettingsPage.qml:333
+#: ui/SettingsPage.qml:358
 msgid ""
 "Must stay off: \"input\" and \"native\" let a typed password through "
 "unchecked with some PAM setups."
@@ -539,19 +543,19 @@ msgstr ""
 "Doit rester sur « off » : « input » et « native » laissent passer un mot de "
 "passe tapé sans vérification avec certaines configurations PAM."
 
-#: ui/SettingsPage.qml:336
+#: ui/SettingsPage.qml:361
 msgid "Snapshots:"
 msgstr "Captures :"
 
-#: ui/SettingsPage.qml:337
+#: ui/SettingsPage.qml:362
 msgid "on"
 msgstr "activées"
 
-#: ui/SettingsPage.qml:337
+#: ui/SettingsPage.qml:362
 msgid "off"
 msgstr "désactivées"
 
-#: ui/SettingsPage.qml:339
+#: ui/SettingsPage.qml:364
 msgid ""
 "Must stay off: the lock screen cannot write them and facial unlock would "
 "fail."
@@ -559,11 +563,11 @@ msgstr ""
 "Doivent rester désactivées : l'écran de verrouillage ne peut pas les écrire "
 "et le déverrouillage par le visage échouerait."
 
-#: ui/SettingsPage.qml:342
+#: ui/SettingsPage.qml:367
 msgid "Capture backend:"
 msgstr "Moteur de capture :"
 
-#: ui/SettingsPage.qml:345
+#: ui/SettingsPage.qml:370
 msgid ""
 "OpenCV is the backend that works with this camera, the others easily break "
 "capture."
