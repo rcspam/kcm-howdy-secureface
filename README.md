@@ -2,6 +2,12 @@
 
 ### KDE Plasma 6 configuration module for [Howdy](https://github.com/boltgolt/howdy).
 
+## WARNING
+
+**The lock screen setup of this README replaces fingerprint unlock on the Plasma lock screen. On a machine with a fingerprint reader, use the [variant that keeps both](#unlocking-the-plasma-lock-screen), or fingerprint unlock stops working there.**
+
+Face unlock is also weaker than a password: read the [note on security](#a-note-on-security) before using it.
+
 #### Current features:
 
 - list/add/remove face models for current user (without elevated privileges)
