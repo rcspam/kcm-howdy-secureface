@@ -80,6 +80,7 @@ ColumnLayout {
                     width: tall ? maxWidth : Math.round(maxHeight / ratio)
                     height: tall ? Math.round(maxWidth * ratio) : maxHeight
                     enabled: visible && onboardingView.wantPreview
+                    host: root
                 }
             }
 
@@ -152,6 +153,7 @@ ColumnLayout {
                     width: tall ? maxWidth : Math.round(maxHeight / ratio)
                     height: tall ? Math.round(maxWidth * ratio) : maxHeight
                     enabled: visible && onboardingView.wantPreview
+                    host: root
                 }
             }
 

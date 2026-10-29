@@ -17,6 +17,9 @@ Row {
     property var maxComboWidth
     property alias currentValue: combo.currentValue
 
+    // only a choice made by the user, not the index set while the model loads
+    signal activated(string value)
+
     function getCurrentItemProperty(name) {
         return combo.model.getItemProperty(combo.currentIndex, name)
     }
@@ -26,8 +29,9 @@ Row {
 
         property var maxItemWidth: 0
 
-        // returns -1 if not found
-        currentIndex: Math.max(indexOfValue(node.setValue), 0)
+        // returns -1 if not found; "count" makes it run again once the model is filled
+        currentIndex: count, Math.max(indexOfValue(node.setValue), 0)
+        onActivated: node.activated(currentValue)
         model: node.model
         valueRole: 'name'
         textRole: 'description'
