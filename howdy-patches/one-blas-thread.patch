@@ -1,0 +1,18 @@
+diff --git a/howdy/src/compare.py b/howdy/src/compare.py
+index 35e85fb..c92c3fb 100644
+--- a/howdy/src/compare.py
++++ b/howdy/src/compare.py
+@@ -12,6 +12,13 @@ timings = {
+ # Import required modules
+ import sys
+ import os
++
++# OpenBLAS, used by dlib and numpy, starts one worker per core, and the workers
++# spin between calls: an authentication kept 3 to 5 cores busy. One thread uses
++# less than a core and is not slower on the small matrices of a single face.
++# It is read when the library loads, so before dlib and numpy are imported.
++os.environ["OPENBLAS_NUM_THREADS"] = "1"
++
+ import json
+ import configparser
+ import dlib
