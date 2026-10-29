@@ -1,6 +1,6 @@
 <img src="sc-apps-howdy.svg" width="128"/>
 
-### KDE5 configuration module for [Howdy](https://github.com/boltgolt/howdy).
+### KDE Plasma 6 configuration module for [Howdy](https://github.com/boltgolt/howdy).
 
 #### Current features:
 
@@ -11,7 +11,11 @@
 
 ## This fork
 
-Based on [golubevan/kcm-howdy](https://gitlab.com/golubevan/kcm-howdy) 6.0.1 (commit `51eebd78`), for Howdy 3 on KDE Plasma 6. One commit per change:
+Based on [golubevan/kcm-howdy](https://gitlab.com/golubevan/kcm-howdy) 6.0.1 (commit `51eebd78`). One commit per change.
+
+Howdy 3 has no release yet: the latest one, 2.6.1 from 2020, is not supported. This fork is built and tested against the development version of Howdy, `master` at commit [`d3ab993`](https://github.com/boltgolt/howdy/commit/d3ab99382f88f043d15f15c1450ab69433892a1c) (2025-06-22, version `beta` in its `meson.build`), on Ubuntu 24.04 (TUXEDO OS) with KDE Plasma 6 and Qt 6.10.
+
+Changes:
 
 - the root helper runs the howdy CLI by absolute path (`HOWDY_COMMAND`)
 - the preview thresholds start at Howdy's defaults
@@ -42,7 +46,7 @@ On Ubuntu, `liblapack-dev` ships no CMake config: add `-Dlapack_DIR=$PWD/cmake/u
 
 ### Howdy patches
 
-`howdy-patches/` holds two patches for Howdy 3 itself, applied with `git apply` in the Howdy source tree:
+`howdy-patches/` holds two patches for Howdy itself, made against commit `d3ab993` and applied with `git apply` in the Howdy source tree:
 
 - `stamps-fail-closed.patch`: upstream Howdy skips a rubber stamp that crashes or a rule it cannot read, and lets the unlock through. With this patch every such error denies the unlock. Apply it before turning the head nod on.
 - `one-blas-thread.patch`: keeps OpenBLAS to one thread during authentication, which otherwise keeps several cores busy.
