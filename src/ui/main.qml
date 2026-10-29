@@ -38,6 +38,7 @@ KCM.ScrollViewKCM {
     property bool noConfirmation: false
     property bool abortIfSsh: true
     property bool abortIfLidClosed: true
+    property bool nodRequired: false
 
     // bumped on every load, for bindings that read kcm.config directly
     property int configRevision: 0
@@ -146,6 +147,15 @@ KCM.ScrollViewKCM {
         listenValue: root.abortIfLidClosed
     }
 
+    // runs the stamp rules of config.ini, offered only when they are a single nod
+    property var cfg_nodRequired: ConfigValue {
+        branch: "rubberstamps/"
+        name: "enabled"
+        type: cfgBoolean
+        defaultValue: false
+        listenValue: root.nodRequired
+    }
+
     // the setup wizard writes these two ConfigValues directly
     Connections {
         target: root.cfg_device
@@ -170,6 +180,7 @@ KCM.ScrollViewKCM {
         noConfirmation = cfg_noConfirmation.value
         abortIfSsh = cfg_abortIfSsh.value
         abortIfLidClosed = cfg_abortIfLidClosed.value
+        nodRequired = cfg_nodRequired.value
         configRevision++
 
         // The handlers below only fire on a change, and a reload usually brings

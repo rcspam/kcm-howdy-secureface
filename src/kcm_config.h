@@ -21,6 +21,8 @@ public:
     Q_INVOKABLE QVariant getConfigValue(QString url);
     Q_INVOKABLE void updateConfigValue(QString url, QVariant value);
     Q_INVOKABLE void storeDefaultValue(QString url, QVariant value);
+    // seconds of the nod stamp rule, or -1 when the rules are anything else
+    Q_INVOKABLE double nodTimeout() const;
     // return false if error occurs
     Q_INVOKABLE bool save();
     void load();
@@ -42,4 +44,5 @@ private:
     QString m_filename;
     Config m_storedConfig;
     Config m_updatedConfig;
+    double m_nodTimeout = -1;
 };

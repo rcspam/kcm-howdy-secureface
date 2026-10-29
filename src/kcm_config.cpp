@@ -6,6 +6,7 @@
 
 #include "kcm_config.h"
 
+#include <QFile>
 #include <QVariant>
 
 #include <KAuth/Action>
@@ -15,6 +16,7 @@
 #include <KLocalizedString>
 
 #include "mini/ini.h"
+#include "stamprules.h"
 
 KcmConfig::KcmConfig(QString filename, KQuickManagedConfigModule *parent) : QObject(parent), m_filename(filename) {}
 
@@ -51,12 +53,21 @@ QVariant KcmConfig::getConfigValue(QString url)
     }
 }
 
+double KcmConfig::nodTimeout() const
+{
+    return m_nodTimeout;
+}
+
 void KcmConfig::load()
 {
     mINI::INIFile file(qPrintable(m_filename));
     mINI::INIStructure ini;
     m_storedConfig.clear();
     m_updatedConfig.clear();
+
+    QFile raw(m_filename);
+    m_nodTimeout = raw.open(QIODevice::ReadOnly) ? StampRules::nodTimeout(StampRules::parse(QString::fromUtf8(raw.readAll()))) : -1;
+
     if(!file.read(ini)) {
         qWarning("%s: can't read config file %s", Q_FUNC_INFO, qPrintable(m_filename));
         Q_EMIT errorLoadConfigFile(m_filename);

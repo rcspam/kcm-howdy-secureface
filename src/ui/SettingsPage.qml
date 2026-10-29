@@ -27,10 +27,15 @@ KCM.SimpleKCM {
     readonly property string workaround: lockedValue("core/workaround", "off")
     readonly property string saveFailed: lockedValue("snapshots/save_failed", "false")
     readonly property string saveSuccessful: lockedValue("snapshots/save_successful", "false")
-    readonly property string rubberstamps: lockedValue("rubberstamps/enabled", "false")
     readonly property string recordingPlugin: lockedValue("video/recording_plugin", "opencv")
     readonly property bool lockedRisk: workaround !== "off" || saveFailed === "true" || saveSuccessful === "true"
-                                       || rubberstamps === "true" || recordingPlugin !== "opencv"
+                                       || recordingPlugin !== "opencv"
+
+    // seconds of the nod stamp rule, -1 when the stamp rules are anything else
+    readonly property real nodTimeout: {
+        host.configRevision // re-read after every load
+        return kcm.config.nodTimeout()
+    }
 
     // unchecking it stops the camera and its IR emitter
     property bool showPreview: true
@@ -283,6 +288,39 @@ KCM.SimpleKCM {
                 text: i18n("With the lid closed the camera sees nothing: every attempt waits for the search time before the password is asked.")
             }
 
+            QQC2.CheckBox {
+                Kirigami.FormData.label: i18n("After recognition:")
+                text: i18n("Ask for a nod")
+                // can always be turned off, turned on only over a single nod rule
+                enabled: page.nodTimeout > 0 || checked
+                checked: page.host.nodRequired
+                onToggled: page.host.nodRequired = checked
+            }
+            QQC2.Label {
+                Layout.maximumWidth: Kirigami.Units.gridUnit * 20
+                visible: page.nodTimeout > 0
+                text: i18np("Once your face is recognized, nod within %1 second or the password is asked. Shaking your head cancels. The lock screen does not show this step.",
+                            "Once your face is recognized, nod within %1 seconds or the password is asked. Shaking your head cancels. The lock screen does not show this step.",
+                            page.nodTimeout)
+                font: Kirigami.Theme.smallFont
+                wrapMode: Text.WordWrap
+                opacity: 0.7
+            }
+            Kirigami.InlineMessage {
+                Layout.maximumWidth: Kirigami.Units.gridUnit * 24
+                Layout.fillWidth: true
+                visible: page.host.nodRequired && page.nodTimeout > 0
+                type: Kirigami.MessageType.Information
+                text: i18n("This stops a photo held still in front of the camera, not one moved up and down.")
+            }
+            Kirigami.InlineMessage {
+                Layout.maximumWidth: Kirigami.Units.gridUnit * 24
+                Layout.fillWidth: true
+                visible: page.nodTimeout <= 0
+                type: Kirigami.MessageType.Warning
+                text: i18n("The stamp rules in Howdy's config.ini are not a single nod that asks for the password on timeout, so the nod cannot be turned on here.")
+            }
+
             Kirigami.Separator {
                 Kirigami.FormData.isSection: true
                 Kirigami.FormData.label: i18n("Locked Settings")
@@ -313,12 +351,6 @@ KCM.SimpleKCM {
                 value: page.saveFailed === "true" || page.saveSuccessful === "true" ? i18n("on") : i18n("off")
                 risky: page.saveFailed === "true" || page.saveSuccessful === "true"
                 reason: i18n("Must stay off: the lock screen cannot write them and facial unlock would fail.")
-            }
-            LockedSetting {
-                Kirigami.FormData.label: i18n("Rubber stamps:")
-                value: page.rubberstamps === "true" ? i18n("on") : i18n("off")
-                risky: page.rubberstamps === "true"
-                reason: i18n("Must stay off: a stamp that fails with an error counts as a success.")
             }
             LockedSetting {
                 Kirigami.FormData.label: i18n("Capture backend:")
