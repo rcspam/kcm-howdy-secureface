@@ -8,6 +8,7 @@
 
 #include "config.h"
 
+#include <QElapsedTimer>
 #include <QFile>
 #include <QImage>
 #include <QJsonDocument>
@@ -20,6 +21,7 @@
 
 #include <string>
 #include <cmath>
+#include <dlfcn.h>
 #include <pwd.h>
 
 #include <dlib/image_processing/shape_predictor.h>
@@ -31,6 +33,7 @@
 #include <opencv2/imgproc.hpp>
 
 #include "face_recognition.h"
+#include "recognitionpacer.h"
 #include "../kcm_config.h"
 
 CaptureThread::CaptureThread(QMutex *lock, QObject *parent) :
@@ -41,24 +44,8 @@ CaptureThread::CaptureThread(QMutex *lock, QObject *parent) :
     // holds no defined value before C++20, and 0 marks every IR frame as dark
     m_darkThreshold(60),
     m_certainty(3.5),
-    m_fontRatio(0.01f),
-    m_fontThickness(0),
     m_selectModel(-1)
 {}
-
-static constexpr int OVERLAY_FONT = cv::FONT_HERSHEY_SIMPLEX;
-
-struct FontParam {
-    float size;
-    float scale;
-    int thickness;
-};
-
-static void print_text(cv::Mat &overlay, int height, int line_number, QString text, FontParam font)
-{
-    cv::putText(overlay, text.toStdString(), { int(1.4f * font.size), height - int(font.size * (1.4f + (1.4f * line_number))) },
-                OVERLAY_FONT, font.scale, { 0, 255, 0 }, font.thickness, cv::LINE_AA);
-}
 
 class FaceHelper {
 
@@ -211,14 +198,19 @@ static std::array<float, HistSize> calculate_hist(const cv::Mat &overlay)
     return histPerc;
 }
 
-template <size_t HistSize, class F>
-static void draw_hist(cv::Mat &overlay, const std::array<float, HistSize> &histPerc, F &&sc)
+// OpenBLAS starts one worker per core, and the workers spin between calls:
+// on 20 cores the face encoder of the preview kept 6 of them busy. One thread
+// is also faster here (86 ms per recognition against 112), the matrices of a
+// single face are small. Does nothing with another BLAS.
+static void useOneBlasThread()
 {
-    for (size_t i = 0; i < HistSize; ++i) {
-        cv::Point p1{ sc(20 + 10 * i), sc(10) };
-        cv::Point p2{ sc(10 + 10 * i), sc(histPerc[i] / 2 + 10) };
-        cv::rectangle(overlay, p1, p2, { 0, 200, 0 }, cv::FILLED);
+    void *openblas = dlopen("libopenblas.so.0", RTLD_NOW | RTLD_NOLOAD);
+    if (!openblas) return;
+    using SetNumThreads = void (*)(int);
+    if (auto setNumThreads = reinterpret_cast<SetNumThreads>(dlsym(openblas, "openblas_set_num_threads"))) {
+        setNumThreads(1);
     }
+    dlclose(openblas);
 }
 
 template <class CleanupFunction>
@@ -232,6 +224,8 @@ void CaptureThread::run()
 {
     Q_EMIT runInitialization();
     Cleanup loopingGuard{ [this] { m_looping = false; } };
+
+    useOneBlasThread();
 
     m_cap.open(m_videoPath.toStdString(), cv::CAP_V4L);
     if (!m_cap.isOpened()) {
@@ -259,24 +253,16 @@ void CaptureThread::run()
 
     cv::Mat origFrame;
     cv::Mat greyFrame;
-    cv::Mat overlay;
+    cv::Mat shownFrame;
 
-    int baseSize;
-    auto hersheySize = cv::getTextSize("M", OVERLAY_FONT, 1.0, 0, &baseSize);
+    // a recognition keeps a core busy, the frames in between show its faces
+    RecognitionPacer pacer;
+    QElapsedTimer clock;
+    clock.start();
+    QList<Overlay::Face> lastFaces;
+    qint64 lastRecognitionMs = -1;
 
     while (m_looping) {
-
-        FontParam font;
-
-        font.size = m_fontRatio.load() * frameWidth;
-        font.scale = font.size / hersheySize.height;
-        font.thickness = m_fontThickness.load();
-
-        // some arbitrary units, for non-text elements
-        float scale = font.size / 6;
-        auto sc = [scale] (auto x) {
-            return int(scale * x);
-        };
 
         qint64 time = QDateTime::currentMSecsSinceEpoch();
         ++totalFrames;
@@ -296,75 +282,73 @@ void CaptureThread::run()
 
         cvtColor(origFrame, greyFrame, cv::COLOR_BGR2GRAY);
         clahe->apply(greyFrame, greyFrame);
-        cvtColor(greyFrame, overlay, cv::COLOR_GRAY2RGB);
+        cvtColor(greyFrame, shownFrame, cv::COLOR_GRAY2RGB);
 
         const int HIST_SIZE = 8;
-        auto histPerc = calculate_hist<HIST_SIZE>(overlay);
-        draw_hist(overlay, histPerc, sc);
+        auto histPerc = calculate_hist<HIST_SIZE>(shownFrame);
 
-        qint64 recTime = QDateTime::currentMSecsSinceEpoch();
+        // drawn by the QML preview, at screen resolution
+        Overlay::Info overlay;
+        overlay.frameWidth = frameWidth;
+        overlay.frameHeight = frameHeight;
+        overlay.hist = QList<float>(histPerc.cbegin(), histPerc.cend());
 
         if (histPerc[0] > m_darkThreshold) {
             ++darkFrames;
             // sometimes dark and light frames alternate quickly, and this causes flickering
             // we will show dark frames only if there are a lot of them in a row
             if (darkFrames < 3) continue;
-            cv::putText(overlay, "DARK FRAME", { frameWidth - sc(68), sc(16) }, OVERLAY_FONT, font.scale, { 255, 0, 0 }, font.thickness, cv::LINE_AA);
+            overlay.dark = true;
+            // nothing is seen in the dark, do not bring old faces back after it
+            lastFaces.clear();
         } else {
             darkFrames = 0;
-            cv::putText(overlay, "SCAN FRAME", { frameWidth - sc(68), sc(16) }, OVERLAY_FONT, font.scale, { 0, 255, 0 }, font.thickness, cv::LINE_AA);
 
-            dlib::array2d<uint8_t> greyImg;
-            dlib::assign_image(greyImg, dlib::cv_image<uint8_t>(greyFrame));
+            if (pacer.due(clock.elapsed())) {
+                qint64 recStart = clock.elapsed();
 
-            cv::Mat rgbFrame;
-            cvtColor(origFrame, rgbFrame, cv::COLOR_BGR2RGB);
-            dlib::array2d<rgb_pixel> rgbImg;
-            dlib::assign_image(rgbImg, dlib::cv_image<rgb_pixel>(rgbFrame));
+                dlib::array2d<uint8_t> greyImg;
+                dlib::assign_image(greyImg, dlib::cv_image<uint8_t>(greyFrame));
 
-            auto faceLocations = faceHelper.detectFaces(greyImg);
+                cv::Mat rgbFrame;
+                cvtColor(origFrame, rgbFrame, cv::COLOR_BGR2RGB);
+                dlib::array2d<rgb_pixel> rgbImg;
+                dlib::assign_image(rgbImg, dlib::cv_image<rgb_pixel>(rgbFrame));
 
-            for (auto &loc : faceLocations) {
-                int x = (loc.right() - loc.left()) / 2 + loc.left();
-                int y = (loc.bottom() - loc.top()) / 2 + loc.top();
-                int r = (loc.right() - loc.left()) / 2;
-                r += r * 0.2;
+                auto faceLocations = faceHelper.detectFaces(greyImg);
 
-                cv::Scalar color{ 230, 0, 0 };
+                lastFaces.clear();
+                for (auto &loc : faceLocations) {
+                    auto face = Overlay::faceCircle(loc.left(), loc.top(), loc.right(), loc.bottom());
 
-                if (faceHelper.matchNeeded()) {
-                    auto match = faceHelper.matchFace(rgbImg, loc, m_selectModel.load());
-                    cv::Point p{ x + r / 3, y - r };
-                    if (match.index == FaceHelper::MatchResult::INVALID) {
-                        QString circle_text = QStringLiteral("match failed");
-                        cv::putText(overlay, circle_text.toStdString(), p, OVERLAY_FONT, font.scale, { 255, 0, 0 }, font.thickness, cv::LINE_AA);
-                    } else if (match.index != FaceHelper::MatchResult::INVALID && match.certainty * 10 < m_certainty) {
-                        color = { 0, 230, 0 };
-                        QString circleText = QStringLiteral("Model #%1 (c: %2)").arg(match.index).arg(match.certainty * 10.0, 4, 'f', 2);
-                        cv::putText(overlay, circleText.toStdString(), p, OVERLAY_FONT, font.scale, { 0, 255, 0 }, font.thickness, cv::LINE_AA);
-                    } else {
-                        QString circle_text = QStringLiteral("no match (c: %1)").arg(match.certainty * 10.0, 4, 'f', 2);
-                        cv::putText(overlay, circle_text.toStdString(), p, OVERLAY_FONT, font.scale, { 255, 0, 0 }, font.thickness, cv::LINE_AA);
+                    if (faceHelper.matchNeeded()) {
+                        auto match = faceHelper.matchFace(rgbImg, loc, m_selectModel.load());
+                        face.match = Overlay::classify(match.index, match.certainty, m_certainty);
+                        face.model = match.index;
+                        face.certainty = match.certainty * 10.0;
                     }
+                    lastFaces.append(face);
                 }
-                cv::circle(overlay, { x, y }, r, color, 2);
+
+                qint64 recEnd = clock.elapsed();
+                pacer.done(recStart, recEnd);
+                lastRecognitionMs = recEnd - recStart;
             }
+            overlay.faces = lastFaces;
         }
 
-        recTime = QDateTime::currentMSecsSinceEpoch() - recTime;
-
-        print_text(overlay, frameHeight, 0, QStringLiteral("RESOLUTION: %1x%2").arg(frameWidth).arg(frameHeight), font);
-        print_text(overlay, frameHeight, 1, QStringLiteral("FPS: %1").arg(fps), font);
-        print_text(overlay, frameHeight, 2, QStringLiteral("FRAMES: %1").arg(totalFrames), font);
+        overlay.fps = fps;
+        overlay.frames = totalFrames;
         if (darkFrames == 0) {
-            print_text(overlay, frameHeight, 3, QStringLiteral("RECOGNITION: %1 ms").arg(recTime), font);
+            overlay.recognitionMs = lastRecognitionMs;
         }
 
         m_dataLock->lock();
-        cvtColor(overlay, m_frame, cv::COLOR_RGB2BGRA);
+        cvtColor(shownFrame, m_frame, cv::COLOR_RGB2BGRA);
+        m_overlay = overlay;
         m_dataLock->unlock();
 
-        Q_EMIT frameCaptured(&m_frame);
+        Q_EMIT frameCaptured(&m_frame, &m_overlay);
     }
 }
 

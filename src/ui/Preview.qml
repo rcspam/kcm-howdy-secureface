@@ -27,9 +27,6 @@ Rectangle {
     property int defaultWidth: kcm.gridUnit * 20 + gap * 2
     property int defaultHeight: kcm.gridUnit * 15 + gap * 2
 
-    property int prevPaintedHeight: 0
-    property int prevPaintedWidth: 0
-
     // sized by host.previewZoom (set with PreviewSizeSlider) rather than fixed
     readonly property bool zoomable: host !== null && availableWidth > 0
     // camera size once frames arrive, the IR sensor of this laptop until then
@@ -86,33 +83,124 @@ Rectangle {
             smooth: true
             fillMode: Custom.QPixmapItem.PreserveAspectFit
             visible: preview.active && !kcm.previewProducer.waitingCamera
+        }
 
-            onPaintedWidthChanged: if (visible && prevPaintedWidth != paintedWidth) {
-                updateFontParams()
+        // Drawn here at screen resolution: drawn into the small IR frame,
+        // the text and circles were blurred by the scaling.
+        Item {
+            id: overlayLayer
+
+            readonly property var info: kcm.previewProducer.overlay
+            readonly property var faces: info.faces || []
+            // frame pixels to item pixels
+            readonly property real ratio: info.frameWidth > 0 ? width / info.frameWidth : 0
+            // statistics and histogram only when they do not cover the face
+            readonly property bool roomy: height >= Kirigami.Units.gridUnit * 8
+            readonly property int margin: Kirigami.Units.smallSpacing
+
+            x: Math.round((videoOut.width - videoOut.paintedWidth) / 2)
+            y: Math.round((videoOut.height - videoOut.paintedHeight) / 2)
+            width: videoOut.paintedWidth
+            height: videoOut.paintedHeight
+            visible: videoOut.visible && ratio > 0
+            clip: true
+
+            function statistics() {
+                // nothing to format before the first frame
+                if (!(info.frameWidth > 0)) return ""
+                var lines = []
+                if (info.recognitionMs >= 0) lines.push(i18n("Recognition: %1 ms", info.recognitionMs))
+                lines.push(i18n("Frames: %1", info.frames))
+                lines.push(i18n("FPS: %1", info.fps))
+                lines.push(i18n("Resolution: %1×%2", info.frameWidth, info.frameHeight))
+                return lines.join("\n")
             }
 
-            onPaintedHeightChanged: if (visible && prevPaintedHeight != paintedHeight) {
-                updateFontParams()
+            // the delegates stay while the number of faces does not change
+            Repeater {
+                model: overlayLayer.faces.length
+
+                delegate: Item {
+                    id: mark
+
+                    required property int index
+                    // the old delegates can still be evaluated once the list got shorter
+                    readonly property var face: overlayLayer.faces[index] || { x: 0, y: 0, r: 0, state: "unchecked" }
+                    readonly property color tint: face.state === "matched" ? Kirigami.Theme.positiveTextColor
+                                                                           : Kirigami.Theme.negativeTextColor
+                    readonly property real r: face.r * overlayLayer.ratio
+                    readonly property real cx: face.x * overlayLayer.ratio
+                    readonly property real cy: face.y * overlayLayer.ratio
+
+                    anchors.fill: parent
+
+                    Rectangle {
+                        x: mark.cx - mark.r
+                        y: mark.cy - mark.r
+                        width: mark.r * 2
+                        height: mark.r * 2
+                        radius: mark.r
+                        color: "transparent"
+                        border.width: 2
+                        border.color: mark.tint
+                        antialiasing: true
+                    }
+
+                    OverlayTag {
+                        visible: mark.face.state !== "unchecked"
+                        color: mark.tint
+                        text: mark.face.state === "matched" ? i18n("Model #%1, certainty %2", mark.face.model, mark.face.certainty.toFixed(2))
+                            : mark.face.state === "nomatch" ? i18n("No match, certainty %1", mark.face.certainty.toFixed(2))
+                            : i18n("Match failed")
+                        // above the circle, slightly right of its center, kept inside the frame
+                        x: Math.max(0, Math.min(mark.cx + mark.r / 3, overlayLayer.width - width))
+                        y: Math.max(0, Math.min(mark.cy - mark.r - height - overlayLayer.margin, overlayLayer.height - height))
+                    }
+                }
             }
 
-            onVisibleChanged: if (visible) {
-                updateFontParams()
+            OverlayTag {
+                anchors.top: parent.top
+                anchors.right: parent.right
+                anchors.margins: overlayLayer.margin
+                color: overlayLayer.info.dark ? Kirigami.Theme.negativeTextColor : Kirigami.Theme.positiveTextColor
+                text: overlayLayer.info.dark ? i18n("Dark frame") : i18n("Scan frame")
             }
 
-            function updateFontParams() {
+            // brightness histogram, darkest bin first: Howdy skips the frame
+            // when the first bin goes over the dark threshold.
+            // Same size on screen as the one the capture used to draw.
+            Row {
+                id: histBars
 
-                var fontHeight = kcm.gridUnit * 0.4
-                // use the ratio of the font height to the frame width, because there is more empty space vertically
-                var newFontRatio = paintedWidth > 0 ? fontHeight / paintedWidth : 0.01
-                // limit it so that nothing overlaps
-                newFontRatio = Math.min(0.03, newFontRatio)
-                // increase the font thickness because the image will shrink
-                var thickness = paintedHeight > 0 && nativeHeight > 0 ? Math.round(nativeHeight / paintedHeight - 0.5) : 1
+                readonly property real barsHeight: Math.round(Kirigami.Units.gridUnit * 10 / 3)
 
-                kcm.previewProducer.setFontParams(newFontRatio, thickness)
+                visible: overlayLayer.roomy
+                anchors.top: parent.top
+                anchors.left: parent.left
+                anchors.margins: overlayLayer.margin
+                height: barsHeight
 
-                prevPaintedHeight = paintedHeight
-                prevPaintedWidth = paintedWidth
+                Repeater {
+                    model: (overlayLayer.info.hist || []).length
+
+                    delegate: Rectangle {
+                        required property int index
+                        // no anchors: a delegate being destroyed has no parent left
+                        y: histBars.barsHeight - height
+                        width: Math.round(Kirigami.Units.gridUnit * 2 / 3)
+                        height: Math.max(1, (overlayLayer.info.hist[index] || 0) / 100 * histBars.barsHeight)
+                        color: Kirigami.Theme.positiveTextColor
+                    }
+                }
+            }
+
+            OverlayTag {
+                visible: overlayLayer.roomy
+                anchors.left: parent.left
+                anchors.bottom: parent.bottom
+                anchors.margins: overlayLayer.margin
+                text: overlayLayer.statistics()
             }
         }
 
@@ -127,6 +215,20 @@ Rectangle {
             anchors.centerIn: parent
             running: visible
             visible: preview.active && kcm.previewProducer.waitingCamera
+        }
+    }
+
+    // text on a dark backdrop, readable on any part of the frame
+    component OverlayTag: QQC2.Label {
+        font: Kirigami.Theme.smallFont
+        color: Kirigami.Theme.positiveTextColor
+        topPadding: 1
+        bottomPadding: 1
+        leftPadding: Kirigami.Units.smallSpacing
+        rightPadding: Kirigami.Units.smallSpacing
+        background: Rectangle {
+            radius: Kirigami.Units.cornerRadius
+            color: Qt.rgba(0, 0, 0, 0.6)
         }
     }
 

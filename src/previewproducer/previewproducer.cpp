@@ -32,7 +32,7 @@ PreviewProducer::~PreviewProducer()
     m_capturer->stopCaptureSync();
 }
 
-void PreviewProducer::newFrame(cv::Mat *data)
+void PreviewProducer::newFrame(cv::Mat *data, Overlay::Info *overlay)
 {
     try {
         QMutexLocker locker(m_dataLock.get());
@@ -41,6 +41,7 @@ void PreviewProducer::newFrame(cv::Mat *data)
         } else {
             *m_currentFrame = data->clone();
         }
+        m_overlay = Overlay::toVariant(*overlay);
     } catch (...) {
         Q_EMIT captureErrorOccurred(i18n("Frame copy error."));
         setCapturing(false);
@@ -98,11 +99,6 @@ QVariant PreviewProducer::getPixmap()
 void PreviewProducer::setVideoPath(QString videoPath)
 {
     m_capturer->setVideoPath(videoPath);
-}
-
-void PreviewProducer::setFontParams(float fontRatio, int thickness)
-{
-    m_capturer->setFontParams(fontRatio, thickness);
 }
 
 void PreviewProducer::selectModel(int modelId)

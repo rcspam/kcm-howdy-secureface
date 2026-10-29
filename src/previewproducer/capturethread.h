@@ -11,6 +11,8 @@
 #include <QThread>
 #include <opencv2/opencv.hpp>
 
+#include "overlay.h"
+
 class QMutex;
 
 class CaptureThread : public QThread
@@ -23,11 +25,6 @@ public:
     bool isLooping() { return m_looping.load(); }
     void setDarkThreshold(int threshold) { m_darkThreshold.store(threshold); }
     void setCertainty(double certainty) { m_certainty.store(certainty); }
-    void setFontParams(float fontRatio, int thickness)
-    {
-        m_fontRatio.store(fontRatio);
-        m_fontThickness.store(thickness);
-    }
     void setUserName(QString userName);
     void selectModel(int modelId) { m_selectModel.store(modelId); }
     void stopCaptureSync();
@@ -38,7 +35,8 @@ protected:
 
 Q_SIGNALS:
     void runInitialization();
-    void frameCaptured(cv::Mat *data);
+    // both are guarded by the data lock
+    void frameCaptured(cv::Mat *data, Overlay::Info *overlay);
     void errorOccurred(QString errorString);
 
 private:
@@ -46,12 +44,11 @@ private:
     QString m_userName;
     QMutex *m_dataLock;
     cv::Mat m_frame;
+    Overlay::Info m_overlay;
     cv::VideoCapture m_cap;
     std::atomic<bool> m_looping;
     std::atomic<int> m_darkThreshold;
     std::atomic<double> m_certainty;
-    std::atomic<float> m_fontRatio;
-    std::atomic<int> m_fontThickness;
     std::atomic<int> m_selectModel;
 };
 
