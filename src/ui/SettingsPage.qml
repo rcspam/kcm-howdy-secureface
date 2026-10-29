@@ -227,20 +227,6 @@ KCM.SimpleKCM {
             }
 
             QQC2.CheckBox {
-                Kirigami.FormData.label: i18n("Facial authentication:")
-                text: i18n("Disable for every account")
-                checked: page.host.howdyDisabled
-                onToggled: page.host.howdyDisabled = checked
-            }
-            Kirigami.InlineMessage {
-                Layout.maximumWidth: Kirigami.Units.gridUnit * 24
-                Layout.fillWidth: true
-                visible: page.host.howdyDisabled
-                type: Kirigami.MessageType.Information
-                text: i18n("The face models are kept. Unlocking asks for the password only.")
-            }
-
-            QQC2.CheckBox {
                 Kirigami.FormData.label: i18n("Messages:")
                 text: i18n("Announce the face scan")
                 checked: page.host.detectionNotice

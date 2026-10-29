@@ -304,6 +304,30 @@ KCM.ScrollViewKCM {
             spacing: 0
             visible: usersList.ready
 
+            // core/disabled of Howdy, for every account: on top, where it is found
+            QQC2.SwitchDelegate {
+                Layout.fillWidth: true
+                text: i18n("Facial authentication")
+                icon.name: "user-identity"
+                checked: !root.howdyDisabled
+                onToggled: root.howdyDisabled = !checked
+            }
+            QQC2.Label {
+                Layout.fillWidth: true
+                Layout.leftMargin: Kirigami.Units.largeSpacing
+                Layout.rightMargin: Kirigami.Units.largeSpacing
+                Layout.bottomMargin: Kirigami.Units.smallSpacing
+                visible: root.howdyDisabled
+                text: i18n("Off for every account: unlocking asks for the password only. The face models are kept.")
+                font: Kirigami.Theme.smallFont
+                wrapMode: Text.WordWrap
+                opacity: 0.7
+            }
+
+            Kirigami.Separator {
+                Layout.fillWidth: true
+            }
+
             QQC2.ItemDelegate {
                 Layout.fillWidth: true
                 highlighted: root.selected === "settings"

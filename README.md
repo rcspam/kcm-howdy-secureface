@@ -39,6 +39,7 @@ Changes:
 - only accounts people log into are listed (UID range of `/etc/login.defs`, shell in `/etc/shells`), with their avatars
 - a layout like the Users page of System Settings, with more settings; settings that weaken facial unlock are shown read only
 - the preview overlay is drawn by QML and stays sharp; the preview uses about 40 % of one core
+- a facial authentication switch on top of the sidebar, for every account
 - an optional head nod after recognition (Howdy's `nod` rubber stamp)
 - a French translation
 
