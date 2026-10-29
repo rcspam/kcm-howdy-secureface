@@ -9,6 +9,17 @@
 - select camera, adjust `certainty` and `dark_threshold` (with elevated privileges)
 - preview with recognition as in `howdy test` command
 
+## A note on security
+
+Face unlock is a convenience, and it is weaker than a password. Howdy compares a 2D image with your face model and has no liveness check: someone who looks like you, or a good photo of you, can be enough. An IR camera helps against phone screens and most inkjet prints, but it sees laser toner, so a black and white laser print of an IR picture remains the most likely attack. No independent audit of Howdy has been published.
+
+- Keep a password on the account, and use face unlock only where a stranger with a photo of you is an acceptable risk. The setup described below covers the Plasma lock screen only: login, sudo and KWallet keep their password.
+- The optional head nod stops a photo held still, not a photo moved up and down in front of the camera.
+- Face models are biometric data. The lock screen runs Howdy as your user, so `/usr/local/etc/howdy/models` has to stay readable, and other local accounts can copy the models: keep that in mind on a shared machine. Keep Howdy's own files root-owned and read only.
+- Keep snapshots off (`save_failed`, `save_successful`): a saved capture of your face is exactly what a forged photo needs.
+
+**Do not use face unlock as the only way to authenticate.**
+
 ## This fork
 
 Based on [golubevan/kcm-howdy](https://gitlab.com/golubevan/kcm-howdy) 6.0.1 (commit `51eebd78`). One commit per change.
