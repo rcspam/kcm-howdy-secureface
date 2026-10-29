@@ -19,6 +19,7 @@ Based on [golubevan/kcm-howdy](https://gitlab.com/golubevan/kcm-howdy) 6.0.1 (co
 - a layout like the Users page of System Settings, with more settings; settings that weaken facial unlock are shown read only
 - the preview overlay is drawn by QML and stays sharp; the preview uses about 40 % of one core
 - an optional head nod after recognition (Howdy's `nod` rubber stamp)
+- a French translation
 
 ### Building
 

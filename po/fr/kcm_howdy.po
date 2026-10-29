@@ -1,0 +1,639 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: kcm-howdy\n"
+"PO-Revision-Date: 2026-10-29 09:00+0100\n"
+"Last-Translator: rcspam <rcspam4gh@gmail.com>\n"
+"Language-Team: French\n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: auth_helper.cpp:72
+msgid "Invalid key format: %1"
+msgstr "Format de clé invalide : %1"
+
+#: auth_helper.cpp:85
+msgid "Failed to write configuration file on disk"
+msgstr "Impossible d'écrire le fichier de configuration sur le disque"
+
+#: auth_helper.cpp:116
+msgid "Howdy is not installed correctly"
+msgstr "Howdy n'est pas installé correctement"
+
+#: auth_helper.cpp:144 usersmodel.cpp:76
+msgid "Unable to get user data"
+msgstr "Impossible d'obtenir les données de l'utilisateur"
+
+#: cammodel.cpp:187 ui/UserPage.qml:29
+msgid "No camera selected"
+msgstr "Aucune caméra sélectionnée"
+
+#: facesmodel.cpp:52
+msgid "Model file exists but cannot be opened"
+msgstr "Le fichier des modèles existe mais ne peut pas être ouvert"
+
+#: facesmodel.cpp:61
+msgid "Invalid model file"
+msgstr "Fichier des modèles invalide"
+
+#: facesmodel.cpp:118
+msgid "Id"
+msgstr "Id"
+
+#: facesmodel.cpp:119
+msgid "Time"
+msgstr "Date"
+
+#: facesmodel.cpp:120
+msgid "Name"
+msgstr "Nom"
+
+#: facesmodel.cpp:128 kcm_config.cpp:88
+msgid "Access denied"
+msgstr "Accès refusé"
+
+#: facesmodel.cpp:149
+msgid "Add face model failed:"
+msgstr "Échec de l'ajout du modèle de visage :"
+
+#: facesmodel.cpp:168
+msgid "Remove face model failed:"
+msgstr "Échec de la suppression du modèle de visage :"
+
+#: kcm_howdy.cpp:57
+msgid "No cameras found"
+msgstr "Aucune caméra trouvée"
+
+#: previewproducer/capturethread.cpp:232
+msgid "Failed to open camera: \"%1\""
+msgstr "Impossible d'ouvrir la caméra : « %1 »"
+
+#: previewproducer/capturethread.cpp:238 usersmodel.cpp:105
+msgid "User unavailable"
+msgstr "Utilisateur indisponible"
+
+#: previewproducer/capturethread.cpp:279
+msgid "Failed to capture frame from camera: \"%1\""
+msgstr "Impossible de capturer une image de la caméra : « %1 »"
+
+#: previewproducer/previewproducer.cpp:46
+msgid "Frame copy error."
+msgstr "Erreur de copie de l'image."
+
+#: previewproducer/previewproducer.cpp:81
+msgid "Preview is not supported if CNN model is active (use_cnn option)"
+msgstr ""
+"L'aperçu n'est pas disponible quand le détecteur CNN est actif (option "
+"use_cnn)"
+
+#: ui/AddFacePage.qml:21
+msgid "Add Face Model"
+msgstr "Ajouter un modèle de visage"
+
+#: ui/AddFacePage.qml:24 ui/OnboardingView.qml:171
+msgid "Authorization"
+msgstr "Autorisation"
+
+#: ui/AddFacePage.qml:54
+msgid "Model name:"
+msgstr "Nom du modèle :"
+
+#: ui/AddFacePage.qml:55
+msgid "For example: with glasses"
+msgstr "Par exemple : avec lunettes"
+
+#: ui/AddFacePage.qml:68 ui/OnboardingView.qml:166
+msgid "Scan"
+msgstr "Scanner"
+
+#: ui/AddFacePage.qml:73
+msgid "Cancel"
+msgstr "Annuler"
+
+#: ui/AddFacePage.qml:84 ui/OnboardingView.qml:191
+msgid "Look into the camera please"
+msgstr "Regardez la caméra, s'il vous plaît"
+
+#: ui/AddFacePage.qml:90 ui/OnboardingView.qml:196
+msgid "Face model added successfully"
+msgstr "Modèle de visage ajouté"
+
+#: ui/CameraComboBox.qml:49
+msgid "IR camera, recommended"
+msgstr "Caméra infrarouge, recommandée"
+
+#: ui/CameraComboBox.qml:78
+msgid "Non IR camera, not recommended"
+msgstr "Caméra non infrarouge, déconseillée"
+
+#: ui/main.qml:310
+msgid "Camera and recognition"
+msgstr "Caméra et reconnaissance"
+
+#: ui/main.qml:317
+msgid "Users"
+msgstr "Utilisateurs"
+
+#: ui/main.qml:356
+msgid "%1 face model"
+msgid_plural "%1 face models"
+msgstr[0] "%1 modèle de visage"
+msgstr[1] "%1 modèles de visage"
+
+#: ui/main.qml:357
+msgid "No face model"
+msgstr "Aucun modèle de visage"
+
+#: ui/main.qml:371
+msgid "Set up facial authentication first"
+msgstr "Configurez d'abord la reconnaissance faciale"
+
+#: ui/main.qml:412
+msgid "Error load config file:"
+msgstr "Erreur de chargement du fichier de configuration :"
+
+#: ui/main.qml:417
+msgid "Save settings failed:"
+msgstr "Échec de l'enregistrement des réglages :"
+
+#: ui/main.qml:435
+msgid "Error create faces model:"
+msgstr "Erreur de création de la liste des modèles :"
+
+#: ui/main.qml:449
+msgid "Capture error occurred:"
+msgstr "Erreur de capture :"
+
+#: ui/main.qml:458
+msgid "Error init backend:"
+msgstr "Erreur d'initialisation du moteur :"
+
+#: ui/OnboardingPage.qml:18
+msgid "Setup"
+msgstr "Configuration"
+
+#: ui/OnboardingView.qml:21
+msgid "Face authentication setup wizard"
+msgstr "Assistant de configuration de la reconnaissance faciale"
+
+#: ui/OnboardingView.qml:39
+msgid ""
+"Please select a camera. It is highly recommended to use an IR camera for "
+"authentication."
+msgstr ""
+"Choisissez une caméra. Une caméra infrarouge est fortement recommandée pour "
+"l'authentification."
+
+#: ui/OnboardingView.qml:95
+msgid "You need to choose a camera."
+msgstr "Vous devez choisir une caméra."
+
+#: ui/OnboardingView.qml:99
+msgid ""
+"Using a non-IR camera for facial recognition is highly discouraged. For "
+"example, someone will be able to use your photo for successful "
+"authentication. Are you sure you want to proceed?"
+msgstr ""
+"Une caméra non infrarouge est fortement déconseillée pour la reconnaissance "
+"faciale. Quelqu'un pourrait par exemple s'authentifier avec une photo de "
+"vous. Voulez-vous vraiment continuer ?"
+
+#: ui/OnboardingView.qml:132
+msgid ""
+"Your face needs to be scanned to create a reference model. During "
+"authentication, a check will be made against this model."
+msgstr ""
+"Votre visage doit être scanné pour créer un modèle de référence. Chaque "
+"authentification le compare à ce modèle."
+
+#: ui/OnboardingView.qml:227
+msgid "Please select an operating mode:"
+msgstr "Choisissez un mode de fonctionnement :"
+
+#: ui/OnboardingView.qml:263
+msgid "Fast"
+msgstr "Rapide"
+
+#: ui/OnboardingView.qml:264
+msgid "Allows more fuzzy matches, but speeds up the scanning process greatly."
+msgstr ""
+"Accepte des correspondances plus approximatives, mais accélère beaucoup la "
+"recherche."
+
+#: ui/OnboardingView.qml:275
+msgid "Balanced"
+msgstr "Équilibré"
+
+#: ui/OnboardingView.qml:276
+msgid ""
+"Still relatively quick detection, but might not log you in when furher away."
+msgstr ""
+"Détection encore assez rapide, mais peut ne pas vous reconnaître de plus "
+"loin."
+
+#: ui/OnboardingView.qml:285
+msgid "Secure"
+msgstr "Sûr"
+
+#: ui/OnboardingView.qml:286
+msgid ""
+"The slightly safer option, but will take much longer to authenticate you."
+msgstr "Un peu plus sûr, mais l'authentification prendra bien plus de temps."
+
+#: ui/OnboardingView.qml:303
+msgid ""
+"The setup process is complete. Please note that you may need to additionally"
+" configure PAM to use facial recognition for authentication."
+msgstr ""
+"La configuration est terminée. Il faudra peut-être aussi configurer PAM pour"
+" utiliser la reconnaissance faciale à l'authentification."
+
+#: ui/OnboardingView.qml:345
+msgid "Back"
+msgstr "Précédent"
+
+#: ui/OnboardingView.qml:356
+msgid "Next"
+msgstr "Suivant"
+
+#: ui/OnboardingView.qml:361
+msgid "Finish"
+msgstr "Terminer"
+
+#: ui/Preview.qml:112
+msgid "Recognition: %1 ms"
+msgstr "Reconnaissance : %1 ms"
+
+#: ui/Preview.qml:113
+msgid "Frames: %1"
+msgstr "Images : %1"
+
+#: ui/Preview.qml:114
+msgid "FPS: %1"
+msgstr "Images/s : %1"
+
+#: ui/Preview.qml:115
+msgid "Resolution: %1×%2"
+msgstr "Résolution : %1×%2"
+
+#: ui/Preview.qml:152
+msgid "Model #%1, certainty %2"
+msgstr "Modèle n° %1, certitude %2"
+
+#: ui/Preview.qml:153
+msgid "No match, certainty %1"
+msgstr "Pas de correspondance, certitude %1"
+
+#: ui/Preview.qml:154
+msgid "Match failed"
+msgstr "Échec de la comparaison"
+
+#: ui/Preview.qml:167
+msgid "Dark frame"
+msgstr "Image sombre"
+
+#: ui/Preview.qml:167
+msgid "Scan frame"
+msgstr "Image analysée"
+
+#: ui/PreviewSizeSlider.qml:25 ui/SettingsPage.qml:78
+msgid "Preview size:"
+msgstr "Taille de l'aperçu :"
+
+#: ui/PreviewSizeSlider.qml:41 ui/PreviewSizeSlider.qml:45
+msgctxt "preview size in percent"
+msgid "%1 %"
+msgstr "%1 %"
+
+#: ui/SettingsPage.qml:19
+msgid "Camera and Recognition"
+msgstr "Caméra et reconnaissance"
+
+#: ui/SettingsPage.qml:53
+msgid "Camera"
+msgstr "Caméra"
+
+#: ui/SettingsPage.qml:57
+msgid "Device:"
+msgstr "Périphérique :"
+
+#: ui/SettingsPage.qml:69
+msgid "Show the camera preview"
+msgstr "Afficher l'aperçu de la caméra"
+
+#: ui/SettingsPage.qml:100
+msgid "Darkness threshold:"
+msgstr "Seuil d'obscurité :"
+
+#: ui/SettingsPage.qml:119
+msgid ""
+"Frames with a larger share of dark pixels than this percentage are skipped."
+msgstr ""
+"Les images dont la part de pixels sombres dépasse ce pourcentage sont "
+"ignorées."
+
+#: ui/SettingsPage.qml:127
+msgid "Recognition"
+msgstr "Reconnaissance"
+
+#: ui/SettingsPage.qml:131
+msgid "Certainty:"
+msgstr "Certitude :"
+
+#: ui/SettingsPage.qml:151
+msgid "Lower is stricter. Howdy advises against values above 5."
+msgstr ""
+"Plus bas, c'est plus strict. Howdy déconseille les valeurs au-dessus de 5."
+
+#: ui/SettingsPage.qml:161
+msgid "Above 4, another person's face is more likely to be accepted."
+msgstr ""
+"Au-dessus de 4, le visage d'une autre personne risque davantage d'être "
+"accepté."
+
+#: ui/SettingsPage.qml:165
+msgid "Search for:"
+msgstr "Durée de recherche :"
+
+#: ui/SettingsPage.qml:169
+msgid "%1 second"
+msgid_plural "%1 seconds"
+msgstr[0] "%1 seconde"
+msgstr[1] "%1 secondes"
+
+#: ui/SettingsPage.qml:175
+msgid "Use the CNN face detector"
+msgstr "Utiliser le détecteur de visage CNN"
+
+#: ui/SettingsPage.qml:181
+msgid "More accurate, but much slower than the default detector."
+msgstr "Plus précis, mais bien plus lent que le détecteur par défaut."
+
+#: ui/SettingsPage.qml:188
+msgid "Analysis height:"
+msgstr "Hauteur d'analyse :"
+
+#: ui/SettingsPage.qml:193
+msgctxt "height in pixels"
+msgid "%1 px"
+msgstr "%1 px"
+
+#: ui/SettingsPage.qml:199
+msgid "Taller frames are scaled down before analysis. Lower is faster."
+msgstr ""
+"Les images plus hautes sont réduites avant l'analyse. Plus bas, c'est plus "
+"rapide."
+
+#: ui/SettingsPage.qml:206
+msgid "Frame rate:"
+msgstr "Fréquence d'images :"
+
+#: ui/SettingsPage.qml:211
+msgid "Highest available"
+msgstr "La plus élevée possible"
+
+#: ui/SettingsPage.qml:212 ui/SettingsPage.qml:213
+msgctxt "frames per second"
+msgid "%1 fps"
+msgstr "%1 i/s"
+
+#: ui/SettingsPage.qml:216
+msgctxt "frames per second, value set by hand"
+msgid "%1 fps (custom)"
+msgstr "%1 i/s (personnalisée)"
+
+#: ui/SettingsPage.qml:226
+msgid "General"
+msgstr "Général"
+
+#: ui/SettingsPage.qml:230
+msgid "Facial authentication:"
+msgstr "Reconnaissance faciale :"
+
+#: ui/SettingsPage.qml:231
+msgid "Disable for every account"
+msgstr "Désactiver pour tous les comptes"
+
+#: ui/SettingsPage.qml:240
+msgid "The face models are kept. Unlocking asks for the password only."
+msgstr ""
+"Les modèles de visage sont conservés. Le déverrouillage demande alors "
+"seulement le mot de passe."
+
+#: ui/SettingsPage.qml:244
+msgid "Messages:"
+msgstr "Messages :"
+
+#: ui/SettingsPage.qml:245
+msgid "Announce the face scan"
+msgstr "Annoncer la recherche du visage"
+
+#: ui/SettingsPage.qml:250
+msgid "Tell when no face was recognized in time"
+msgstr "Signaler quand aucun visage n'a été reconnu à temps"
+
+#: ui/SettingsPage.qml:255
+msgid "Show who was recognized"
+msgstr "Afficher qui a été reconnu"
+
+#: ui/SettingsPage.qml:262
+msgid "Safety"
+msgstr "Sécurité"
+
+#: ui/SettingsPage.qml:266
+msgid "Skip facial authentication:"
+msgstr "Ne pas utiliser la reconnaissance faciale :"
+
+#: ui/SettingsPage.qml:267
+msgid "In SSH sessions"
+msgstr "Dans les sessions SSH"
+
+#: ui/SettingsPage.qml:276
+msgid ""
+"Someone connected remotely could then be let in by whoever sits in front of "
+"the camera."
+msgstr ""
+"Quelqu'un connecté à distance pourrait alors être laissé entrer par la "
+"personne assise devant la caméra."
+
+#: ui/SettingsPage.qml:279
+msgid "When the lid is closed"
+msgstr "Quand l'écran est rabattu"
+
+#: ui/SettingsPage.qml:288
+msgid ""
+"With the lid closed the camera sees nothing: every attempt waits for the "
+"search time before the password is asked."
+msgstr ""
+"Écran rabattu, la caméra ne voit rien : chaque tentative attend la fin de la"
+" durée de recherche avant que le mot de passe soit demandé."
+
+#: ui/SettingsPage.qml:292
+msgid "After recognition:"
+msgstr "Après la reconnaissance :"
+
+#: ui/SettingsPage.qml:293
+msgid "Ask for a nod"
+msgstr "Demander un hochement de tête"
+
+#: ui/SettingsPage.qml:302
+msgid ""
+"Once your face is recognized, nod within %1 second or the password is asked."
+" Shaking your head cancels. The lock screen does not show this step."
+msgid_plural ""
+"Once your face is recognized, nod within %1 seconds or the password is "
+"asked. Shaking your head cancels. The lock screen does not show this step."
+msgstr[0] ""
+"Une fois votre visage reconnu, hochez la tête dans un délai de %1 seconde, "
+"sinon le mot de passe est demandé. Secouer la tête annule. L'écran de "
+"verrouillage n'affiche pas cette étape."
+msgstr[1] ""
+"Une fois votre visage reconnu, hochez la tête dans un délai de %1 secondes, "
+"sinon le mot de passe est demandé. Secouer la tête annule. L'écran de "
+"verrouillage n'affiche pas cette étape."
+
+#: ui/SettingsPage.qml:314
+msgid ""
+"This stops a photo held still in front of the camera, not one moved up and "
+"down."
+msgstr ""
+"Cela arrête une photo tenue immobile devant la caméra, pas une photo bougée "
+"de haut en bas."
+
+#: ui/SettingsPage.qml:321
+msgid ""
+"The stamp rules in Howdy's config.ini are not a single nod that asks for the"
+" password on timeout, so the nod cannot be turned on here."
+msgstr ""
+"Les règles de stamps du config.ini de Howdy ne se limitent pas à un seul "
+"hochement qui demande le mot de passe une fois le délai écoulé : le "
+"hochement ne peut pas être activé ici."
+
+#: ui/SettingsPage.qml:326
+msgid "Locked Settings"
+msgstr "Réglages verrouillés"
+
+#: ui/SettingsPage.qml:331
+msgid ""
+"These settings can only be changed in Howdy's config.ini, as root, because "
+"they weaken or break facial unlock here."
+msgstr ""
+"Ces réglages ne se modifient que dans le config.ini de Howdy, en root, car "
+"ils affaiblissent ou cassent ici le déverrouillage par le visage."
+
+#: ui/SettingsPage.qml:340
+msgid "At least one of them has a risky value. Check Howdy's config.ini."
+msgstr ""
+"Au moins l'un d'eux a une valeur risquée. Vérifiez le config.ini de Howdy."
+
+#: ui/SettingsPage.qml:344
+msgid "Password workaround:"
+msgstr "Contournement du mot de passe :"
+
+#: ui/SettingsPage.qml:347
+msgid ""
+"Must stay off: \"input\" and \"native\" let a typed password through "
+"unchecked with some PAM setups."
+msgstr ""
+"Doit rester sur « off » : « input » et « native » laissent passer un mot de "
+"passe tapé sans vérification avec certaines configurations PAM."
+
+#: ui/SettingsPage.qml:350
+msgid "Snapshots:"
+msgstr "Captures :"
+
+#: ui/SettingsPage.qml:351
+msgid "on"
+msgstr "activées"
+
+#: ui/SettingsPage.qml:351
+msgid "off"
+msgstr "désactivées"
+
+#: ui/SettingsPage.qml:353
+msgid ""
+"Must stay off: the lock screen cannot write them and facial unlock would "
+"fail."
+msgstr ""
+"Doivent rester désactivées : l'écran de verrouillage ne peut pas les écrire "
+"et le déverrouillage par le visage échouerait."
+
+#: ui/SettingsPage.qml:356
+msgid "Capture backend:"
+msgstr "Moteur de capture :"
+
+#: ui/SettingsPage.qml:359
+msgid ""
+"OpenCV is the backend that works with this camera, the others easily break "
+"capture."
+msgstr ""
+"OpenCV est le moteur qui fonctionne avec cette caméra, les autres cassent "
+"facilement la capture."
+
+#: ui/TestFacePage.qml:21
+msgid "Test: %1"
+msgstr "Test : %1"
+
+#: ui/TestFacePage.qml:35
+msgid ""
+"Look at the camera: a recognized face is marked with its certainty. The "
+"lower the value, the closer the match."
+msgstr ""
+"Regardez la caméra : un visage reconnu est marqué avec sa certitude. Plus la"
+" valeur est basse, plus la correspondance est proche."
+
+#: ui/TestFacePage.qml:52
+msgid "Done"
+msgstr "Terminé"
+
+#: ui/UserPage.qml:36
+msgid ""
+"Delete the face model \"%1\"?\n"
+"The operation cannot be undone."
+msgstr ""
+"Supprimer le modèle de visage « %1 » ?\n"
+"Cette opération est irréversible."
+
+#: ui/UserPage.qml:54
+msgid "Add Face Model…"
+msgstr "Ajouter un modèle de visage…"
+
+#: ui/UserPage.qml:81
+msgctxt "login name of the current user"
+msgid "%1 (you)"
+msgstr "%1 (vous)"
+
+#: ui/UserPage.qml:88
+msgid "Changes to another account need the administrator password."
+msgstr "Modifier un autre compte demande le mot de passe administrateur."
+
+#: ui/UserPage.qml:135
+msgid "Added %1"
+msgstr "Ajouté le %1"
+
+#: ui/UserPage.qml:144
+msgid "Test"
+msgstr "Tester"
+
+#: ui/UserPage.qml:150
+msgid "Delete"
+msgstr "Supprimer"
+
+#: ui/UserPage.qml:165
+msgid "No face model yet"
+msgstr "Pas encore de modèle de visage"
+
+#: ui/UserPage.qml:167
+msgid "Add a face model to unlock the screen by looking at the camera."
+msgstr ""
+"Ajoutez un modèle de visage pour déverrouiller l'écran en regardant la "
+"caméra."
+
+#: ui/UserPage.qml:168
+msgid "Add a face model so this account can be unlocked with its face."
+msgstr ""
+"Ajoutez un modèle de visage pour que ce compte puisse être déverrouillé par "
+"son visage."
