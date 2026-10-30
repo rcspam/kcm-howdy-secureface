@@ -6,9 +6,9 @@
 
 #include "cammodel.h"
 
-#include <QCameraDevice>
-#include <QMediaDevices>
+#include <QDir>
 #include <QFile>
+#include <QMediaDevices>
 
 #include <KLocalizedString>
 
@@ -16,9 +16,11 @@
 #include <linux/version.h>
 #include <linux/videodev2.h>
 #include <sys/ioctl.h>
+#include <unistd.h>
 #include <systemd/sd-device.h>
 
 #include "devicelinks.h"
+#include "v4l2devices.h"
 
 uint32_t camera_pixel_format(int fd)
 {
@@ -119,17 +121,39 @@ bool camera_is_infrared(QString deviceName)
     return pixel_format_is_grey(pixelFormat) || camera_has_infrared_property(deviceName);
 }
 
+// The card name of a video capture node, empty for any other node
+static QString captureCardName(const QString &node)
+{
+    const int fd = open(QFile::encodeName(node).constData(), O_RDONLY | O_NONBLOCK | O_CLOEXEC);
+    if (fd < 0) {
+        return {};
+    }
+    v4l2_capability cap{};
+    const bool queried = ioctl(fd, VIDIOC_QUERYCAP, &cap) == 0;
+    close(fd);
+    if (!queried || !V4l2Devices::isVideoCapture(cap.capabilities, cap.device_caps)) {
+        return {};
+    }
+    return V4l2Devices::cardName(cap.card);
+}
+
+// Asks the /dev/video* nodes themselves: QMediaDevices only tells when to
+// look again (see v4l2devices.h)
 static QList<CamModel::CameraEntry> scanCameras()
 {
     QList<CamModel::CameraEntry> cams;
-    const QList<QCameraDevice> cameras = QMediaDevices::videoInputs();
-    for (const QCameraDevice &cameraDevice : cameras) {
-        const QString node = QString::fromLatin1(cameraDevice.id());
+    const QStringList names = QDir(QStringLiteral("/dev")).entryList({QStringLiteral("video*")}, QDir::System);
+    for (const QString &name : names) {
+        const QString node = QStringLiteral("/dev/") + name;
+        const QString description = captureCardName(node);
+        if (description.isEmpty()) {
+            continue;
+        }
         // the by-path link Howdy advises, which survives a change of /dev/videoN
         const QString link = DeviceLinks::stableLink(node);
         cams.push_back({
             link.isEmpty() ? node : link,
-            cameraDevice.description(),
+            description,
             camera_is_infrared(node)
         });
     }

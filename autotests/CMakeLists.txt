@@ -31,3 +31,9 @@ ecm_add_test(devicelinks_test.cpp
     LINK_LIBRARIES Qt6::Core Qt6::Test
 )
 target_include_directories(devicelinks_test PRIVATE ${CMAKE_SOURCE_DIR}/src)
+
+ecm_add_test(v4l2devices_test.cpp
+    TEST_NAME v4l2devices_test
+    LINK_LIBRARIES Qt6::Core Qt6::Test
+)
+target_include_directories(v4l2devices_test PRIVATE ${CMAKE_SOURCE_DIR}/src)

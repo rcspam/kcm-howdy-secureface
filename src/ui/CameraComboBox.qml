@@ -48,7 +48,8 @@ Row {
 
             property var infrared: model.infrared
 
-            width: ListView.view.width
+            // the view is gone while a new camera list replaces the delegates
+            width: ListView.view ? ListView.view.width : 0
 
             contentItem: Label {
                 id: label
@@ -59,7 +60,7 @@ Row {
 
             highlighted: combo.highlightedIndex === index
             ToolTip.text: label.text
-            ToolTip.visible: highlighted && ListView.view.width > 0 && ListView.view.width < implicitWidth
+            ToolTip.visible: highlighted && width > 0 && width < implicitWidth
             ToolTip.delay: 500
 
         }
