@@ -26,6 +26,17 @@ KCM.SimpleKCM {
     }
     Component.onDestruction: kcm.previewProducer.unSelectModel()
 
+    // The back arrow of the columns only scrolls back: the test kept running
+    onBackRequested: (event) => {
+        event.accepted = true
+        kcm.pop()
+    }
+    Shortcut {
+        sequences: [StandardKey.Cancel]
+        enabled: page.visible
+        onActivated: kcm.pop()
+    }
+
     ColumnLayout {
         spacing: Kirigami.Units.largeSpacing
 

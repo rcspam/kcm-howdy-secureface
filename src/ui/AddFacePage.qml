@@ -30,6 +30,18 @@ KCM.SimpleKCM {
         }
     }
 
+    // The back arrow of the columns only scrolls back and left the page open.
+    // A running scan cannot be cancelled, like with the Cancel button.
+    onBackRequested: (event) => {
+        event.accepted = true
+        if (modelName.enabled) kcm.pop()
+    }
+    Shortcut {
+        sequences: [StandardKey.Cancel]
+        enabled: page.visible && modelName.enabled
+        onActivated: kcm.pop()
+    }
+
     ColumnLayout {
         spacing: Kirigami.Units.largeSpacing
 
