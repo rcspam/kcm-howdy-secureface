@@ -33,6 +33,7 @@
 #include <opencv2/imgproc.hpp>
 
 #include "face_recognition.h"
+#include "backgroundtask.h"
 #include "recognitionpacer.h"
 #include "../kcm_config.h"
 
@@ -261,6 +262,18 @@ void CaptureThread::run()
     clock.start();
     QList<Overlay::Face> lastFaces;
     qint64 lastRecognitionMs = -1;
+    // Recognitions run beside the capture: run inline, each one froze the
+    // preview for its whole duration, then the queued frames rushed by.
+    // Declared after faceHelper, which the running job uses: it is destroyed
+    // first and waits for that job.
+    struct Recognition {
+        QList<Overlay::Face> faces;
+        qint64 start;
+        qint64 end;
+    };
+    BackgroundTask<Recognition> recognition;
+    // the running recognition saw a frame from before a dark spell
+    bool recognitionStale = false;
 
     while (m_looping) {
 
@@ -293,6 +306,15 @@ void CaptureThread::run()
         overlay.frameHeight = frameHeight;
         overlay.hist = QList<float>(histPerc.cbegin(), histPerc.cend());
 
+        // a finished recognition hands its faces over
+        if (auto done = recognition.takeIfDone()) {
+            pacer.done(done->start, done->end);
+            lastRecognitionMs = done->end - done->start;
+            if (!recognitionStale) {
+                lastFaces = done->faces;
+            }
+        }
+
         if (histPerc[0] > m_darkThreshold) {
             ++darkFrames;
             // sometimes dark and light frames alternate quickly, and this causes flickering
@@ -301,38 +323,42 @@ void CaptureThread::run()
             overlay.dark = true;
             // nothing is seen in the dark, do not bring old faces back after it
             lastFaces.clear();
+            recognitionStale = recognition.busy();
         } else {
             darkFrames = 0;
 
-            if (pacer.due(clock.elapsed())) {
-                qint64 recStart = clock.elapsed();
+            if (!recognition.busy() && pacer.due(clock.elapsed())) {
+                recognitionStale = false;
+                // copies: the loop reads the next frames into these while the job runs
+                recognition.start([this, &faceHelper, &clock, grey = greyFrame.clone(), orig = origFrame.clone()] {
+                    Recognition result;
+                    result.start = clock.elapsed();
 
-                dlib::array2d<uint8_t> greyImg;
-                dlib::assign_image(greyImg, dlib::cv_image<uint8_t>(greyFrame));
+                    dlib::array2d<uint8_t> greyImg;
+                    dlib::assign_image(greyImg, dlib::cv_image<uint8_t>(grey));
 
-                cv::Mat rgbFrame;
-                cvtColor(origFrame, rgbFrame, cv::COLOR_BGR2RGB);
-                dlib::array2d<rgb_pixel> rgbImg;
-                dlib::assign_image(rgbImg, dlib::cv_image<rgb_pixel>(rgbFrame));
+                    cv::Mat rgbFrame;
+                    cvtColor(orig, rgbFrame, cv::COLOR_BGR2RGB);
+                    dlib::array2d<rgb_pixel> rgbImg;
+                    dlib::assign_image(rgbImg, dlib::cv_image<rgb_pixel>(rgbFrame));
 
-                auto faceLocations = faceHelper.detectFaces(greyImg);
+                    auto faceLocations = faceHelper.detectFaces(greyImg);
 
-                lastFaces.clear();
-                for (auto &loc : faceLocations) {
-                    auto face = Overlay::faceCircle(loc.left(), loc.top(), loc.right(), loc.bottom());
+                    for (auto &loc : faceLocations) {
+                        auto face = Overlay::faceCircle(loc.left(), loc.top(), loc.right(), loc.bottom());
 
-                    if (faceHelper.matchNeeded()) {
-                        auto match = faceHelper.matchFace(rgbImg, loc, m_selectModel.load());
-                        face.match = Overlay::classify(match.index, match.certainty, m_certainty);
-                        face.model = match.index;
-                        face.certainty = match.certainty * 10.0;
+                        if (faceHelper.matchNeeded()) {
+                            auto match = faceHelper.matchFace(rgbImg, loc, m_selectModel.load());
+                            face.match = Overlay::classify(match.index, match.certainty, m_certainty);
+                            face.model = match.index;
+                            face.certainty = match.certainty * 10.0;
+                        }
+                        result.faces.append(face);
                     }
-                    lastFaces.append(face);
-                }
 
-                qint64 recEnd = clock.elapsed();
-                pacer.done(recStart, recEnd);
-                lastRecognitionMs = recEnd - recStart;
+                    result.end = clock.elapsed();
+                    return result;
+                });
             }
             overlay.faces = lastFaces;
         }

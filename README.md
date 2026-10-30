@@ -39,6 +39,7 @@ Changes:
 - only accounts people log into are listed (UID range of `/etc/login.defs`, shell in `/etc/shells`), with their avatars
 - a layout like the Users page of System Settings, with more settings; settings that weaken facial unlock are shown read only
 - the preview overlay is drawn by QML and stays sharp; the preview uses about 40 % of one core
+- the preview keeps moving while a face is checked: recognition runs beside the capture
 - a facial authentication switch on top of the sidebar, for every account
 - the camera list keeps the stable `/dev/v4l/by-path` link that Howdy advises, and follows cameras plugged in or out
 - an optional head nod after recognition (Howdy's `nod` rubber stamp)
