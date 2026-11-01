@@ -2,6 +2,8 @@
 
 ### KDE Plasma 6 configuration module for [Howdy](https://github.com/boltgolt/howdy).
 
+**This module needs Howdy 3, which has no release yet: install the beta from its `master` branch, as described [below](#installing-howdy-3-from-source).** Howdy 2.6.1, the latest release, does not work with it: it keeps its files under `/lib/security/howdy`, has no rubber stamps, and names several settings differently.
+
 ## WARNING
 
 **The lock screen setup of this README replaces fingerprint unlock on the Plasma lock screen. On a machine with a fingerprint reader, use the [variant that keeps both](#unlocking-the-plasma-lock-screen), or fingerprint unlock stops working there.**
